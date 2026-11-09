@@ -11,20 +11,20 @@
 <style>
 /* =================================================================
    Tokens
-   Showcase frame: the portfolio system (ink, white, electric indigo).
+   Showcase frame: the portfolio system (navy, white, blue).
    Product UI: Keap design system values pulled from the Figma file.
    ================================================================= */
 @property --spin { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
 
 :root{
   /* showcase */
-  --sc-ink:#0b0b0f;
-  --sc-accent:#4f46e5;
-  --sc-accent-deep:#3a32c0;
-  --sc-accent-light:#8b84ff;
-  --sc-muted:rgba(255,255,255,.62);
-  --sc-subtle:rgba(255,255,255,.52);
-  --sc-rule:rgba(255,255,255,.13);
+  --sc-ink:#07326A;
+  --sc-accent:#0A61C9;
+  --sc-accent-deep:#064089;
+  --sc-accent-light:#82A8D1;
+  --sc-muted:rgba(255,255,255,.74);
+  --sc-subtle:rgba(255,255,255,.62);
+  --sc-rule:rgba(255,255,255,.16);
   --sc-font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
   --sc-display:"Inter Tight","Inter",system-ui,sans-serif;
 
@@ -95,8 +95,8 @@ body{
 body::before{
   content:"";position:fixed;inset:0;pointer-events:none;
   background:
-    radial-gradient(900px 560px at 88% -12%, rgba(79,70,229,.38), transparent 62%),
-    radial-gradient(700px 520px at -8% 112%, rgba(79,70,229,.14), transparent 60%);
+    radial-gradient(900px 560px at 88% -12%, rgba(10,97,201,.38), transparent 62%),
+    radial-gradient(700px 520px at -8% 112%, rgba(10,97,201,.14), transparent 60%);
 }
 .sc{position:relative;display:flex;flex-direction:column;height:100vh;height:100dvh}
 .sc :focus-visible{outline-color:var(--sc-accent-light)}
@@ -121,7 +121,7 @@ body::before{
 .sc-pill:disabled{opacity:.35;pointer-events:none}
 
 /* intro */
-.intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:rgba(11,11,15,.94);backdrop-filter:blur(10px);transition:opacity .5s var(--ease-out),visibility .5s}
+.intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:rgba(7,50,106,.95);backdrop-filter:blur(10px);transition:opacity .5s var(--ease-out),visibility .5s}
 .intro.hide{opacity:0;visibility:hidden}
 .intro-card{width:min(760px,calc(100% - 40px))}
 .intro .eyebrow{display:flex;align-items:center;gap:12px;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--sc-accent-light)}
@@ -843,7 +843,7 @@ html.vt-brand::view-transition-new(pv){animation:vtWipe .95s cubic-bezier(.65,0,
 /* list: rows open in the builder, AI button glows */
 .tbl tbody tr[data-act]{cursor:pointer}
 .tbl tbody tr[data-act]:hover .nm{color:var(--blue)}
-.concept-tag{display:inline-flex;align-items:center;height:20px;margin-left:8px;padding:0 8px;border-radius:999px;background:rgba(79,70,229,.10);color:#4f46e5;font-size:11px;font-weight:600;letter-spacing:.01em;vertical-align:middle;white-space:nowrap}
+.concept-tag{display:inline-flex;align-items:center;height:20px;margin-left:8px;padding:0 8px;border-radius:999px;background:rgba(116,157,200,.2);color:#064089;font-size:11px;font-weight:600;letter-spacing:.01em;vertical-align:middle;white-space:nowrap}
 .pop button{white-space:nowrap}
 .pop button .concept-tag{margin-left:auto}
 .ai-cta{position:relative;overflow:hidden;animation:ctaGlow 3.4s ease-in-out infinite}
@@ -949,7 +949,7 @@ html.vt-brand::view-transition-new(pv){animation:vtWipe .95s cubic-bezier(.65,0,
 @keyframes savedPulse{0%{opacity:0;transform:translateY(4px)}15%,70%{opacity:1;transform:none}100%{opacity:0}}
 
 /* tour video */
-.vmodal{position:fixed;inset:0;z-index:200;display:grid;place-items:center;background:rgba(11,11,15,.88);backdrop-filter:blur(8px);animation:fadeIn .3s var(--ease-out)}
+.vmodal{position:fixed;inset:0;z-index:200;display:grid;place-items:center;background:rgba(7,50,106,.9);backdrop-filter:blur(8px);animation:fadeIn .3s var(--ease-out)}
 .vmodal.out{animation:fadeOut .25s forwards}
 .vbox{position:relative;width:min(1200px,calc(100vw - 48px));animation:modalIn .45s var(--ease-out)}
 .vbox video{display:block;width:100%;border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.5);background:#000}
