@@ -7,7 +7,7 @@
 <meta name="description" content="Interactive prototype of a unified form builder with AI generation: describe a form, refine it by hand, and publish it. Built from the Figma design on demo data.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;800&family=Poppins:wght@600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
 <style>
 /* =================================================================
    Tokens
@@ -79,6 +79,7 @@ h1,h2,h3,h4,h5,p,ul,ol{margin:0;padding:0}
 ul,ol{list-style:none}
 a{color:inherit;text-decoration:none}
 svg.ic{flex:none;display:block}
+[hidden]{display:none!important}
 :focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:4px}
 
 /* =================================================================
@@ -105,35 +106,12 @@ body::before{
 .sc-back:hover{color:#fff;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.04)}
 .sc-title{font-family:var(--sc-display);font-weight:800;font-size:16px;letter-spacing:-.02em;white-space:nowrap}
 .sc-title small{display:block;font-family:var(--sc-font);font-weight:500;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--sc-subtle);margin-top:1px}
-.sc-spacer{flex:1}
-.sc-flow{display:flex;padding:3px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--sc-rule)}
-.sc-flow button{height:28px;padding:0 14px;border-radius:999px;font-size:13px;font-weight:600;color:var(--sc-muted);transition:background .25s var(--ease-out),color .25s}
-.sc-flow button:hover{color:#fff}
-.sc-flow button.on{background:#fff;color:var(--sc-ink)}
-.sc-steps{display:flex;align-items:center;gap:2px}
-.sc-step{position:relative;display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px 0 6px;border-radius:999px;font-size:12px;font-weight:500;color:var(--sc-subtle);transition:color .2s,background .25s var(--ease-out)}
-.sc-step:hover{color:#fff;background:rgba(255,255,255,.06)}
-.sc-step .n{display:grid;place-items:center;width:18px;height:18px;border-radius:50%;border:1px solid var(--sc-rule);font-size:10px;font-weight:600;transition:all .25s var(--ease-out)}
-.sc-step.past{color:var(--sc-muted)}
-.sc-step.past .n{border-color:transparent;background:rgba(139,132,255,.22);color:var(--sc-accent-light)}
-.sc-step.on{color:#fff;background:rgba(79,70,229,.28)}
-.sc-step.on .n{border-color:transparent;background:var(--sc-accent);color:#fff}
-.sc-icon-btn{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;color:var(--sc-muted);border:1px solid var(--sc-rule);transition:color .2s,background .2s}
-.sc-icon-btn:hover{color:#fff;background:rgba(255,255,255,.06)}
-
-.sc-main{flex:1;min-height:0;position:relative}
+.sc-main{flex:1;min-height:0;position:relative;padding-bottom:20px}
 .stage-box{position:absolute;left:50%;top:0;transform:translateX(-50%)}
 .stage{position:absolute;left:0;top:0;transform-origin:0 0}
-
-.sc-cap{flex:none;min-height:72px;display:flex;align-items:center;gap:20px;padding:10px 20px 12px}
-.sc-cap-text{flex:1;min-width:0;display:flex;align-items:baseline;gap:14px}
-.sc-cap-eyebrow{flex:none;display:inline-flex;align-items:center;gap:10px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--sc-accent-light);white-space:nowrap}
-.sc-cap-eyebrow::before{content:"";width:22px;height:1px;background:currentColor}
-.sc-cap-copy{font-size:15px;line-height:22px;color:rgba(255,255,255,.88);max-width:900px}
-.sc-cap-copy .tip{color:var(--sc-subtle);margin-left:6px}
-.sc-cap-copy.swap{animation:capIn .45s var(--ease-out)}
+.stage-box.rise-in{animation:stageIn 1s var(--ease-out) both}
+@keyframes stageIn{from{opacity:0;transform:translateX(-50%) translateY(28px) scale(.97);filter:blur(6px)}to{opacity:1;transform:translateX(-50%);filter:none}}
 @keyframes capIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.sc-nav{flex:none;display:flex;gap:8px}
 .sc-pill{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 18px;border-radius:999px;font-size:14px;font-weight:600;transition:background .2s,color .2s,border-color .2s,transform .2s var(--ease-out)}
 .sc-pill:active{transform:scale(.97)}
 .sc-pill.primary{background:var(--sc-accent);color:#fff}
@@ -757,17 +735,236 @@ textarea.in{height:76px;padding:8px 9px;resize:vertical;line-height:20px}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
   .intro h1 .w>span{transform:none}
 }
-@media (max-width:1180px){ .sc-step .l{display:none} .sc-step{padding:0 5px} .sc-title small{display:none} }
-@media (max-width:860px){ .sc-steps{display:none} .sc-cap-eyebrow{display:none} .sc-title{display:none} }
-.sc-back,.sc-flow button{white-space:nowrap}
+/* =================================================================
+   Templates, Branding Center, common forms, live build card
+   ================================================================= */
+/* preview card: brand values arrive as custom properties */
+.pv-card{--bp:#222;--bt:#fff;--ba:var(--blue);--hf:var(--font);transition:background-color .5s,box-shadow .5s,border-radius .5s}
+.pv-h{font-family:var(--hf);transition:color .5s}
+.pv-submit{background:var(--bp);color:var(--bt);transition:background-color .55s,color .55s,border-radius .4s,transform .15s}
+.pv-field input:focus,.pv-field select:focus,.pv-field textarea:focus{border-color:var(--ba);box-shadow:inset 0 0 0 1px var(--ba)}
+.pv-check input{accent-color:var(--ba)}
+.pv-card .pv-steps span.on{background:var(--ba)}
+.pv-art{display:none}
+.pv-card.flash-card{animation:flashCard 1.7s var(--ease-out)}
+@keyframes flashCard{0%,30%{box-shadow:0 0 0 3px rgba(54,166,53,.5),var(--z4)}100%{box-shadow:var(--z4)}}
+
+/* Spotlight: a brand color header band */
+.tpl-spotlight .pv-hdr{margin:-24px -24px 0;padding:26px 24px 24px;background-color:var(--bp);background-image:radial-gradient(120% 150% at 100% 0%,color-mix(in srgb,var(--ba) 60%,transparent) 0%,transparent 58%);color:#fff;transition:background-color .6s}
+.tpl-spotlight .pv-steps~.pv-hdr,.tpl-cover .pv-steps~.pv-hdr{margin-top:6px}
+.tpl-spotlight .pv-logo{width:112px;height:76px;padding:6px 10px;border-radius:12px;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,.18)}
+.tpl-spotlight .pv-h{color:#fff;font-size:22px;line-height:28px;font-weight:700}
+.tpl-spotlight .pv-d{color:rgba(255,255,255,.84)}
+.tpl-spotlight .pv-submit{border-radius:8px}
+/* Cover: artwork banner, round logo, soft fields */
+.tpl-cover{border-radius:18px}
+.tpl-cover .pv-hdr{margin:-24px -24px 0;padding:0 28px 2px;text-align:center}
+.tpl-cover .pv-art{display:block;position:relative;height:118px;margin:0 -28px;overflow:hidden;background:var(--bp);transition:background-color .6s}
+.tpl-cover .pv-art i{position:absolute;border-radius:50%;transition:background-color .6s}
+.tpl-cover .pv-art i:nth-child(1){width:230px;height:230px;left:-70px;top:-120px;background:var(--ba);opacity:.9}
+.tpl-cover .pv-art i:nth-child(2){width:170px;height:170px;right:-40px;top:-30px;background:color-mix(in srgb,var(--ba) 45%,#fff);opacity:.55}
+.tpl-cover .pv-art i:nth-child(3){width:86px;height:86px;left:46%;top:56px;border:12px solid rgba(255,255,255,.22)}
+.tpl-cover .pv-logo{position:relative;width:104px;height:104px;margin:-52px auto 12px;padding:12px;border-radius:50%;background:#fff;box-shadow:0 8px 22px rgba(0,0,0,.16)}
+.tpl-cover .pv-h{font-size:21px;line-height:28px;font-weight:700}
+.tpl-cover .pv-field input,.tpl-cover .pv-field select,.tpl-cover .pv-field textarea{border-color:transparent;background:color-mix(in srgb,var(--bp) 6%,#fff);border-radius:10px}
+.tpl-cover .pv-submit{width:100%;height:44px;border-radius:999px}
+/* Minimal: open layout, underlined fields */
+.tpl-minimal{background:transparent;box-shadow:none;padding:8px 4px}
+.tpl-minimal .pv-logo{width:96px;height:66px;margin-bottom:20px}
+.tpl-minimal .pv-h{font-size:28px;line-height:34px;font-weight:700;letter-spacing:-.01em}
+.tpl-minimal .pv-d{font-size:15px;line-height:22px}
+.tpl-minimal .pv-fields{gap:10px;margin-top:28px}
+.tpl-minimal .pv-field input,.tpl-minimal .pv-field select,.tpl-minimal .pv-field textarea{border:0;border-bottom:1.5px solid rgba(0,0,0,.22);border-radius:0;padding-left:0;background:transparent}
+.tpl-minimal .pv-field input:focus,.tpl-minimal .pv-field select:focus,.tpl-minimal .pv-field textarea:focus{box-shadow:inset 0 -1px 0 var(--ba);border-bottom-color:var(--ba)}
+.tpl-minimal .pv-field .ph-l{left:0}
+.tpl-minimal .pv-field textarea{height:84px}
+.tpl-minimal .pv-submit{height:44px;padding:0 26px;border-radius:999px}
+.tpl-minimal.flash-card{animation:none}
+
+/* view transitions: only the preview area and the chat thumbnail morph */
+:root{view-transition-name:none}
+#b-right .pv-scroll{view-transition-name:pv}
+.mini-host.vt .mini{view-transition-name:mini}
+::view-transition-old(pv),::view-transition-old(mini){animation:vtOut .42s var(--ease-out) both}
+::view-transition-new(pv),::view-transition-new(mini){animation:vtIn .6s var(--ease-out) both}
+@keyframes vtOut{to{opacity:0;transform:scale(.985);filter:blur(5px)}}
+@keyframes vtIn{from{opacity:0;transform:scale(1.02);filter:blur(5px)}}
+html.vt-brand::view-transition-old(pv){animation:none}
+html.vt-brand::view-transition-new(pv){animation:vtWipe .95s cubic-bezier(.65,0,.35,1) both}
+@keyframes vtWipe{from{clip-path:circle(0% at 0% 40%)}to{clip-path:circle(150% at 0% 40%)}}
+
+/* live thumbnails */
+.mini{position:relative;width:100%;min-width:0;overflow:hidden;pointer-events:none;user-select:none;transition:background-color .6s}
+.mini-scale{width:464px;transform:scale(var(--ms));transform-origin:0 0}
+.mini .pv-card{max-width:none}
+.mini.pan .mini-scale{animation:miniPan 13s ease-in-out 1.4s infinite}
+@keyframes miniPan{0%,16%{transform:translateY(0) scale(var(--ms))}48%,64%{transform:translateY(var(--pan)) scale(var(--ms))}96%,100%{transform:translateY(0) scale(var(--ms))}}
+.mini.bld .pv-logo{transition:opacity .5s,transform .7s var(--ease-spring)}
+.mini.bld:not(.b-brand) .pv-card{--bp:#C9CED6!important;--ba:#DADDE3!important}
+.mini.bld:not(.b-brand) .pv-logo{opacity:0;transform:scale(.5) rotate(-8deg)}
+.mini.bld:not(.b-copy) .pv-h,.mini.bld:not(.b-copy) .pv-d{color:transparent!important;background:linear-gradient(90deg,#e9e9ec,#f6f6f8,#e9e9ec);background-size:200% 100%;animation:shimmer 1.2s linear infinite;border-radius:6px}
+.mini.bld:not(.b-copy) .pv-h{width:72%;min-height:24px}
+.mini.bld:not(.b-fields) .pv-field{border-radius:6px;background:linear-gradient(90deg,#ececef,#f7f7f9,#ececef);background-size:200% 100%;animation:shimmer 1.2s linear infinite}
+.mini.bld:not(.b-fields) .pv-field>*{visibility:hidden}
+.mini.bld.anim.b-fields .pv-field{animation:fadeUp .5s var(--ease-out) backwards;animation-delay:calc(var(--i)*110ms)}
+.mini.bld:not(.b-fields) .pv-submit{opacity:.35}
+@keyframes shimmer{from{background-position:100% 0}to{background-position:-100% 0}}
+
+/* build card in the chat */
+.msg.ai.wide .bubble{width:660px;max-width:660px}
+.build{display:grid;grid-template-columns:minmax(0,1fr) 252px;gap:22px;align-items:start}
+.build-r .mini{height:300px;padding:12px 10px;border-radius:12px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+.build-r .mini::after{content:"";position:absolute;left:0;right:0;bottom:0;height:36px;background:linear-gradient(transparent,rgba(255,255,255,.85));pointer-events:none}
+.build.done .build-r .mini{animation:miniDone 1s var(--ease-out)}
+@keyframes miniDone{0%{box-shadow:inset 0 0 0 1px rgba(0,0,0,.06),0 0 0 0 rgba(54,166,53,.45)}40%{box-shadow:inset 0 0 0 1px rgba(54,166,53,.6),0 0 0 6px rgba(54,166,53,0)}100%{box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}}
+.tpl-chips{display:flex!important;flex-wrap:wrap;gap:6px;margin-top:12px}
+.tchip{height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--gray-300);background:var(--paper);font-size:13px;font-weight:600;color:var(--ink-800);transition:background .25s,border-color .25s,color .25s,transform .25s var(--ease-spring)}
+.tchip:hover{border-color:var(--blue);color:var(--blue);transform:translateY(-1px)}
+.tchip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.form-link.link-in{animation:linkPop .6s var(--ease-spring),linkGlow 2.4s 1s ease-in-out 3}
+@keyframes linkGlow{0%,100%{box-shadow:0 0 0 0 rgba(0,108,235,0)}50%{box-shadow:0 0 0 4px rgba(0,108,235,.14)}}
+
+/* Thryv AI welcome: commonly created forms */
+.ai-body.mode-welcome{padding:40px 24px}
+.hero h1{margin-bottom:28px}
+.ai-body.mode-welcome .disclaimer{display:none}
+.ai-body.mode-chat .common{display:none}
+.common{margin-top:26px}
+.common-h{font-size:14px;line-height:20px;font-weight:600;color:var(--ink-800);margin-bottom:12px;animation:fadeUp .5s var(--ease-out) .8s backwards}
+.cchips{display:flex;flex-wrap:wrap;gap:10px}
+.cchip{position:relative;display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 16px 0 8px;border-radius:999px;background-color:rgba(255,255,255,.92);border:1px solid rgba(0,0,0,.08);box-shadow:0 2px 8px rgba(0,0,0,.05);font-size:14px;font-weight:600;color:var(--ink-900);transition:transform .3s var(--ease-out),box-shadow .3s,border-color .3s;animation:fadeUp .5s var(--ease-out) backwards;animation-delay:calc(880ms + var(--i)*70ms)}
+.cchip .cc-ic{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--green-050);color:var(--green-700);transition:background .3s,color .3s,transform .45s var(--ease-spring)}
+.cchip:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.10);border-color:rgba(0,108,235,.35)}
+.cchip:hover .cc-ic,.cchip.picked .cc-ic{background:var(--blue);color:#fff;transform:rotate(-8deg) scale(1.08)}
+.cchip.picked{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,108,235,.15)}
+.cchip.fly{position:absolute;z-index:6;margin:0;animation:none;pointer-events:none;border-color:var(--blue);box-shadow:0 14px 30px rgba(0,108,235,.25);transition:transform .62s cubic-bezier(.5,0,.15,1),opacity .35s .3s}
+.spot{background-image:radial-gradient(130px circle at var(--mx,-200px) var(--my,-200px),rgba(0,108,235,.12),transparent 70%)}
+
+/* list: rows open in the builder, AI button glows */
+.tbl tbody tr[data-act]{cursor:pointer}
+.tbl tbody tr[data-act]:hover .nm{color:var(--blue)}
+.concept-tag{display:inline-flex;align-items:center;height:20px;margin-left:8px;padding:0 8px;border-radius:999px;background:rgba(79,70,229,.10);color:#4f46e5;font-size:11px;font-weight:600;letter-spacing:.01em;vertical-align:middle;white-space:nowrap}
+.pop button{white-space:nowrap}
+.pop button .concept-tag{margin-left:auto}
+.ai-cta{position:relative;overflow:hidden;animation:ctaGlow 3.4s ease-in-out infinite}
+.ai-cta-glow{position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.38) 50%,transparent 70%);background-size:260% 100%;animation:ctaShine 3.4s ease-in-out infinite}
+@keyframes ctaShine{0%,55%{background-position:130% 0}100%{background-position:-40% 0}}
+@keyframes ctaGlow{0%,100%{box-shadow:0 4px 14px rgba(54,166,53,.28)}50%{box-shadow:0 6px 22px rgba(0,108,235,.42)}}
+.list-actions{position:relative}
+.ai-cta.beacon{overflow:visible}
+.ai-cta.beacon::after{content:"";position:absolute;inset:-3px;border-radius:11px;border:2px solid var(--blue);animation:beacon 1.9s var(--ease-out) infinite;pointer-events:none}
+@keyframes beacon{from{opacity:.75;transform:scale(1)}to{opacity:0;transform:scale(1.18,1.5)}}
+.ai-cta.beacon .ai-cta-glow{overflow:hidden}
+
+/* steps */
+.ftab{display:inline-flex;align-items:center;gap:6px}
+.ftab.new{animation:tabIn .7s var(--ease-spring)}
+@keyframes tabIn{0%{opacity:0;transform:translateY(8px) scale(.7)}100%{opacity:1;transform:none}}
+.under-list .sp{flex:1}
+
+/* Style step */
+.tpl-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.tpl-card{min-width:0;cursor:pointer;position:relative;display:flex;flex-direction:column;align-items:stretch;text-align:left;padding:6px 6px 12px;border-radius:14px;background:var(--paper);box-shadow:var(--z-subtle);transition:box-shadow .3s,transform .4s var(--ease-out)}
+.tpl-card:hover{box-shadow:var(--z4)}
+.tpl-card.on{box-shadow:0 0 0 2px var(--blue),var(--z4)}
+.tpl-grid.enter .tpl-card{animation:fadeUp .5s var(--ease-out) backwards;animation-delay:calc(120ms + var(--i)*70ms)}
+.tpl-thumb{position:relative;display:block;min-width:0;border-radius:10px;overflow:hidden}
+.tpl-thumb .mini{height:152px;padding:10px}
+.tpl-check{position:absolute;right:8px;top:8px;width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;transform:scale(0);transition:transform .4s var(--ease-spring)}
+.tpl-card.on .tpl-check{transform:scale(1)}
+.tpl-name{margin:10px 6px 0;font-size:14px;line-height:20px;font-weight:600;color:var(--ink-900)}
+.tpl-desc{margin:1px 6px 0;font-size:12px;line-height:16px;color:var(--ink-800)}
+.tilt{transform:perspective(700px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--ty,0px))}
+.tilt:hover{--ty:-3px}
+.brand-card{position:relative;padding:18px 20px;margin-bottom:16px}
+.brand-card.synced::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:conic-gradient(from var(--spin),var(--green),var(--blue),#8B84FF,var(--green));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:spinVar 6s linear infinite;opacity:.6;pointer-events:none}
+.bc-head{display:flex;align-items:center;gap:12px}
+.bc-logo{width:58px;height:42px;object-fit:contain;border-radius:8px;background:#fff;box-shadow:inset 0 0 0 1px var(--gray-200);padding:3px}
+.bc-t{flex:1}
+.bc-t b{display:block;font-size:15px;line-height:20px;font-weight:600;color:var(--ink-900)}
+.bc-t small{font-size:12px;line-height:16px;color:var(--ink-800)}
+.sync-pill{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;background:var(--gray-100);color:var(--ink-800);font-size:12px;font-weight:600}
+.synced .sync-pill{background:var(--green-050);color:var(--green-700)}
+.sync-pill .dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.8s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(54,166,53,.55)}70%{box-shadow:0 0 0 7px rgba(54,166,53,0)}100%{box-shadow:0 0 0 0 rgba(54,166,53,0)}}
+.bc-kit{display:flex;gap:28px;margin:16px 0 14px;padding:14px 0;border-top:1px solid var(--divider);border-bottom:1px solid var(--divider)}
+.bc-row{display:flex;align-items:center;gap:10px}
+.bc-row .lbl{font-size:12px;color:var(--ink-800)}
+.bsws{display:flex}
+.bsw{width:26px;height:26px;border-radius:50%;background:var(--c);box-shadow:0 0 0 2px #fff,0 1px 3px rgba(0,0,0,.25);margin-left:-6px;transition:background-color .5s}
+.bsw:first-child{margin-left:0}
+.bfont{font-size:18px;font-weight:700;color:var(--ink-900)}
+.bfont em{font-style:normal;font-family:var(--font);font-size:13px;font-weight:500;color:var(--ink-800);margin-left:4px}
+.bc-foot{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.bc-switch{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink-900);cursor:pointer}
+
+/* Branding Center drawer, over the editor so the preview stays in view */
+.b-body{position:relative}
+.bc-host{position:absolute;left:0;top:0;bottom:0;right:clamp(440px,42%,577px);z-index:20;pointer-events:none;overflow:hidden}
+.bc-host.on{pointer-events:auto}
+.bd-scrim{position:absolute;inset:0;background:rgba(21,27,34,.28);opacity:0;transition:opacity .35s}
+.bc-host.on .bd-scrim{opacity:1}
+.bc-drawer{position:absolute;left:0;top:0;bottom:0;width:min(540px,100%);display:flex;flex-direction:column;background:var(--paper);box-shadow:12px 0 32px rgba(0,0,0,.16);transform:translateX(-104%);transition:transform .5s var(--ease-out)}
+.bc-host.on .bc-drawer{transform:none}
+.bc-drawer.still{transition:none}
+.bd-top{display:flex;align-items:flex-start;gap:12px;padding:20px 16px 16px 24px;border-bottom:1px solid var(--divider)}
+.bd-top .grow{flex:1}
+.bd-ic{width:40px;height:40px;flex:none;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#EAF3FE,#E8F6E8);color:var(--blue)}
+.bd-top h2{font-size:18px;line-height:24px;font-weight:600;color:var(--ink-900)}
+.bd-top p{font-size:13px;line-height:18px;color:var(--ink-800);margin-top:2px}
+.bd-body{flex:1;min-height:0;overflow:auto;padding:4px 24px 20px}
+.bd-sec{padding:18px 0;border-bottom:1px solid var(--divider)}
+.bd-sec:last-child{border-bottom:0}
+.bc-drawer:not(.still) .bd-sec{animation:fadeUp .5s var(--ease-out) backwards;animation-delay:calc(160ms + var(--i)*80ms)}
+.bd-sec h3{font-size:14px;line-height:20px;font-weight:600;color:var(--ink-900);margin-bottom:12px}
+.bd-logos{display:flex;gap:12px}
+.bd-logo{position:relative;width:132px;height:96px;border-radius:10px;border:1px solid var(--gray-300);display:grid;place-items:center;background:#fff}
+.bd-logo img{width:108px;height:74px;object-fit:contain}
+.bd-logo.on{border:2px solid var(--blue)}
+.bd-logo .tag{position:absolute;left:8px;top:8px;font-size:11px;line-height:16px;font-weight:600;padding:0 6px;border-radius:4px;background:var(--blue);color:#fff}
+.bd-logo.add{border-style:dashed;color:var(--ink-800);font-size:12px;align-content:center;gap:4px;transition:border-color .2s,color .2s}
+.bd-logo.add:hover{border-color:var(--blue);color:var(--blue)}
+.bd-role{margin-bottom:14px}
+.bd-role:last-child{margin-bottom:0}
+.bd-role-h{display:flex;justify-content:space-between;font-size:13px;line-height:18px;color:var(--ink-800);margin-bottom:8px}
+.bd-role-h code{font:12px/18px ui-monospace,"SF Mono",Menlo,monospace;color:var(--ink-800)}
+.bd-sws{display:flex;gap:10px}
+.bd-sw{width:34px;height:34px;border-radius:50%;background:var(--c);display:grid;place-items:center;color:#fff;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);transition:transform .3s var(--ease-spring),box-shadow .3s}
+.bd-role:last-child .bd-sw{color:var(--ink-900)}
+.bd-sw:hover{transform:scale(1.14)}
+.bd-sw svg{opacity:0;transform:scale(.3);transition:opacity .3s,transform .4s var(--ease-spring)}
+.bd-sw.on{box-shadow:inset 0 0 0 1px rgba(0,0,0,.12),0 0 0 2px #fff,0 0 0 4px var(--c)}
+.bd-sw.on svg{opacity:1;transform:none}
+.bd-fonts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.bd-font{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;border:1px solid var(--gray-300);text-align:left;transition:border-color .2s,background .2s,box-shadow .2s}
+.bd-font:hover{border-color:rgba(0,108,235,.5)}
+.bd-font .aa{width:38px;font-size:24px;line-height:28px;font-weight:700;color:var(--ink-900)}
+.bd-font .nm{font-size:14px;color:var(--ink-900)}
+.bd-font.on{border-color:var(--blue);background:var(--blue-050);box-shadow:inset 0 0 0 1px var(--blue)}
+.bd-warn{margin:16px 0 0;background:var(--blue-050);color:var(--ink-900)}
+.bd-warn .ic{color:var(--blue)}
+.bd-foot{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-top:1px solid var(--divider)}
+.bd-saved{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--green-700);opacity:0}
+.bd-saved.on{animation:savedPulse 2.2s var(--ease-out)}
+@keyframes savedPulse{0%{opacity:0;transform:translateY(4px)}15%,70%{opacity:1;transform:none}100%{opacity:0}}
+
+/* tour video */
+.vmodal{position:fixed;inset:0;z-index:200;display:grid;place-items:center;background:rgba(11,11,15,.88);backdrop-filter:blur(8px);animation:fadeIn .3s var(--ease-out)}
+.vmodal.out{animation:fadeOut .25s forwards}
+.vbox{position:relative;width:min(1200px,calc(100vw - 48px));animation:modalIn .45s var(--ease-out)}
+.vbox video{display:block;width:100%;border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.5);background:#000}
+.vclose{position:absolute;right:-14px;top:-14px;width:36px;height:36px;border-radius:50%;background:#fff;color:var(--sc-ink);display:grid;place-items:center;box-shadow:0 6px 16px rgba(0,0,0,.3)}
+
+@media (prefers-reduced-motion: reduce){
+  .ai-cta,.ai-cta-glow,.ai-cta.beacon::after,.brand-card.synced::before,.sync-pill .dot,.mini.pan .mini-scale{animation:none}
+}
+
+.sc-back{white-space:nowrap}
 .small-note{display:none}
 @media (max-width:560px){
   .sc-bar{gap:8px;padding:0 12px}
   .sc-back{padding:0 10px 0 6px}
-  .sc-flow button{padding:0 10px}
-  .sc-cap{flex-direction:column;align-items:stretch;gap:10px;padding:10px 16px 14px}
-  .sc-nav{justify-content:flex-end}
-  .sc-cap-copy{font-size:14px;line-height:20px}
+  .sc-main{padding-bottom:12px}
   .small-note{display:block}
 }
 </style>
@@ -777,16 +974,6 @@ textarea.in{height:76px;padding:8px 9px;resize:vertical;line-height:20px}
   <header class="sc-bar">
     <a class="sc-back" href="https://dbyxdesign.com/case-form-unification.html"><span data-icon="arrowLeft" data-size="16"></span>Case study</a>
     <div class="sc-title">Form builder with AI<small>Interactive prototype</small></div>
-    <div class="sc-spacer"></div>
-    <div class="sc-flow" role="tablist" aria-label="Choose a flow">
-      <button role="tab" data-act="sc-flow" data-flow="ai">AI flow</button>
-      <button role="tab" data-act="sc-flow" data-flow="manual">Manual flow</button>
-      <button role="tab" data-act="sc-flow" data-flow="future">Future</button>
-    </div>
-    <nav class="sc-steps" id="sc-steps" aria-label="Scenes"></nav>
-    <div class="sc-spacer"></div>
-    <button class="sc-icon-btn" data-act="sc-restart" title="Restart this flow" aria-label="Restart this flow"><span data-icon="restart" data-size="16"></span></button>
-    <button class="sc-icon-btn" data-act="sc-intro" title="About this prototype" aria-label="About this prototype"><span data-icon="info" data-size="16"></span></button>
   </header>
 
   <main class="sc-main" id="sc-main">
@@ -806,30 +993,18 @@ textarea.in{height:76px;padding:8px 9px;resize:vertical;line-height:20px}
       </div>
     </div>
   </main>
-
-  <footer class="sc-cap">
-    <div class="sc-cap-text">
-      <span class="sc-cap-eyebrow" id="sc-eyebrow"></span>
-      <p class="sc-cap-copy" id="sc-copy"></p>
-    </div>
-    <div class="sc-nav">
-      <button class="sc-pill ghost" data-act="sc-prev" id="sc-prev"><span data-icon="arrowLeft" data-size="16"></span>Back</button>
-      <button class="sc-pill primary" data-act="sc-next" id="sc-next">Next<span data-icon="arrowRight" data-size="16"></span></button>
-    </div>
-  </footer>
 </div>
 
 <div class="intro" id="intro" role="dialog" aria-modal="true" aria-labelledby="intro-h">
   <div class="intro-card">
     <div class="eyebrow rise" style="--i:0">Interactive prototype · Form unification</div>
     <h1 id="intro-h"></h1>
-    <p class="lede rise" style="--i:1">Seven form products became one builder, which gave AI a single target to generate for. Walk through both ways in, from the first prompt to a published form.</p>
+    <p class="lede rise" style="--i:1">Seven form products became one builder, which gave AI a single target to generate for. Describe a form, style it with your brand, then publish it. Or open any form and build by hand in the same place.</p>
     <div class="actions rise" style="--i:2">
-      <button class="sc-pill primary" data-act="start" data-flow="ai">Start with AI<span data-icon="arrowRight" data-size="16"></span></button>
-      <button class="sc-pill ghost" data-act="start" data-flow="manual">Build it by hand</button>
-      <button class="sc-pill ghost" data-act="start" data-flow="future">See future concepts</button>
+      <button class="sc-pill primary" data-act="start">Open the prototype<span data-icon="arrowRight" data-size="16"></span></button>
+      <button class="sc-pill ghost" data-act="watch" id="watch-btn" hidden><span data-icon="play" data-size="16"></span>Watch the tour</button>
     </div>
-    <p class="meta rise" style="--i:3">Keap, acquired by Thryv · Demo data · Use Back and Next, or the arrow keys<span class="small-note">Best on a laptop or larger screen.</span></p>
+    <p class="meta rise" style="--i:3">Keap, acquired by Thryv · Demo data · Everything is clickable<span class="small-note">Best on a laptop or larger screen.</span></p>
   </div>
 </div>
 
@@ -912,6 +1087,10 @@ const I = {
   branch:'<circle cx="6.5" cy="5.5" r="2"/><circle cx="6.5" cy="18.5" r="2"/><circle cx="17.5" cy="7.5" r="2"/><path d="M6.5 7.5v9"/><path d="M17.5 9.5c0 4.5-6 4-10 7.2"/>',
   cart:'<circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17.5" cy="19.5" r="1.4"/><path d="M3 4h2.5l2.3 11h10.4l2-7.5H6.6"/>',
   creditCard:'<rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h3"/>',
+  play:'<path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/>',
+  palette:'<path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.2 0 1.8-.8 1.8-1.7 0-1.2-1-1.6-1-2.6 0-1 .8-1.7 1.8-1.7h2.3a3.6 3.6 0 0 0 3.6-3.6C20.5 6.6 16.7 3.5 12 3.5z"/><circle cx="7.6" cy="11.2" r="1.1" fill="currentColor" stroke="none"/><circle cx="10.4" cy="7.4" r="1.1" fill="currentColor" stroke="none"/><circle cx="14.8" cy="7.6" r="1.1" fill="currentColor" stroke="none"/>',
+  dollar:'<path d="M12 3.5v17M16.2 7.4c-.8-1.1-2.3-1.8-4.2-1.8-2.4 0-4 1.2-4 3 0 4.4 8.6 2.3 8.6 6.7 0 1.9-1.8 3.3-4.5 3.3-2 0-3.7-.7-4.6-2"/>',
+  upload:'<path d="M12 15V4.5M7.5 9 12 4.5 16.5 9M4.5 15v4a1 1 0 0 0 1 1h13a1 1 0 0 0 1-1v-4"/>',
   xlogo:'<path fill="currentColor" stroke="none" d="M17.6 3.5h3l-6.6 7.5 7.8 9.5h-6.1l-4.8-6-5.4 6h-3l7-8-7.4-9h6.2l4.3 5.5zm-1 15.2h1.7L7.5 5.2H5.7z"/>'
 };
 const ic = (n, s = 24, cls = "", sw = 1.7) => `<svg class="ic ${cls}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n] || ""}</svg>`;
@@ -994,11 +1173,41 @@ const TPL = {
     questions:["Who will fill this out, customers or your internal team?","Any fields beyond name and email, like phone number or company?"],
     replies:["Customers. Add phone number","Internal team. Add company name","Keep it short"]}
 };
-const SUGGEST = [
-  "Create a new client intake form with contact info.",
-  "Build a lead capture form for my book club website.",
-  "Make an event registration form for a workshop."
+/* Commonly created forms: the cold start nudge on the Thryv AI welcome screen */
+const COMMON = [
+  {k:"intake", label:"Client intake", icon:"userPlus", prompt:"Create a new client intake form with contact info."},
+  {k:"lead", label:"Lead capture", icon:"marketing", prompt:"Build a lead capture form for my book club website."},
+  {k:"event", label:"Event registration", icon:"calendar", prompt:"Make an event registration form for a workshop."},
+  {k:"feedback", label:"Customer feedback", icon:"feedback", prompt:"Create a customer feedback form for finished projects."},
+  {k:"booking", label:"Consultation request", icon:"clock", prompt:"Build a consultation request form so people can book a free call."},
+  {k:"generic", label:"Contact us", icon:"comms", prompt:"Make a simple contact us form for my website."}
 ];
+const PLACEHOLDERS = ["Describe your form", "A waitlist for my spring workshop", "An intake form for new coaching clients", "A feedback form I can send after every project"];
+
+/* Templates change the layout, never the fields */
+const TEMPLATES = [
+  {id:"classic", name:"Classic", desc:"Logo on top, outlined fields"},
+  {id:"spotlight", name:"Spotlight", desc:"Brand color header"},
+  {id:"cover", name:"Cover", desc:"Artwork banner, soft fields"},
+  {id:"minimal", name:"Minimal", desc:"Open layout, underlined fields"}
+];
+const TPL_STYLE = {intake:"spotlight", lead:"cover", event:"cover", feedback:"minimal", booking:"spotlight", generic:"classic"};
+const tplName = id => (TEMPLATES.find(t => t.id === id) || TEMPLATES[0]).name;
+
+/* Branding Center: one brand kit that forms, emails and landing pages share */
+const FONTS = [
+  {id:"poppins", name:"Poppins", stack:"'Poppins','Figtree',sans-serif"},
+  {id:"fraunces", name:"Fraunces", stack:"'Fraunces',Georgia,serif"},
+  {id:"grotesk", name:"Space Grotesk", stack:"'Space Grotesk','Figtree',sans-serif"},
+  {id:"figtree", name:"Figtree", stack:"'Figtree',system-ui,sans-serif"}
+];
+const fontOf = id => FONTS.find(x => x.id === id) || FONTS[0];
+const BRAND_SWATCHES = {
+  primary:[["#1F2C55","Rocket navy"],["#0B5CAD","Deep sky"],["#2E6B3F","Pine"],["#5B3CC4","Violet"],["#B4372E","Brick"],["#222222","Ink"]],
+  accent:[["#2A9BD8","Otter blue"],["#F28C38","Ember"],["#36A635","Leaf"],["#E5487A","Rose"],["#00A6A6","Lagoon"],["#F2C230","Sun"]],
+  bg:[["#F2F6FB","Cloud"],["#FAFAFA","Light gray"],["#FFFFFF","White"],["#F6F1EA","Warm sand"],["#EEF7F1","Mint"],["#F4F0FB","Lilac"]]
+};
+const BRAND0 = {name:"Otter and Rocket", primary:"#1F2C55", accent:"#2A9BD8", bg:"#F2F6FB", font:"poppins"};
 const ROWS0 = [
   {name:"New Client Intake", desc:"Collects contact info before a first call", status:"draft", created:"10/30/26", edited:"11/2/26", contacts:0},
   {name:"Service Request Form", desc:"", status:"draft", created:"10/24/26", edited:"10/29/26", contacts:20},
@@ -1037,37 +1246,16 @@ const MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","
 const FUTURE_IDS = ["cond", "pay", "appt"];
 
 /* -----------------------------------------------------------------
-   Scenes (showcase narration)
+   Deep links. There is one prototype; these only set up a starting point,
+   e.g. #ai/fields, #manual/details, #future/pay
    ----------------------------------------------------------------- */
 const SCENES = {
-  ai:[
-    {id:"list", label:"Forms list", text:"Every form starts here. Create with AI sits next to Start from scratch, and both lead to the same builder."},
-    {id:"ai-welcome", label:"Thryv AI", text:"Create with AI opens Thryv AI in a new tab and reuses the assistant the AI team built. Suggestion cards make the cold start a nudge, not an empty prompt box.", tip:"Pick a card, or describe your own form."},
-    {id:"ai-clarify", label:"Clarify", text:"Nearly everyone tries AI once, so the first output is the whole product. Two quick questions come before anything is built.", tip:"Pick a reply, or type your own answer."},
-    {id:"ai-generated", label:"Generate", text:"One builder means one generation target, so the draft comes back complete. The link returns to the builder tab.", tip:"You can ask for a change first, like add a phone number field."},
-    {id:"details", label:"Review", text:"The draft lands in the same builder as a manual form, next to the live preview that testers named most often as building trust."},
-    {id:"fields", label:"Refine", text:"Testers wanted a starter, not an editor. Small edits happen by hand: open a field to rename it, or drag it to reorder.", tip:"Drag a field by its handle, or add one."},
-    {id:"settings", label:"Settings", text:"The logo and colors come from the Branding Center. Pick a thank you page, check the automation, then publish."},
-    {id:"share", label:"Share", text:"Published. Copy the link, post it on social, or embed it on a website."},
-    {id:"done", label:"Done", text:"The new form joins the list as Published, ready to use in automations and contact records."}
-  ],
-  manual:[
-    {id:"list", label:"Forms list", text:"Start from scratch opens the same builder the AI drafts into, with a simple form to start from."},
-    {id:"details", label:"Details", text:"Name the form and write the headline. The live preview updates as you type.", tip:"Press Next with the name empty to see inline validation."},
-    {id:"fields", label:"Fields", text:"Add, rename, require or reorder fields. Every change shows in the preview right away.", tip:"Drag a field by its handle, or add one."},
-    {id:"settings", label:"Settings", text:"The logo and colors come from the Branding Center. Pick a thank you page, check the automation, then publish."},
-    {id:"share", label:"Share", text:"Published. Copy the link, post it on social, or embed it on a website."},
-    {id:"done", label:"Done", text:"The new form joins the list as Published, ready to use in automations and contact records."}
-  ],
-  future:[
-    {id:"cond", label:"Conditional fields", text:"Conditional logic was the top complaint in the survey and the top ranked feature in the Kano study, so it moved up the roadmap.", tip:"Pick Web design or Marketing in the preview."},
-    {id:"pay", label:"Payments", text:"Checkout carried payment logic the other forms did not, so payments were designed in as a future state: one more step in the same builder.", tip:"Add the upsell, or try code WELCOME10."},
-    {id:"appt", label:"Appointments", text:"The phasing put appointments and payments after parity and consolidation. Booking becomes a step too.", tip:"Pick a day, then book a time."}
-  ]
+  ai:["list","ai-welcome","ai-clarify","ai-generated","details","fields","style","settings","share","done"],
+  manual:["list","details","fields","style","settings","share","done"],
+  future:FUTURE_IDS
 };
-const NEXT_FLOW = {ai:"manual", manual:"future", future:"ai"};
-const NEXT_LABEL = {ai:"Try the manual flow", manual:"See future concepts", future:"Try the AI flow"};
-const STEP_SCENE = {1:"details", 2:"fields", 3:"settings", 4:"share"};
+const STEP_SCENE = {1:"details", 2:"fields", 3:"style", 4:"settings", 5:"share"};
+const LAST_STEP = 5;
 
 /* -----------------------------------------------------------------
    State
@@ -1079,8 +1267,9 @@ function freshState(flow){
     tabs:["forms"], active:"forms", newTab:null,
     formsView:"list", step:1, maxStep:1, published:false, dir:"fade",
     form:null, rows:ROWS0.map((r, i) => ({...r, id:"r"+i})), newRow:null, query:"", sortAsc:false,
+    brand:{...BRAND0}, hint:"create",
     chat:{mode:"welcome", stage:"start", msgs:[], replies:[], busy:false, tpl:null, draft:null, opened:false, lastChange:null},
-    ui:{open:new Set(), acc:new Set(["styles"]), shareAcc:new Set(), errors:{}, aiBanner:false, materialize:false, flash:null, thank:false, added:null,
+    ui:{open:new Set(), acc:new Set(["thanks"]), shareAcc:new Set(), errors:{}, aiBanner:false, materialize:false, flash:null, thank:false, added:null, bc:false,
       fstep:0, fdir:"", cond:null, condAnim:null, pv:{}, payAdded:null,
       cart:{method:"card", added:new Set(), promo:null, promoErr:"", open:false},
       appt:{view:null, sel:null, booked:null, swap:false, still:false}}
@@ -1096,7 +1285,7 @@ function baseForm(over){
   return Object.assign({
     id:"form"+Date.now(), rowId:null, origin:"manual", title:"Form", name:"", headline:"Stay in touch",
     description:"Drop your info and we'll reach out soon.", button:"Send", showLogo:true, fields:[],
-    styles:{pageBg:"#FAFAFA", align:"left", btnBg:"#222222", btnText:"#FFFFFF", btnAlign:"left"},
+    styles:{tpl:"classic", brand:true, pageBg:"#FAFAFA", align:"left", btnBg:"#222222", btnText:"#FFFFFF", btnAlign:"left", accent:"#006CEB", font:"figtree"},
     thankYou:"default", thankMsg:"Thanks! We got your info and will be in touch soon.", automation:true, inContact:false
   }, over);
 }
@@ -1106,6 +1295,7 @@ function manualForm(){
 /* Future concepts: a three step intake form with a condition, a checkout and a booking */
 function futureForm(){
   const f = makeForm(TPL.intake, "");
+  Object.assign(f, {origin:"manual", name:"Service Request Form", title:"Service request form", headline:"Tell us about your project", description:"Pick a service, choose your package and book a kickoff call, all in one form."});
   const st = mkField("serviceType"), web = mkField("webBudget"), mkt = mkField("mktBudget");
   const s1 = [mkField("firstName"), mkField("lastName"), mkField("email"), mkField("phone"), mkField("company"), st, web, mkt, mkField("projectDetails"), mkField("contactType")];
   const appt = mkField("appointment", {apptType:APPT_TYPES[0]});
@@ -1148,11 +1338,35 @@ function makeForm(tpl, answer){
   const adds = short && /name and email/.test(t) ? [] : libKeysIn(t).filter(k => !base.includes(k) && !tail.includes(k) && LIB[k].type !== "hidden");
   const keys = [...base, ...adds.filter(k => LIB[k].type !== "textarea" && LIB[k].type !== "checkbox"), ...tail, ...adds.filter(k => LIB[k].type === "textarea" || LIB[k].type === "checkbox"), ...tpl.hidden];
   const uniq = keys.filter((k, i) => keys.indexOf(k) === i);
-  return baseForm({
+  const form = baseForm({
     origin:"ai", tpl:tpl.key, title:tpl.title, name:tpl.name, headline:tpl.headline, description:tpl.description, button:tpl.button,
     fields:uniq.map(k => mkField(k)), inContact:/internal|team|staff/.test(t) && !/new customer/.test(t)
   });
+  form.styles.tpl = TPL_STYLE[tpl.key] || "classic";
+  return form;
 }
+
+/* Steps: any form can grow a payment or booking step (future concepts) */
+const PAY0 = () => ({products:[CATALOG.products[0]], upsells:[CATALOG.upsells[0]], promos:[CATALOG.promos[0]]});
+function addStep(f, kind){
+  if (!f.steps){ f.steps = [{name:"Step 1", kind:"fields", fields:f.fields}]; }
+  else if (S.form === f) f.steps[S.ui.fstep].fields = f.fields;
+  if (kind === "payment"){
+    if (f.steps.some(s => s.kind === "payment")) return -1;
+    f.pay = f.pay || PAY0();
+    f.steps.push({name:`Step ${f.steps.length + 1}`, kind:"payment", fields:[]});
+  } else {
+    if (f.steps.some(s => s.fields.some(x => x.type === "appointment"))) return -1;
+    f.steps.push({name:`Step ${f.steps.length + 1}`, kind:"fields", fields:[mkField("appointment", {apptType:APPT_TYPES[0]})]});
+  }
+  return f.steps.length - 1;
+}
+/* What the preview actually uses: Branding Center values while the form is synced */
+function eff(f){
+  const s = f.styles, b = S.brand;
+  return s.brand ? {...s, btnBg:b.primary, accent:b.accent, pageBg:b.bg, font:b.font} : s;
+}
+function pageBgOf(f){ const e = eff(f); return e.tpl === "minimal" ? "#FFFFFF" : e.pageBg; }
 function audienceOf(t){
   t = (t || "").toLowerCase();
   if (/internal|team|staff/.test(t) && !/new customer/.test(t)) return " for your team";
@@ -1162,7 +1376,7 @@ function audienceOf(t){
 }
 function buildSteps(form, answer){
   const visible = form.fields.filter(f => f.type !== "hidden").length;
-  const steps = [`Choosing ${visible} fields${audienceOf(answer)}`, "Writing the headline and description", "Applying your logo and colors from the Branding Center"];
+  const steps = [`Choosing ${visible} fields${audienceOf(answer)}`, "Writing the headline and description", "Applying your logo, colors and font from the Branding Center", `Picking the ${tplName(form.styles.tpl)} template`];
   const ct = form.fields.find(f => f.key === "contactType");
   if (ct) steps.push(`Setting new contacts to ${ct.value}`);
   const tg = form.fields.find(f => f.key === "applyTags");
@@ -1194,7 +1408,7 @@ function insertField(form, f){
 }
 /* Split "add a phone field and make company optional" into clauses, but keep
    "add service type and budget range" together: only split before a verb. */
-const VERB = "(?:add|remove|delete|drop|make|change|rename|set|hide|show|include|center|centre|move)";
+const VERB = "(?:add|remove|delete|drop|make|change|rename|set|hide|show|include|center|centre|move|use|switch|apply|let)";
 function applyRefine(form, text){
   const clauses = text.split(new RegExp(`\\s*(?:,|;|\\bthen\\b|\\balso\\b|\\band\\b)\\s*(?=(?:then\\s+|also\\s+)?${VERB}\\b)`, "i")).map(s => s.trim()).filter(Boolean);
   if (clauses.length < 2) return applyRefineOne(form, text);
@@ -1234,9 +1448,31 @@ function applyRefineOne(form, text){
     const hide = /\b(hide|remove|no|without|drop|turn off)\b/.test(t);
     form.showLogo = !hide; return ok(hide ? "Done. The logo is hidden." : "Done. Your logo is back on the form.", [], "header");
   }
+  if ((m = t.match(/\b(classic|spotlight|cover|minimal)\b/))){
+    form.styles.tpl = m[1]; return ok(`Done. It uses the ${tplName(m[1])} template now. The fields stay the same.`, [], "card");
+  }
+  if (/\b(payments?|checkout|take money|charge)\b/.test(t)){
+    const i = addStep(form, "payment");
+    return i < 0 ? {changed:false, msg:"This form already has a payment step."} : ok(`Done. I added a payment step as Step ${i + 1}, with your Web design retainer, an upsell and a promo code.`, [], "steps");
+  }
+  if (/\b(booking|appointments?|book a (time|call|slot)|schedul\w*)\b/.test(t) && !/\bconsultation request\b/.test(t)){
+    const i = addStep(form, "booking");
+    return i < 0 ? {changed:false, msg:"People can already book a time on this form."} : ok(`Done. Step ${i + 1} lets people pick a day and book a time.`, [], "steps");
+  }
+  const font = FONTS.find(x => t.includes(x.name.toLowerCase()));
+  if (/\bfont\b/.test(t) && font){
+    if (form.styles.brand) Object.assign(form.styles, {btnBg:S.brand.primary, accent:S.brand.accent, pageBg:S.brand.bg, font:S.brand.font, brand:false});
+    form.styles.font = font.id; return ok(`Done. Headlines use ${font.name} now.`, [], "header");
+  }
+  if (/\b(brand|branding)\b/.test(t)){
+    form.styles.brand = true; return ok("Done. The form is synced with your Branding Center again.", [], "card");
+  }
   const colors = {green:"#36A635", blue:"#006CEB", black:"#222222", orange:"#FF5000", navy:"#0043DB", teal:"#1B7FA6"};
   if (/button/.test(t)){
-    for (const [n, hex] of Object.entries(colors)) if (new RegExp("\\b" + n + "\\b").test(t)){ form.styles.btnBg = hex; return ok(`Done. The button is ${n} now.`, [], "button"); }
+    for (const [n, hex] of Object.entries(colors)) if (new RegExp("\\b" + n + "\\b").test(t)){
+      if (form.styles.brand) Object.assign(form.styles, {accent:S.brand.accent, pageBg:S.brand.bg, font:S.brand.font, brand:false});
+      form.styles.btnBg = hex; return ok(`Done. The button is ${n} now.`, [], "button");
+    }
   }
   if (/\bcent(er|re)(ed)?\b/.test(t)){ form.styles.align = "center"; return ok("Done. The logo and headline are centered.", [], "header"); }
   const keys = libKeysIn(t);
@@ -1252,7 +1488,7 @@ function applyRefineOne(form, text){
     const f = form.fields.find(x => x.key === keys[0]);
     return {changed:false, msg:`${f.label} is already on the form. Want me to make it required, or remove it?`};
   }
-  return {changed:false, msg:"I can add or remove fields, make a field required or optional, rename a field, or change the headline, button text and colors. Try: add a phone number field."};
+  return {changed:false, msg:"I can add or remove fields, rename a field, make one required, switch the template, change the font, or add a payment or booking step. Try: use the Minimal template."};
 }
 
 /* -----------------------------------------------------------------
@@ -1316,7 +1552,7 @@ function renderForms(){
     p.innerHTML = primaryNav("marketing") + `<div class="content"><section class="builder">${builderTop()}<div class="b-loading"><div class="loader" role="status" aria-label="Loading"></div></div></section></div>`;
   } else {
     p.innerHTML = primaryNav("marketing") + `<div class="content"><section class="builder">${builderTop()}
-      <div class="b-body"><div class="b-left" id="b-left"></div><aside class="b-right" id="b-right" aria-label="Form preview"></aside></div></section><div id="cond-host"></div></div>`;
+      <div class="b-body"><div class="b-left" id="b-left"></div><aside class="b-right" id="b-right" aria-label="Form preview"></aside><div class="bc-host" id="bc-host"></div></div></section><div id="cond-host"></div></div>`;
     renderLeft(); renderPreview();
   }
 }
@@ -1328,7 +1564,7 @@ function listView(){
     <header class="list-head"><h1>Forms</h1>
       <div class="list-actions">
         <button class="btn text" data-act="scratch">${ic("plus", 18, "", 2)} Start from scratch</button>
-        <button class="btn filled ai-cta" data-act="create-ai">${ic("wand", 18)} Create with AI</button>
+        <button class="btn filled ai-cta ${S.hint === "create" ? "beacon" : ""}" data-act="create-ai"><span class="ai-cta-glow" aria-hidden="true"></span>${ic("wand", 18)} Create with AI</button>
       </div></header>
     <div class="list-tools">
       <label class="search">${ic("search", 22)}<input type="search" placeholder="Search forms" value="${esc(S.query)}" data-input="search" aria-label="Search forms"></label>
@@ -1337,8 +1573,8 @@ function listView(){
     <div class="table-wrap"><table class="tbl">
       <thead><tr><th>Form name</th><th>Status</th><th class="sorted"><button data-act="sort">Date created <span class="arr ${S.sortAsc ? "up" : ""}">${ic("arrowDown", 16, "", 2)}</span></button></th><th>Date edited</th><th style="text-align:center">Contact added</th><th style="width:56px"><span class="sr" style="position:absolute;clip:rect(0 0 0 0)">Actions</span></th></tr></thead>
       <tbody>${rows.length ? rows.map(r => `
-        <tr class="${r.id === S.newRow ? "row-new" : ""}" data-row="${r.id}">
-          <td><div class="nm">${esc(r.name)}</div>${r.desc ? `<div class="ds">${esc(r.desc)}</div>` : ""}</td>
+        <tr class="${r.id === S.newRow ? "row-new" : ""}" data-row="${r.id}" data-act="open-row" data-id="${r.id}" tabindex="0" style="--i:${Math.min(rows.indexOf(r), 9)}">
+          <td><div class="nm">${esc(r.name)}${/service request/i.test(r.name) ? `<span class="concept-tag">Future concept</span>` : ""}</div>${r.desc ? `<div class="ds">${esc(r.desc)}</div>` : ""}</td>
           <td><span class="status ${STATUS[r.status][0]}">${STATUS[r.status][1]}</span></td>
           <td class="num">${r.created}</td><td class="num">${r.edited}</td><td class="num c">${r.contacts}</td>
           <td><button class="icon-btn" data-act="row-menu" aria-label="More actions for ${esc(r.name)}">${ic("moreV", 22)}</button></td>
@@ -1358,7 +1594,7 @@ function builderTop(){
 }
 
 function stepper(){
-  const labels = ["Details","Fields","Settings","Share"];
+  const labels = ["Details","Fields","Style","Settings","Share"];
   let h = `<ol class="stepper" aria-label="Steps">`;
   labels.forEach((l, i) => {
     const n = i + 1;
@@ -1373,7 +1609,7 @@ function stepper(){
 }
 function renderLeft(){
   const el = $("#b-left"); if (!el) return;
-  const body = {1:stepDetails, 2:stepFields, 3:stepSettings, 4:stepShare}[S.step]();
+  const body = {1:stepDetails, 2:stepFields, 3:stepStyle, 4:stepSettings, 5:stepShare}[S.step]();
   el.innerHTML = `<div class="b-inner">${stepper()}<div class="step-body ${S.dir}">${body}</div></div>`;
   S.dir = "";
   if (S.ui.materialize && S.step === 1){
@@ -1435,10 +1671,12 @@ function fieldCard(f, opts = {}){
 }
 function stepFields(){
   const f = S.form, dir = S.ui.fdir; S.ui.fdir = "";
-  const tabs = f.steps ? `<div class="ftabs ${dir ? "anim" : ""}" role="tablist" aria-label="Form steps">${f.steps.map((s, i) => `<button class="ftab ${i === S.ui.fstep ? "on" : ""}" role="tab" aria-selected="${i === S.ui.fstep}" data-act="fstep" data-i="${i}">${esc(s.name)}</button>`).join("")}<button class="ftab add" data-act="soon" data-msg="Adds another step to the form">${ic("plus", 16, "", 2)} Add step</button></div>` : "";
+  const stepIc = s => s.kind === "payment" ? ic("dollar", 15, "", 2) : s.fields.some(x => x.type === "appointment") ? ic("calendar", 15, "", 1.9) : "";
+  const tabs = f.steps ? `<div class="ftabs ${dir ? "anim" : ""}" role="tablist" aria-label="Form steps">${f.steps.map((s, i) => `<button class="ftab ${i === S.ui.fstep ? "on" : ""} ${S.ui.newStep === i ? "new" : ""}" role="tab" aria-selected="${i === S.ui.fstep}" data-act="fstep" data-i="${i}">${stepIc(s)}${esc(s.name)}</button>`).join("")}<button class="ftab add" data-act="add-step">${ic("plus", 16, "", 2)} Add step</button></div>` : "";
+  S.ui.newStep = null;
   const kind = f.steps ? f.steps[S.ui.fstep].kind : "fields";
   const body = kind === "payment" ? paymentEditor() : `<div class="field-list" id="field-list">${f.fields.map(x => fieldCard(x, {added:S.ui.added === x.id})).join("")}</div>
-    <div class="under-list"><button class="btn outline" data-act="add-field">Add a field</button><button class="btn text" data-act="custom-field">Create a custom field</button></div>`;
+    <div class="under-list"><button class="btn outline" data-act="add-field">Add a field</button><button class="btn text" data-act="custom-field">Create a custom field</button>${f.steps ? "" : `<span class="sp"></span><button class="btn text" data-act="add-step">${ic("plus", 16, "", 2)} Add a step</button>`}</div>`;
   return `<h2 class="sec-h">Form fields</h2>${tabs}<div class="ftab-body ${dir}">${body}</div>
     <div class="b-foot"><button class="btn text" data-act="prev">Back</button><button class="btn filled" data-act="next" style="min-width:64px">Next</button></div>`;
 }
@@ -1455,9 +1693,59 @@ const SWATCH = {
   btnText:[["#FFFFFF","White"],["#000000","Black"]]
 };
 function colorSelect(key, legend){
-  const v = S.form.styles[key];
+  const v = eff(S.form)[key];
+  const list = SWATCH[key].some(([hex]) => hex === v) ? SWATCH[key] : [[v, "Brand"], ...SWATCH[key]];
   return `<label class="ofield"><span class="lg">${legend}</span><span class="sw" style="background:${v}"></span>
-    <select data-style="${key}" aria-label="${legend}">${SWATCH[key].map(([hex, n]) => `<option value="${hex}" ${hex === v ? "selected" : ""}>${hex} · ${n}</option>`).join("")}</select><span class="chev">${ic("chevDown", 18)}</span></label>`;
+    <select data-style="${key}" aria-label="${legend}">${list.map(([hex, n]) => `<option value="${hex}" ${hex === v ? "selected" : ""}>${hex} · ${n}</option>`).join("")}</select><span class="chev">${ic("chevDown", 18)}</span></label>`;
+}
+function fontSelect(){
+  const v = eff(S.form).font;
+  return `<label class="ofield"><span class="lg">Headline font</span><select data-style="font" aria-label="Headline font">${FONTS.map(x => `<option value="${x.id}" ${x.id === v ? "selected" : ""}>${x.name}</option>`).join("")}</select><span class="chev">${ic("chevDown", 18)}</span></label>`;
+}
+
+/* Live thumbnails: the real preview card, scaled down and inert */
+function miniHTML(form, o = {}){
+  const f = {...form, styles:{...form.styles, ...(o.tpl ? {tpl:o.tpl} : {})}};
+  const card = pvCard(f, {mini:true}).replace(/\s(data-(?:act|pv|id|i|key|iso|h|d|kind)|id)="[^"]*"/g, "");
+  return `<div class="mini ${o.cls || ""}" inert aria-hidden="true" style="--ms:${o.scale || .3};background:${pageBgOf(f)}"><div class="mini-scale">${card}</div></div>`;
+}
+function tplCards(enter){
+  const cur = S.form.styles.tpl;
+  return `<div class="tpl-grid ${enter ? "enter" : ""}" role="radiogroup" aria-label="Template">${TEMPLATES.map((t, i) => `
+    <div class="tpl-card tilt ${t.id === cur ? "on" : ""}" role="radio" tabindex="0" aria-checked="${t.id === cur}" aria-label="${t.name} template" data-act="tpl" data-tpl="${t.id}" style="--i:${i}">
+      <span class="tpl-thumb">${miniHTML(S.form, {tpl:t.id, scale:.26})}<span class="tpl-check">${ic("check", 14, "", 3)}</span></span>
+      <span class="tpl-name">${t.name}</span><span class="tpl-desc">${t.desc}</span>
+    </div>`).join("")}</div>`;
+}
+function brandCard(){
+  const s = S.form.styles, b = S.brand, synced = s.brand;
+  const sw = (hex, n) => `<span class="bsw" style="--c:${hex}" title="${n} ${hex}"></span>`;
+  return `<div class="card brand-card ${synced ? "synced" : ""}">
+    <div class="bc-head"><img src="${OTTER}" alt="" class="bc-logo"><div class="bc-t"><b>${esc(b.name)}</b><small>Branding Center</small></div>
+      <span class="sync-pill">${synced ? `<i class="dot"></i>Synced` : "Custom styles"}</span></div>
+    <div class="bc-kit">
+      <div class="bc-row"><span class="lbl">Colors</span><span class="bsws">${sw(b.primary, "Primary")}${sw(b.accent, "Accent")}${sw(b.bg, "Background")}</span></div>
+      <div class="bc-row"><span class="lbl">Font</span><span class="bfont" style="font-family:${fontOf(b.font).stack}">Aa <em>${fontOf(b.font).name}</em></span></div>
+    </div>
+    <div class="bc-foot">
+      <label class="bc-switch"><span class="switch"><input type="checkbox" data-act="brand-sync" ${synced ? "checked" : ""} aria-label="Use Branding Center styles"><i></i></span>Use Branding Center styles</label>
+      <button class="btn outline" data-act="brand-open">${ic("palette", 18)} Edit brand</button>
+    </div></div>`;
+}
+function fineTune(){
+  return `<p class="acc-desc">Changing a color or font here gives this form its own styles. Turn Branding Center styles back on any time.</p>
+      <div class="grid2">${colorSelect("pageBg", "Page background color")}${alignSelect("align", "Text alignment")}</div>
+      <div class="grid2">${colorSelect("btnBg", "Button color")}${colorSelect("btnText", "Button text color")}</div>
+      <div class="grid2" style="margin-bottom:0">${alignSelect("btnAlign", "Button alignment", true)}${fontSelect()}</div>`;
+}
+function stepStyle(){
+  return `<h2 class="sec-h">Template</h2>
+    <p class="sec-p">Templates change the layout, never your fields. Switch any time.</p>
+    ${tplCards(true)}
+    <h2 class="sec-h" style="margin-top:28px">Branding</h2>
+    ${brandCard()}
+    ${acc("styles", "aperture", "Fine tune", fineTune())}
+    <div class="b-foot"><button class="btn text" data-act="prev">Back</button><button class="btn filled" data-act="next" style="min-width:64px">Next</button></div>`;
 }
 function alignSelect(key, legend, withFull){
   const v = S.form.styles[key];
@@ -1473,12 +1761,6 @@ function acc(id, icon, title, inner, set = S.ui.acc){
 function stepSettings(){
   const f = S.form;
   return `<h2 class="sec-h">Form settings</h2>
-    ${acc("styles", "aperture", "Styles", `
-      <p class="acc-desc">Change your form and your button style to match your branding.</p>
-      <p class="sub-h">Form style</p>
-      <div class="grid2">${colorSelect("pageBg", "Page background color")}${alignSelect("align", "Text alignment")}</div>
-      <p class="sub-h">Button style</p>
-      <div class="grid2" style="margin-bottom:0">${colorSelect("btnBg", "Background color")}${colorSelect("btnText", "Text color")}${alignSelect("btnAlign", "Text alignment", true)}</div>`)}
     ${acc("thanks", "layout", "Thank you page", `
       <p class="acc-desc">Choose what people see after they submit the form.</p>
       <div style="display:flex;align-items:center;gap:20px">
@@ -1555,9 +1837,10 @@ function stepShare(){
 
 /* ---------------- Preview ---------------- */
 function inRule(id){ return (S.form && S.form.rules || []).some(r => r.src === id || r.show.includes(id)); }
-function condTargets(){ const s = new Set(); (S.form.rules || []).forEach(r => r.show.forEach(id => s.add(id))); return s; }
-function condVisible(id){
-  const rules = (S.form.rules || []).filter(r => r.show.includes(id));
+let PVF = null;   // the form the card being rendered belongs to (the builder form, or a chat draft)
+function condTargets(f = PVF || S.form){ const s = new Set(); ((f && f.rules) || []).forEach(r => r.show.forEach(id => s.add(id))); return s; }
+function condVisible(id, f = PVF || S.form){
+  const rules = ((f && f.rules) || []).filter(r => r.show.includes(id));
   return !rules.length || rules.some(r => S.ui.pv[r.src] === r.val);
 }
 function pvField(f, i, cls){
@@ -1588,9 +1871,11 @@ function pvField(f, i, cls){
 function pvCard(f, opts = {}){
   const mat = opts.materialize;
   const flash = opts.flash || {};
-  const sty = f.styles;
+  PVF = f;
+  const sty = eff(f);
+  const look = `tpl-${sty.tpl}`, vars = `style="--bp:${sty.btnBg};--bt:${sty.btnText};--ba:${sty.accent};--hf:${fontOf(sty.font).stack}"`;
   if (opts.thank){
-    return `<div class="pv-card"><div class="ty"><span class="burst"><svg class="ring" viewBox="0 0 36 36" aria-hidden="true"><circle class="bg" cx="18" cy="18" r="18"/><path d="m11 18.5 4.6 4.5L25 13.5"/></svg></span>
+    return `<div class="pv-card ${look}" ${vars}><div class="ty"><span class="burst"><svg class="ring" viewBox="0 0 36 36" aria-hidden="true"><circle class="bg" cx="18" cy="18" r="18"/><path d="m11 18.5 4.6 4.5L25 13.5"/></svg></span>
       <h4>${f.thankYou === "custom" ? "Thank you!" : "Thanks for reaching out"}</h4><p>${esc(f.thankYou === "custom" ? f.thankMsg : "We got your info and will be in touch soon.")}</p>
       <a class="link" data-act="thank-back">Back to form</a></div></div>`;
   }
@@ -1600,22 +1885,23 @@ function pvCard(f, opts = {}){
   const last = !f.steps || S.ui.fstep === f.steps.length - 1;
   const visible = f.fields.filter(x => x.type !== "hidden");
   const hasAppt = visible.some(x => x.type === "appointment");
-  return `<div class="pv-card ${mat ? "sheen" : ""}">${pvStepsBar()}
+  return `<div class="pv-card ${look} ${mat ? "sheen" : ""} ${flash.region === "card" ? "flash-card" : ""}" ${vars}>${pvStepsBar(f)}
     ${first ? `<div class="pv-hdr ${sty.align === "center" ? "center" : ""} ${mat ? "mat" : ""} ${flash.region === "header" ? "flash-el" : ""}" style="--i:0">
+      <div class="pv-art" aria-hidden="true"><i></i><i></i><i></i></div>
       ${f.showLogo ? `<img class="pv-logo" src="${OTTER}" alt="Otter and Rocket logo">` : ""}
       <h4 class="pv-h">${esc(f.headline || f.name || "Untitled form")}</h4>
       ${f.description ? `<p class="pv-d">${esc(f.description)}</p>` : ""}
     </div>` : ""}
     <div class="pv-fields ${first ? "" : "nohdr"}">${visible.map((x, i) => pvField(x, i + 1, [mat ? "mat" : "", (flash.ids || []).includes(x.id) ? "flash-el" : "", opts.added === x.id ? "added" : ""].join(" "))).join("")}</div>
     ${hasAppt ? "" : `<div class="pv-submit-row ${sty.btnAlign} ${mat ? "mat" : ""}" style="--i:${visible.length + 1}">
-      <button class="pv-submit ${flash.region === "button" ? "flash-el" : ""}" style="background:${sty.btnBg};color:${sty.btnText}" data-act="${last ? "pv-submit" : "pv-next"}">${last ? esc(f.button || "Submit") : "Next"}</button></div>`}
+      <button class="pv-submit ${flash.region === "button" ? "flash-el" : ""}" data-act="${last ? "pv-submit" : "pv-next"}">${last ? esc(f.button || "Submit") : "Next"}</button></div>`}
   </div>`;
 }
 function renderPreview(opts = {}){
   const el = $("#b-right"); if (!el || !S.form) return;
   const mat = S.ui.materialize;
   const flash = S.active === "forms" ? S.ui.flash : null;
-  el.style.background = S.form.styles.pageBg;
+  el.style.background = pageBgOf(S.form);
   const prevScroll = opts.resetScroll ? 0 : (($(".pv-scroll", el) || {}).scrollTop || 0);
   const kind = S.form.steps ? S.form.steps[S.ui.fstep].kind : "fields";
   const body = kind === "payment" && !S.ui.thank ? cartSum() + checkoutCard() : pvCard(S.form, {materialize:mat, flash, thank:S.ui.thank, added:opts.added});
@@ -1640,13 +1926,85 @@ function updatePreviewText(){
   const sub = $("#b-sub"); if (sub) sub.textContent = f.name || "Untitled form";
 }
 
+/* ---------------- Templates and Branding Center ---------------- */
+/* View transitions morph only the named preview card; the rest of the page stays live */
+function morph(fn, kind = ""){
+  const root = document.documentElement;
+  if (REDUCED || !document.startViewTransition){ fn(); return Promise.resolve(); }
+  if (kind) root.classList.add("vt-" + kind);
+  try {
+    const t = document.startViewTransition(fn);
+    t.ready.catch(() => {}); t.updateCallbackDone.catch(() => {});
+    return t.finished.catch(() => {}).finally(() => { if (kind) root.classList.remove("vt-" + kind); });
+  } catch (_) { root.classList.remove("vt-" + kind); fn(); return Promise.resolve(); }
+}
+function refreshStyleUI(skipFine){
+  if (S.step !== 3 || !$("#b-left .tpl-grid")) return;
+  $("#b-left .tpl-grid").outerHTML = tplCards();
+  $("#b-left .brand-card").outerHTML = brandCard();
+  if (!skipFine){ const a = $('#b-left .acc[data-acc-id="styles"] .pad'); if (a) a.innerHTML = fineTune(); }
+}
+function setTpl(id, el){
+  const f = S.form; if (!f || f.styles.tpl === id) return;
+  morph(() => { f.styles.tpl = id; renderPreview(); refreshStyleUI(true); });
+  if (el){ const n = $(`.tpl-card[data-tpl="${id}"]`); if (n){ n.classList.add("picked"); } }
+}
+function adoptBrand(s){ const b = S.brand; Object.assign(s, {btnBg:b.primary, accent:b.accent, pageBg:b.bg, font:b.font}); }
+function setBrandSync(on){
+  const s = S.form.styles; if (on === s.brand) return;
+  if (!on) adoptBrand(s);
+  morph(() => { s.brand = on; renderPreview(); refreshStyleUI(); refreshBrand(); }, on ? "brand" : "");
+  if (on) toast("Synced with your Branding Center");
+}
+function brandDrawer(still){
+  const b = S.brand, synced = S.form && S.form.styles.brand;
+  const role = (key, label) => `<div class="bd-role"><div class="bd-role-h"><span>${label}</span><code>${b[key]}</code></div>
+    <div class="bd-sws">${BRAND_SWATCHES[key].map(([hex, n]) => `<button class="bd-sw ${hex === b[key] ? "on" : ""}" style="--c:${hex}" data-act="brand-color" data-key="${key}" data-hex="${hex}" aria-label="${n}" title="${n}" aria-pressed="${hex === b[key]}">${ic("check", 14, "", 3)}</button>`).join("")}</div></div>`;
+  return `<aside class="bc-drawer ${still ? "still" : ""}" role="dialog" aria-label="Branding Center">
+    <header class="bd-top"><span class="bd-ic">${ic("palette", 22)}</span><div class="grow"><h2>Branding Center</h2><p>One brand for your forms, emails and landing pages.</p></div><button class="icon-btn" data-act="brand-close" aria-label="Close Branding Center">${ic("x", 22)}</button></header>
+    <div class="bd-body">
+      ${synced ? "" : `<div class="inline-alert bd-warn">${ic("info", 20)}<span class="grow">This form uses custom styles, so brand changes skip it.</span><button class="btn text" data-act="brand-resync">Sync this form</button></div>`}
+      <section class="bd-sec" style="--i:0"><h3>Logo</h3><div class="bd-logos"><div class="bd-logo on"><img src="${OTTER}" alt="Otter and Rocket primary logo"><span class="tag">Primary</span></div><button class="bd-logo add" data-act="soon" data-msg="Logo upload opens here">${ic("upload", 22)}<span>Upload logo</span></button></div></section>
+      <section class="bd-sec" style="--i:1"><h3>Colors</h3>${role("primary", "Primary")}${role("accent", "Accent")}${role("bg", "Background")}</section>
+      <section class="bd-sec" style="--i:2"><h3>Font</h3><div class="bd-fonts">${FONTS.map(x => `<button class="bd-font ${x.id === b.font ? "on" : ""}" data-act="brand-font" data-font="${x.id}" aria-pressed="${x.id === b.font}"><span class="aa" style="font-family:${x.stack}">Aa</span><span class="nm">${x.name}</span></button>`).join("")}</div></section>
+    </div>
+    <footer class="bd-foot"><span class="bd-saved" id="bd-saved">${ic("check", 16, "", 2.4)} Saved to your brand</span><button class="btn filled" data-act="brand-close">Done</button></footer>
+  </aside>`;
+}
+function openBrand(){
+  if (!S.form || S.formsView !== "builder" || S.active !== "forms"){ toast("The Branding Center sets the logo, colors and font used here"); return; }
+  closePop(); if (S.ui.cond) closeCond();
+  const host = $("#bc-host"); if (!host) return;
+  S.ui.bc = true;
+  host.innerHTML = `<div class="bd-scrim" data-act="brand-close"></div>` + brandDrawer();
+  void host.offsetWidth; host.classList.add("on");
+  setTimeout(() => { const c = $(".bd-top .icon-btn", host); if (c && S.ui.bc) c.focus({preventScroll:true}); }, 300);
+}
+function closeBrand(){
+  S.ui.bc = false;
+  const host = $("#bc-host"); if (!host || !host.classList.contains("on")) return;
+  host.classList.remove("on");
+  setTimeout(() => { if (!S.ui.bc && host.isConnected) host.innerHTML = ""; }, 460);
+}
+function refreshBrand(){
+  const d = $("#bc-host .bc-drawer"); if (!d) return;
+  const top = $(".bd-body", d).scrollTop;
+  d.outerHTML = brandDrawer(true);
+  $("#bc-host .bd-body").scrollTop = top;
+}
+function setBrand(key, val){
+  if (S.brand[key] === val) return;
+  const apply = () => { S.brand[key] = val; renderPreview(); refreshStyleUI(); refreshBrand(); };
+  S.form && S.form.styles.brand ? morph(apply, "brand") : apply();
+  const s = $("#bd-saved"); if (s){ s.classList.remove("on"); void s.offsetWidth; s.classList.add("on"); }
+}
+
 /* ---------------- Future concepts ---------------- */
-function pvStepsBar(){
-  const f = S.form; if (!f.steps) return "";
+function pvStepsBar(f = S.form){
+  if (!f || !f.steps) return "";
   const n = f.steps.length, i = S.ui.fstep;
   return `<div class="pv-steps" aria-label="Step ${i + 1} of ${n}">${f.steps.map((s, j) => `<span class="${j <= i ? "on" : ""}"></span>`).join("")}<em>Step ${i + 1} of ${n}</em></div>`;
 }
-function inFutureBuilder(){ return S.flow === "future" && S.form && S.form.steps && S.formsView === "builder" && S.active === "forms"; }
 function setFStep(i, force){
   const f = S.form; if (!f || !f.steps || i < 0 || i >= f.steps.length) return;
   if (i === S.ui.fstep && !force) return;
@@ -1656,32 +2014,28 @@ function setFStep(i, force){
   S.ui.fstep = i; f.fields = f.steps[i].fields;
   S.ui.thank = false;
   renderLeft(); renderPreview({resetScroll:true});
-  if (S.flow === "future") setScene(FUTURE_IDS[i]);
 }
-function futureTab(i){
-  if (!inFutureBuilder()) return goto(FUTURE_IDS[i], "future");
-  if (S.step !== 2){ S.dir = "back"; S.step = 2; }
+function addStepMenu(btn){
+  const f = S.form, has = k => (f.steps || []).some(s => k === "payment" ? s.kind === "payment" : s.fields.some(x => x.type === "appointment"));
+  openPop(btn, `<h5>Add a step</h5>
+    <button data-act="step-pick" data-kind="payment" ${has("payment") ? "disabled" : ""}>${ic("dollar", 20)} Payment<span class="concept-tag sm">Future concept</span></button>
+    <button data-act="step-pick" data-kind="booking" ${has("booking") ? "disabled" : ""}>${ic("calendar", 20)} Appointment booking<span class="concept-tag sm">Future concept</span></button>`);
+}
+function pickStep(kind){
+  closePop();
+  const i = addStep(S.form, kind);
+  if (i < 0) return;
+  S.ui.newStep = i;
+  if (kind === "payment") ["pay-products", "pay-upsells", "pay-promos"].forEach(k => S.ui.open.add(k));
+  else S.form.steps[i].fields.forEach(x => S.ui.open.add(x.id));
   setFStep(i, true);
-}
-function futureCond(){
-  if (!inFutureBuilder()) return goto("pay", "future");
-  if (!S.ui.cond) return futureTab(1);
-  // first Next: save the rule, then show it working in the preview
-  saveCond();
-  const st = S.form.fields.find(x => x.key === "serviceType"), ep = EPOCH;
-  setTimeout(() => {
-    if (ep !== EPOCH || !st) return;
-    S.ui.pv[st.id] = "Web design";
-    const sel = $(`#b-right [data-pv="${st.id}"]`);
-    if (sel){ sel.value = "Web design"; sel.classList.remove("ph"); sel.closest(".pv-field").scrollIntoView({block:"center", behavior:REDUCED ? "auto" : "smooth"}); }
-    applyConds();
-  }, 750);
+  toast(kind === "payment" ? "Payment step added" : "Booking step added");
 }
 
 /* conditional fields */
 function applyConds(){
   $$("#b-right .pv-field.cond").forEach(el => {
-    const vis = condVisible(el.dataset.id), was = !el.classList.contains("off");
+    const vis = condVisible(el.dataset.id, S.form), was = !el.classList.contains("off");
     el.classList.toggle("off", !vis);
     if (vis && !was){
       const c = $("select,input,textarea", el);
@@ -1827,13 +2181,14 @@ function checkoutCard(){
   const applied = c.promo && p.promos.find(x => x.code === c.promo);
   const promo = p.promos.length ? `<div class="promo-row"><div class="pv-field"><input id="promo-in" placeholder=" " autocomplete="off" aria-label="Promo code" value="${esc(c.promo || "")}"><span class="ph-l">Promo code</span></div><button class="btn outline" data-act="promo-apply">Apply</button></div>
     ${applied ? `<p class="promo-msg ok">${applied.code} applied. You save ${Math.round(applied.off * 100)}%.</p>` : c.promoErr ? `<p class="promo-msg err">${esc(c.promoErr)}</p>` : ""}` : "";
-  return `<div class="pv-card">${pvStepsBar()}
+  const e = eff(f);
+  return `<div class="pv-card tpl-${e.tpl}" style="--bp:${e.btnBg};--bt:${e.btnText};--ba:${e.accent};--hf:${fontOf(e.font).stack}">${pvStepsBar()}
     <h4 class="pay-h">Choose payment method</h4>
     <div class="pay-methods" role="radiogroup" aria-label="Payment method">
       <label class="radio"><input type="radio" name="pv-method" value="card" ${c.method === "card" ? "checked" : ""}> Credit card</label>
       <label class="radio"><input type="radio" name="pv-method" value="paypal" ${c.method === "paypal" ? "checked" : ""}> <span class="pp">Pay<span>Pal</span></span></label>
     </div>${box}${ups}${promo}
-    <div class="pv-submit-row ${f.styles.btnAlign}"><button class="pv-submit" style="background:${f.styles.btnBg};color:${f.styles.btnText}" data-act="${last ? "pv-submit" : "pv-next"}">${last ? esc(f.button || "Submit") : "Next"}</button></div>
+    <div class="pv-submit-row ${f.styles.btnAlign}"><button class="pv-submit" data-act="${last ? "pv-submit" : "pv-next"}">${last ? esc(f.button || "Submit") : "Next"}</button></div>
   </div>`;
 }
 function paymentEditor(){
@@ -1961,27 +2316,83 @@ function renderAI(){
       <div class="ai-body mode-${S.chat.mode}" id="ai-body">
         <div class="hero col">
           <h1>${h1.replace('<span class="w ai-word">', '<span class="w ai-word"><em hidden></em>')}</h1>
-          <div class="cards">${SUGGEST.map((s, i) => `<button class="s-card" data-act="ask" data-prompt="${esc(s)}" style="--i:${i}"><span>${esc(s)}</span><span class="ask">Ask this</span></button>`).join("")}</div>
         </div>
         <div class="thread" id="thread"><div class="col" id="thread-col"></div></div>
         <div class="dock" id="dock">
           <div class="replies" id="replies"></div>
           <div class="composer" id="composer"><div class="composer-in">
-            <textarea id="prompt" rows="2" placeholder="${S.chat.mode === "welcome" ? "Describe your form" : "Ask anything"}" aria-label="Message Thryv AI" data-input="prompt"></textarea>
+            <textarea id="prompt" rows="2" placeholder="${S.chat.mode === "welcome" ? PLACEHOLDERS[0] : "Ask anything"}" aria-label="Message Thryv AI" data-input="prompt"></textarea>
             <button class="send" data-act="send" id="send" disabled aria-label="Send message">${ic("arrowUp", 18, "", 2.2)}</button>
           </div></div>
           <p class="disclaimer">Chat is in beta. AI can make mistakes, so check all responses. Your data is not used to train future AI models.</p>
+        </div>
+        <div class="common col">
+          <p class="common-h">Commonly created forms</p>
+          <div class="cchips">${COMMON.map((c, i) => `<button class="cchip spot" data-act="common" data-k="${c.k}" style="--i:${i}"><span class="cc-ic">${ic(c.icon, 18)}</span>${c.label}</button>`).join("")}</div>
         </div>
       </div>
     </main>`;
   const col = $("#thread-col");
   S.chat.msgs.forEach(m => col.insertAdjacentHTML("beforeend", msgHTML(m, true)));
+  fillMinis();
   renderReplies();
+  if (S.chat.mode === "welcome") startPH();
 }
 function msgHTML(m, isStatic){
   const meta = `<div class="meta ${isStatic ? "on" : ""}">${m.role === "user" ? "You" : "Thryv AI"} ${m.time}</div>`;
   if (m.role === "user") return `<div class="msg user"><div class="bubble" ${isStatic ? 'style="animation:none"' : ""}>${esc(m.text)}</div>${meta}</div>`;
-  return `<div class="msg ai"><div class="bubble" ${isStatic ? 'style="animation:none"' : ""}><div class="content">${m.html}</div><button class="kebab" data-act="soon" data-msg="Copy, retry and report live in this menu" aria-label="Message options">${ic("moreV", 18)}</button></div>${meta}</div>`;
+  return `<div class="msg ai ${m.wide ? "wide" : ""}"><div class="bubble" ${isStatic ? 'style="animation:none"' : ""}><div class="content">${m.html}</div><button class="kebab" data-act="soon" data-msg="Copy, retry and report live in this menu" aria-label="Message options">${ic("moreV", 18)}</button></div>${meta}</div>`;
+}
+
+/* typewriter placeholder: shows the range of things you can ask for */
+let PH = 0;
+function stopPH(){ PH++; }
+async function startPH(){
+  if (REDUCED) return;
+  const tok = ++PH;
+  await wait(2200);
+  let i = 0;
+  while (tok === PH){
+    const p = $("#prompt");
+    if (!p || S.chat.mode !== "welcome") return;
+    while (p.placeholder.length){ if (tok !== PH) return; p.placeholder = p.placeholder.slice(0, -1); await wait(14); }
+    i = (i + 1) % PLACEHOLDERS.length;
+    for (const ch of PLACEHOLDERS[i]){ if (tok !== PH) return; p.placeholder += ch; await wait(36); }
+    await wait(2200);
+  }
+}
+async function typeInto(text, ep){
+  const p = $("#prompt"); if (!p) return false;
+  stopPH(); p.value = ""; p.placeholder = "";
+  for (const ch of text){ if (ep !== EPOCH) return false; p.value += ch; autoGrow(p); await wait(15); }
+  updateSend();
+  return true;
+}
+async function askCommon(k, el){
+  if (S.chat.busy || S.chat.mode !== "welcome") return;
+  const c = COMMON.find(x => x.k === k); if (!c) return;
+  const ep = EPOCH;
+  S.chat.busy = true;
+  if (el) flyChip(el);
+  await wait(420); if (ep !== EPOCH) return;
+  if (!await typeInto(c.prompt, ep)) return;
+  await wait(320); if (ep !== EPOCH) return;
+  S.chat.busy = false;
+  sendUser(c.prompt);
+}
+/* the chip lifts off and flies into the composer */
+function flyChip(el){
+  el.classList.add("picked");
+  const main = $(".ai-main"), comp = $("#composer .composer-in");
+  if (!main || !comp || REDUCED) return;
+  const mr = main.getBoundingClientRect(), er = el.getBoundingClientRect(), cr = comp.getBoundingClientRect();
+  const g = el.cloneNode(true);
+  g.className = "cchip fly"; g.removeAttribute("data-act");
+  Object.assign(g.style, {left:(er.left - mr.left) / SCALE + "px", top:(er.top - mr.top) / SCALE + "px"});
+  main.appendChild(g);
+  const dx = (cr.left + 18 - er.left) / SCALE, dy = (cr.top + 12 - er.top) / SCALE;
+  requestAnimationFrame(() => requestAnimationFrame(() => { g.style.transform = `translate(${dx}px, ${dy}px) scale(.92)`; g.style.opacity = "0"; }));
+  setTimeout(() => g.remove(), 760);
 }
 function renderReplies(){
   const r = $("#replies"); if (!r) return;
@@ -2021,8 +2432,8 @@ function enterChat(){
     dock.addEventListener("transitionend", () => { dock.style.transition = ""; }, {once:true});
   }
 }
-function addMsg(role, payload){
-  const m = role === "user" ? {role, text:payload, time:now()} : {role, html:payload, time:now()};
+function addMsg(role, payload, wide){
+  const m = role === "user" ? {role, text:payload, time:now()} : {role, html:payload, time:now(), wide:!!wide};
   S.chat.msgs.push(m);
   $("#thread-col").insertAdjacentHTML("beforeend", msgHTML(m, false));
   const el = $("#thread-col").lastElementChild;
@@ -2062,32 +2473,75 @@ async function aiSay(html, ep, {typing = 750, after} = {}){
   if (after) after(el);
   return el;
 }
-async function aiBuild(steps, ep){
-  const head = `<p class="build-title"><span class="spark">${ic("sparkle", 18)}</span><span class="bt">Building your form</span></p>`;
-  const list = `<ul class="build-list">${steps.map(s => `<li><span class="st"><span class="sp"></span><span class="ck">${ic("check", 12, "", 3)}</span></span><span>${esc(s)}</span></li>`).join("")}</ul>`;
-  const {m, el} = addMsg("ai", head + list);
+function buildCardHTML(steps, done){
+  return `<div class="build ${done ? "done" : ""}"><div class="build-l">
+      <p class="build-title ${done ? "done" : ""}"><span class="spark">${ic("sparkle", 18)}</span><span class="bt">${done ? "Built your form" : "Building your form"}</span></p>
+      <ul class="build-list">${steps.map(s => `<li class="${done ? "on ok" : ""}"><span class="st"><span class="sp"></span><span class="ck">${ic("check", 12, "", 3)}</span></span><span>${esc(s)}</span></li>`).join("")}</ul>
+    </div><div class="build-r"><div class="mini-host" data-mini="draft"></div></div></div>`;
+}
+/* the checklist and a live mini preview build together, step by step */
+async function aiBuild(steps, ep, form){
+  const {m, el} = addMsg("ai", buildCardHTML(steps, false), true);
+  const host = $(".mini-host", el);
+  host.innerHTML = miniHTML(form, {tpl:"classic", scale:.5, cls:"bld anim"});
+  const mini = $(".mini", host), card = $(".pv-card", mini), h = $(".pv-h", mini);
+  const headline = h ? h.textContent : "";
   const lis = $$(".build-list li", el);
-  for (const li of lis){
-    await wait(90); if (ep !== EPOCH) return;
-    li.classList.add("on"); scrollThread();
-    await wait(560); if (ep !== EPOCH) return;
-    li.classList.add("ok");
+  for (let i = 0; i < lis.length; i++){
+    await wait(110); if (ep !== EPOCH) return;
+    lis[i].classList.add("on"); scrollThread();
+    if (i === 0) mini.classList.add("b-fields");
+    if (i === 1){ mini.classList.add("b-copy"); typeText(h, headline, ep); }
+    if (i === 2) mini.classList.add("b-brand");
+    if (i === 3){
+      host.classList.add("vt");
+      morph(() => { card.classList.replace("tpl-classic", "tpl-" + form.styles.tpl); mini.style.background = pageBgOf(form); mini.classList.add("b-tpl"); })
+        .then(() => host.classList.remove("vt"));
+    }
+    await wait(i < 4 ? 820 : 520); if (ep !== EPOCH) return;
+    lis[i].classList.add("ok");
   }
   await wait(250); if (ep !== EPOCH) return;
   const t = $(".build-title", el); t.classList.add("done"); $(".bt", t).textContent = "Built your form";
+  $(".build", el).classList.add("done");
   $(".meta", el).classList.add("on");
-  m.html = $(".content", el).innerHTML;
+  m.html = buildCardHTML(steps, true);
+  panMini(mini);
+}
+async function typeText(node, text, ep){
+  if (!node) return;
+  node.textContent = "";
+  for (const w of text.split(/(\s+)/)){ if (ep !== EPOCH){ node.textContent = text; return; } node.textContent += w; if (w.trim()) await wait(55); }
+}
+/* slow pan so the whole draft is visible inside the chat bubble */
+function panMini(mini){
+  if (!mini || REDUCED) return;
+  const sc = $(".mini-scale", mini), k = parseFloat(mini.style.getPropertyValue("--ms")) || .5;
+  const over = sc.offsetHeight * k - mini.clientHeight;
+  if (over > 12){ mini.style.setProperty("--pan", `${-Math.round(over + 8)}px`); mini.classList.add("pan"); }
+}
+function fillMinis(){
+  const f = S.chat.draft; if (!f) return;
+  $$('#pane-ai .mini-host[data-mini="draft"]').forEach(h => { h.innerHTML = miniHTML(f, {scale:.5, cls:"bld b-fields b-copy b-brand b-tpl"}); panMini($(".mini", h)); });
+  $$('#pane-ai [data-chips="draft"]').forEach(c => { c.innerHTML = chipsHTML(f); });
+}
+function chipsHTML(f){
+  return TEMPLATES.map(t => `<button class="tchip ${t.id === f.styles.tpl ? "on" : ""}" data-act="chat-tpl" data-tpl="${t.id}" aria-pressed="${t.id === f.styles.tpl}">${t.name}</button>`).join("");
+}
+function chatTpl(id){
+  const f = S.chat.draft; if (!f || f.styles.tpl === id) return;
+  const hosts = $$('#pane-ai .mini-host[data-mini="draft"]'), host = hosts[hosts.length - 1];
+  if (host) host.classList.add("vt");
+  morph(() => { f.styles.tpl = id; fillMinis(); if (S.form === f && S.formsView === "builder"){ renderPreview(); if (S.step === 3) refreshStyleUI(true); } })
+    .then(() => { if (host) host.classList.remove("vt"); });
 }
 function questionsHTML(tpl){
   return `<p>Sure! A couple of quick questions before I build it:</p><ul>${tpl.questions.map(q => `<li>${esc(q)}</li>`).join("")}</ul>`;
 }
 function resultHTML(form){
-  return `<p>Here's your ${esc(form.title.toLowerCase())}. Let me know if you'd like any changes and I'll update it for you.</p>
+  return `<p>Here's your ${esc(form.title.toLowerCase())}. I used the ${tplName(form.styles.tpl)} template with your logo, colors and font from the Branding Center. Want a different look?</p>
+    <div class="reveal tpl-chips" data-chips="draft">${chipsHTML(form)}</div>
     <span class="reveal"><button class="form-link" data-act="open-form">${esc(form.title)} ${ic("external", 18, "", 2)}</button></span>`;
-}
-function staticBuildHTML(steps){
-  return `<p class="build-title done"><span class="spark">${ic("sparkle", 18)}</span><span class="bt">Built your form</span></p>
-    <ul class="build-list">${steps.map(s => `<li class="on ok"><span class="st"><span class="sp"></span><span class="ck">${ic("check", 12, "", 3)}</span></span><span>${esc(s)}</span></li>`).join("")}</ul>`;
 }
 
 async function sendUser(text){
@@ -2113,7 +2567,7 @@ async function sendUser(text){
     const form = makeForm(S.chat.tpl, text);
     S.chat.draft = form; S.chat.opened = false; S.chat.answer = text;
     await wait(500); if (ep !== EPOCH) return;
-    await aiBuild(buildSteps(form, text), ep); if (ep !== EPOCH) return;
+    await aiBuild(buildSteps(form, text), ep, form); if (ep !== EPOCH) return;
     await aiSay(resultHTML(form), ep, {typing:500});
     if (ep !== EPOCH) return;
     S.chat.stage = "generated";
@@ -2123,7 +2577,9 @@ async function sendUser(text){
     const res = applyRefine(target, text);
     if (res.changed){
       S.chat.lastChange = {ids:res.ids, region:res.region};
+      if (res.region === "steps" && target === S.form) S.ui.newStep = target.steps.length - 1;
       if (S.chat.opened && S.formsView === "builder") { renderForms(); }
+      fillMinis();
     }
     const link = res.changed ? `<span class="reveal"><button class="form-link" data-act="open-form">Back to ${esc(target.name || target.title)} ${ic("external", 18, "", 2)}</button></span>` : "";
     await aiSay(`<p>${esc(res.msg)}</p>${link}`, ep, {typing:700});
@@ -2137,6 +2593,8 @@ function refineReplies(form){
   if (!form.fields.some(f => f.key === "phone")) r.push("Add a phone number field");
   const co = form.fields.find(f => f.key === "company");
   if (co && co.required) r.push("Make company name optional");
+  if (form.styles.tpl !== "minimal") r.push("Use the Minimal template");
+  if (!(form.steps || []).some(s => s.kind === "payment")) r.push("Add a payment step");
   if (form.button !== "Get started") r.push("Change the button text to Get started");
   return r.slice(0, 3);
 }
@@ -2152,6 +2610,7 @@ function actCreateWithAI(){
   closePop();
   const existed = S.tabs.includes("ai");
   if (existed){ S.chat = freshState(S.flow).chat; }
+  S.hint = null;
   openAITab(true);
   renderTabs(); renderAI(); showPane(true);
   setScene("ai-welcome");
@@ -2165,7 +2624,8 @@ function newChat(){
 }
 async function actScratch(){
   const ep = EPOCH;
-  S.form = manualForm(); S.step = 1; S.maxStep = 1; S.published = false; S.ui.errors = {}; S.ui.open = new Set(); S.ui.aiBanner = false;
+  S.hint = null; S.ui = freshState("ai").ui;
+  S.form = manualForm(); S.step = 1; S.maxStep = 1; S.published = false;
   S.formsView = "loading"; renderForms(); renderTabs();
   await wait(750); if (ep !== EPOCH) return;
   S.formsView = "builder"; S.dir = "fade"; renderForms(); renderTabs();
@@ -2176,7 +2636,7 @@ function openGeneratedForm(){
   closePop();
   if (!S.chat.opened){
     S.form = S.chat.draft; S.chat.opened = true;
-    S.step = 1; S.maxStep = 1; S.published = false; S.ui.errors = {}; S.ui.open = new Set();
+    S.step = 1; S.maxStep = 1; S.published = false; S.ui.errors = {}; S.ui.open = new Set(); S.ui.fstep = 0; S.ui.cond = null;
     S.ui.aiBanner = true; S.ui.materialize = true; S.dir = "fade";
     S.formsView = "builder";
     renderForms();
@@ -2186,6 +2646,12 @@ function openGeneratedForm(){
     const change = S.chat.lastChange; S.chat.lastChange = null;
     S.ui.flash = change;
     if (S.formsView !== "builder"){ S.formsView = "builder"; S.dir = "fade"; renderForms(); }
+    if (change && change.region === "steps" && S.form.steps){
+      S.ui.flash = null; switchTab("forms");
+      if (S.step !== 2){ S.dir = "fade"; S.step = 2; S.maxStep = Math.max(S.maxStep, 2); }
+      S.ui.newStep = S.form.steps.length - 1; setFStep(S.form.steps.length - 1, true);
+      return;
+    }
     if (S.active === "forms") renderPreview(); else switchTab("forms");
     if (change && change.ids && S.step === 2){
       change.ids.forEach(id => { const c = $(`.fcard[data-id="${id}"]`); if (c) c.classList.add("flash"); });
@@ -2226,7 +2692,8 @@ function validateDetails(){
   return !Object.keys(e).length;
 }
 function goStep(n, force){
-  if (n < 1 || n > 4) return;
+  if (n < 1 || n > LAST_STEP) return;
+  closeBrand();
   if (!force && n > S.maxStep) return;
   if (S.step === 1 && n > 1 && !validateDetails()){ renderLeft(); focusFirstError(); return; }
   closePop();
@@ -2262,7 +2729,7 @@ async function publish(){
   await wait(1100); if (ep !== EPOCH) return;
   const was = S.published;
   S.published = true; upsertRow("published");
-  S.dir = "fwd"; S.step = 4; S.maxStep = 4;
+  S.dir = "fwd"; S.step = LAST_STEP; S.maxStep = LAST_STEP;
   renderLeft(); renderPreview(); renderTabs();
   $("#b-left").scrollTop = 0;
   toast(was ? "Changes published" : `${S.form.name} is live`);
@@ -2424,7 +2891,7 @@ function fieldMenu(btn){
     ${f.type !== "hidden" ? `<button data-act="fm" data-op="req" data-id="${id}">${ic("check", 20)} Make ${f.required ? "optional" : "required"}</button>` : ""}
     <button data-act="fm" data-op="up" data-id="${id}" ${i === 0 ? "disabled" : ""}>${ic("arrowUp", 20)} Move up</button>
     <button data-act="fm" data-op="down" data-id="${id}" ${i === S.form.fields.length - 1 ? "disabled" : ""}>${ic("arrowDown", 20)} Move down</button>
-    ${S.flow === "future" && f.type !== "hidden" && f.type !== "appointment" ? `<button data-act="fm" data-op="cond" data-id="${id}">${ic("branch", 20)} ${inRule(id) ? "Edit condition" : "Add condition"}</button>` : ""}
+    ${f.type !== "hidden" && f.type !== "appointment" ? `<button data-act="fm" data-op="cond" data-id="${id}">${ic("branch", 20)} ${inRule(id) ? "Edit condition" : "Add condition"}<span class="concept-tag sm">Future concept</span></button>` : ""}
     <hr><button class="danger" data-act="fm" data-op="del" data-id="${id}">${ic("trash", 20)} Delete</button>`);
 }
 function addFieldMenu(btn){
@@ -2454,7 +2921,7 @@ function openModal(){
   const m = document.createElement("div");
   m.className = "modal"; m.id = "modal"; m.setAttribute("role", "dialog"); m.setAttribute("aria-label", "Full preview");
   m.innerHTML = `<div class="modal-box"><div class="modal-top"><span>Preview · ${esc(S.form.name || "Untitled form")}</span><button class="icon-btn" data-act="close-modal" aria-label="Close preview">${ic("x", 22)}</button></div>
-    <div class="modal-scroll" style="background:${S.form.styles.pageBg}">${pvCard(S.form, {})}</div></div>`;
+    <div class="modal-scroll" style="background:${pageBgOf(S.form)}">${S.form.steps && S.form.steps[S.ui.fstep].kind === "payment" ? checkoutCard() : pvCard(S.form, {})}</div></div>`;
   vp.appendChild(m);
   $(".modal-top .icon-btn", m).focus({preventScroll:true});
 }
@@ -2481,39 +2948,21 @@ function toggleAcc(id, btn){
 }
 
 /* -----------------------------------------------------------------
-   Showcase: scenes, narration, jumping
+   Deep links and opening forms
    ----------------------------------------------------------------- */
-function scenesFor(flow = S.flow){ return SCENES[flow]; }
-function sceneIndex(id){ return scenesFor().findIndex(s => s.id === id); }
-function setScene(id){
-  if (sceneIndex(id) === -1) return;
-  S.scene = id;
-  renderNarration(true);
-}
-function renderNarration(animate){
-  const list = scenesFor(); const i = sceneIndex(S.scene); const sc = list[i];
-  $$(".sc-flow button").forEach(b => { b.classList.toggle("on", b.dataset.flow === S.flow); b.setAttribute("aria-selected", b.dataset.flow === S.flow); });
-  $("#sc-steps").innerHTML = list.map((s, j) => `<button class="sc-step ${j === i ? "on" : ""} ${j < i ? "past" : ""}" data-act="sc-scene" data-scene="${s.id}" aria-current="${j === i ? "step" : "false"}" title="${s.label}"><span class="n">${j + 1}</span><span class="l">${s.label}</span></button>`).join("");
-  $("#sc-eyebrow").textContent = `${S.flow === "future" ? "Future concept · " : ""}${String(i + 1).padStart(2, "0")} / ${String(list.length).padStart(2, "0")} · ${sc.label}`;
-  const copy = $("#sc-copy");
-  copy.innerHTML = esc(sc.text) + (sc.tip ? `<span class="tip">${esc(sc.tip)}</span>` : "");
-  if (animate){ copy.classList.remove("swap"); void copy.offsetWidth; copy.classList.add("swap"); }
-  $("#sc-prev").disabled = i === 0;
-  const last = i === list.length - 1;
-  $("#sc-next").innerHTML = last ? `${NEXT_LABEL[S.flow]}${ic("arrowRight", 16)}` : `Next${ic("arrowRight", 16)}`;
-}
+function setScene(id){ S.scene = id; }
 
 function seedChat(upTo){
   const tpl = TPL.intake;
   const t1 = now();
   S.chat.mode = "chat"; S.chat.tpl = tpl;
-  S.chat.msgs = [{role:"user", text:SUGGEST[0], time:t1}, {role:"ai", html:questionsHTML(tpl), time:t1}];
+  S.chat.msgs = [{role:"user", text:COMMON[0].prompt, time:t1}, {role:"ai", html:questionsHTML(tpl), time:t1}];
   S.chat.stage = "clarify"; S.chat.replies = tpl.replies;
   if (upTo === "generated"){
     const ans = tpl.replies[0];
     const form = makeForm(tpl, ans);
     S.chat.draft = form; S.chat.answer = ans;
-    S.chat.msgs.push({role:"user", text:ans, time:t1}, {role:"ai", html:staticBuildHTML(buildSteps(form, ans)), time:t1}, {role:"ai", html:resultHTML(form), time:t1});
+    S.chat.msgs.push({role:"user", text:ans, time:t1}, {role:"ai", html:buildCardHTML(buildSteps(form, ans), true), time:t1, wide:true}, {role:"ai", html:resultHTML(form), time:t1});
     S.chat.stage = "generated"; S.chat.replies = [];
   }
 }
@@ -2521,24 +2970,28 @@ function renderAll(animatePane){
   renderTabs(); renderForms();
   if (S.tabs.includes("ai")) renderAI(); else $("#pane-ai").innerHTML = "";
   showPane(animatePane);
-  if (S.formsView === "list") requestAnimationFrame(() => {});
 }
-function goto(id, flow = S.flow){
+/* the service request form shows the future concepts: a condition, a payment step and a booking step */
+function openService(i, stepN = 2){
+  S.form = futureForm(); S.form.rowId = (S.rows.find(r => /service request/i.test(r.name)) || {}).id || null;
+  S.formsView = "builder"; S.step = stepN; S.maxStep = LAST_STEP; S.dir = "fade";
+  S.ui.fstep = i; S.form.fields = S.form.steps[i].fields;
+  ["pay-products", "pay-upsells", "pay-promos"].forEach(k => S.ui.open.add(k));
+  S.form.steps[2].fields.forEach(x => S.ui.open.add(x.id));
+}
+function goto(id, flow = "ai"){
   EPOCH++;
   closePop(); closeModal();
   S = freshState(flow);
   if (flow === "future"){
     const i = Math.max(0, FUTURE_IDS.indexOf(id));
-    S.form = futureForm(); S.formsView = "builder"; S.step = 2; S.maxStep = 2; S.dir = "fade";
-    S.ui.fstep = i; S.form.fields = S.form.steps[i].fields;
-    ["pay-products", "pay-upsells", "pay-promos"].forEach(k => S.ui.open.add(k));
-    S.form.steps[2].fields.forEach(x => S.ui.open.add(x.id));
+    openService(i);
     renderAll(true);
-    setScene(FUTURE_IDS[i]);
-    if (i === 0){ const ep = EPOCH; setTimeout(() => { if (ep === EPOCH && inFutureBuilder()) openCond(condDraftDefault()); }, 560); }
+    if (i === 0){ const ep = EPOCH; setTimeout(() => { if (ep === EPOCH && S.form && S.form.steps) openCond(condDraftDefault()); }, 560); }
     return;
   }
-  const n = {details:1, fields:2, settings:3, share:4, done:4}[id];
+  if (id !== "list") S.hint = null;
+  const n = {details:1, fields:2, style:3, settings:4, share:5, done:5}[id];
   if (id === "ai-welcome"){ openAITab(false); }
   else if (id === "ai-clarify"){ openAITab(false); seedChat("clarify"); }
   else if (id === "ai-generated"){ openAITab(false); seedChat("generated"); }
@@ -2562,38 +3015,23 @@ function goto(id, flow = S.flow){
     th.style.scrollBehavior = "auto"; th.scrollTop = th.scrollHeight; th.style.scrollBehavior = "";
   }));
 }
-function advance(){
-  const list = scenesFor(); const i = sceneIndex(S.scene);
-  if (i === list.length - 1){ startFlow(NEXT_FLOW[S.flow]); return; }
-  if (S.chat.busy && S.active === "ai") return;
-  const id = S.scene;
-  const A = {
-    "list": () => S.flow === "ai" ? (S.active === "ai" ? null : actCreateWithAI()) : actScratch(),
-    "ai-welcome": () => { if (S.active !== "ai") switchTab("ai"); sendUser(SUGGEST[0]); },
-    "ai-clarify": () => { if (S.active !== "ai") switchTab("ai"); sendUser((S.chat.tpl || TPL.intake).replies[0]); },
-    "ai-generated": () => openGeneratedForm(),
-    "details": () => {
-      if (S.active !== "forms") switchTab("forms");
-      if (S.formsView !== "builder") return goto("details");
-      if (S.step !== 1) return goStep(1);
-      if (!S.form.name.trim()){ S.form.name = "Stay in Touch"; S.ui.errors = {}; renderLeft(); updatePreviewText(); setTimeout(nextStep, 380); return; }
-      nextStep();
-    },
-    "fields": () => { if (S.active !== "forms") switchTab("forms"); if (S.formsView !== "builder" || S.step !== 2) return goto("settings"); goStep(3, true); },
-    "settings": () => { if (S.active !== "forms") switchTab("forms"); if (S.formsView !== "builder" || S.step !== 3) return goto("share"); publish(); },
-    "share": () => { if (S.active !== "forms") switchTab("forms"); done(); },
-    "cond": () => futureCond(),
-    "pay": () => futureTab(2),
-  };
-  const fn = A[id];
-  if (fn){ const r = fn(); if (r === null) goto(list[i + 1].id); }
-  else goto(list[i + 1].id);
+/* every row in the list opens in the same builder */
+async function openRow(id){
+  const r = S.rows.find(x => x.id === id); if (!r) return;
+  closePop();
+  const ep = EPOCH;
+  S.hint = null; S.ui = freshState("ai").ui; S.published = r.status === "published";
+  if (/service request/i.test(r.name)) openService(0);
+  else {
+    const f = makeForm(detectTemplate(r.name), "");
+    Object.assign(f, {origin:"manual", name:r.name, rowId:r.id, title:r.name});
+    S.form = f; S.step = 1; S.maxStep = LAST_STEP;
+  }
+  const target = S.step;
+  S.formsView = "loading"; renderForms(); renderTabs();
+  await wait(650); if (ep !== EPOCH) return;
+  S.formsView = "builder"; S.step = target; S.dir = "fade"; renderForms(); renderTabs();
 }
-function prevScene(){
-  const i = sceneIndex(S.scene);
-  if (i > 0) goto(scenesFor()[i - 1].id);
-}
-function startFlow(flow){ goto(SCENES[flow][0].id, flow); }
 
 /* intro */
 function buildIntro(){
@@ -2601,7 +3039,18 @@ function buildIntro(){
   $("#intro-h").innerHTML = words.map((w, i) => `<span class="w"><span style="--i:${i}" class="${i === 4 || i === 5 ? "accent" : ""}">${w}</span></span>`).join(" ");
 }
 function showIntro(){ const el = $("#intro"); el.classList.remove("hide"); buildIntro(); setTimeout(() => { const b = $("#intro .sc-pill.primary"); if (b) b.focus({preventScroll:true}); }, 600); }
-function hideIntro(){ $("#intro").classList.add("hide"); }
+function hideIntro(){
+  $("#intro").classList.add("hide");
+  const box = $("#stage-box"); box.classList.remove("rise-in"); void box.offsetWidth; box.classList.add("rise-in");
+}
+/* the tour video, when one ships next to the prototype */
+function openVideo(){
+  const v = document.createElement("div");
+  v.className = "vmodal"; v.id = "vmodal"; v.setAttribute("role", "dialog"); v.setAttribute("aria-label", "Prototype tour video");
+  v.innerHTML = `<div class="vbox"><video src="video/tour.mp4" poster="video/tour-poster.jpg" controls autoplay playsinline></video><button class="vclose" data-act="close-video" aria-label="Close video">${ic("x", 20, "", 2)}</button></div>`;
+  document.body.appendChild(v);
+}
+function closeVideo(){ const v = $("#vmodal"); if (!v) return; v.classList.add("out"); setTimeout(() => v.remove(), 250); }
 
 /* -----------------------------------------------------------------
    Events
@@ -2609,7 +3058,19 @@ function hideIntro(){ $("#intro").classList.add("hide"); }
 const ACT = {
   "noop": () => {},
   "soon": el => toast(el.dataset.msg || "Not part of this prototype"),
-  "branding": () => toast("The Branding Center sets the logo and colors used here"),
+  "branding": () => openBrand(),
+  "brand-open": () => openBrand(),
+  "brand-close": () => closeBrand(),
+  "brand-sync": el => setBrandSync(el.checked),
+  "brand-resync": () => setBrandSync(true),
+  "brand-color": el => setBrand(el.dataset.key, el.dataset.hex),
+  "brand-font": el => setBrand("font", el.dataset.font),
+  "tpl": el => setTpl(el.dataset.tpl, el),
+  "chat-tpl": el => chatTpl(el.dataset.tpl),
+  "common": el => askCommon(el.dataset.k, el),
+  "open-row": el => openRow(el.dataset.id),
+  "add-step": el => addStepMenu(el),
+  "step-pick": el => pickStep(el.dataset.kind),
   "filter": () => toast("Filters for status and date open here"),
   "row-menu": () => toast("Edit, duplicate, archive and delete live here"),
   "sort": () => { S.sortAsc = !S.sortAsc; $(".table-wrap").outerHTML; renderForms(); },
@@ -2688,13 +3149,9 @@ const ACT = {
     renderPreview();
   },
   "book": el => { const a = S.ui.appt, t = fmtTime(+el.dataset.h, 0); a.booked = el.dataset.key; a.still = true; renderPreview(); toast(`Booked ${DOW_L[a.sel.getDay()]}, ${MON[a.sel.getMonth()]} ${a.sel.getDate()} at ${t.t} ${t.ap}`); },
-  "sc-flow": el => { if (el.dataset.flow !== S.flow) startFlow(el.dataset.flow); },
-  "sc-scene": el => goto(el.dataset.scene),
-  "sc-next": () => advance(),
-  "sc-prev": () => prevScene(),
-  "sc-restart": () => startFlow(S.flow),
-  "sc-intro": () => showIntro(),
-  "start": el => { hideIntro(); startFlow(el.dataset.flow); }
+  "start": () => hideIntro(),
+  "watch": () => openVideo(),
+  "close-video": () => closeVideo()
 };
 
 document.addEventListener("click", e => {
@@ -2707,6 +3164,22 @@ document.addEventListener("click", e => {
   if (act === "toggle-field" && e.target.closest("button[data-act='field-menu']")) return;
   if (act === "toggle-field" && el.classList.contains("chev")) { e.stopPropagation(); toggleField(el.closest(".fcard").dataset.id); return; }
   const fn = ACT[act]; if (fn) fn(el, e);
+});
+/* cursor spotlight on chips, gentle tilt on template cards */
+document.addEventListener("pointermove", e => {
+  const sp = e.target.closest && e.target.closest(".spot,.tilt");
+  if (!sp || REDUCED) return;
+  const r = sp.getBoundingClientRect();
+  const x = (e.clientX - r.left) / SCALE, y = (e.clientY - r.top) / SCALE;
+  if (sp.classList.contains("spot")){ sp.style.setProperty("--mx", x + "px"); sp.style.setProperty("--my", y + "px"); }
+  else {
+    const w = r.width / SCALE, h = r.height / SCALE;
+    sp.style.setProperty("--ry", ((x / w - .5) * 9).toFixed(2) + "deg"); sp.style.setProperty("--rx", ((.5 - y / h) * 9).toFixed(2) + "deg");
+  }
+});
+document.addEventListener("pointerout", e => {
+  const t = e.target.closest && e.target.closest(".tilt");
+  if (t && !t.contains(e.relatedTarget)){ t.style.removeProperty("--rx"); t.style.removeProperty("--ry"); }
 });
 document.addEventListener("pointerdown", e => {
   const h = e.target.closest("[data-drag]");
@@ -2755,14 +3228,13 @@ document.addEventListener("input", e => {
     f.options[+t.dataset.opt] = t.value; renderPreview(); return;
   }
   if (t.dataset.style){
-    S.form.styles[t.dataset.style] = t.value;
+    const st = S.form.styles, k = t.dataset.style;
+    // a brand value changed by hand gives the form its own styles
+    if (st.brand && ["pageBg", "btnBg", "font"].includes(k)){ adoptBrand(st); st.brand = false; }
+    st[k] = t.value;
     const sw = t.parentElement.querySelector(".sw"); if (sw) sw.style.background = t.value;
-    const pv = $("#b-right"); if (!pv) return;
-    const st = S.form.styles;
-    pv.style.background = st.pageBg;
-    const hdr = $(".pv-hdr", pv); if (hdr) hdr.classList.toggle("center", st.align === "center");
-    const b = $(".pv-submit", pv); if (b){ b.style.background = st.btnBg; b.style.color = st.btnText; }
-    const row = $(".pv-submit-row", pv); if (row){ row.classList.remove("left","center","full"); row.classList.add(st.btnAlign); }
+    renderPreview();
+    refreshStyleUI(true);
   }
 });
 document.addEventListener("change", e => {
@@ -2776,12 +3248,8 @@ document.addEventListener("keydown", e => {
   const t = e.target;
   if (t.id === "prompt" && e.key === "Enter" && !e.shiftKey){ e.preventDefault(); sendUser(t.value); return; }
   if (t.id === "promo-in" && e.key === "Enter"){ e.preventDefault(); applyPromo(); return; }
-  if (e.key === "Escape"){ if ($("#modal")) closeModal(); else if (POP) closePop(); else if (S.ui.cond) closeCond(); return; }
-  if ((e.key === "Enter" || e.key === " ") && t.matches(".tab,[role='button']") && t.dataset.act){ e.preventDefault(); t.click(); return; }
-  const typing = t.closest("input,textarea,select,[contenteditable]");
-  if (typing || !$("#intro").classList.contains("hide")) return;
-  if (e.key === "ArrowRight"){ e.preventDefault(); advance(); }
-  if (e.key === "ArrowLeft"){ e.preventDefault(); prevScene(); }
+  if (e.key === "Escape"){ if ($("#vmodal")) closeVideo(); else if ($("#modal")) closeModal(); else if (POP) closePop(); else if (S.ui.cond) closeCond(); else if (S.ui.bc) closeBrand(); return; }
+  if ((e.key === "Enter" || e.key === " ") && t.matches(".tab,[role='button'],[role='radio'],tr[data-act]") && t.dataset.act){ e.preventDefault(); t.click(); return; }
 });
 function autoGrow(t){ t.style.height = "auto"; t.style.height = Math.min(120, Math.max(48, t.scrollHeight)) + "px"; }
 
@@ -2791,7 +3259,7 @@ function autoGrow(t){ t.style.height = "auto"; t.style.height = Math.min(120, Ma
 const MIN_W = 1180, MIN_H = 640, MAX_W = 1680;
 function fit(){
   const main = $("#sc-main");
-  const W = main.clientWidth - 40, H = main.clientHeight;
+  const W = main.clientWidth - 40, H = main.clientHeight - (parseFloat(getComputedStyle(main).paddingBottom) || 0);
   const s = Math.min(1, W / MIN_W, H / MIN_H);
   const lw = Math.min(W / s, MAX_W);
   // on tall narrow screens keep a laptop-like shape instead of a very tall app
@@ -2816,11 +3284,12 @@ const hash = location.hash.replace("#", "");
 const [hFlow, hScene] = hash.split("/");
 if (SCENES[hFlow]){
   const intro = $("#intro"); intro.style.transition = "none"; hideIntro(); void intro.offsetWidth; intro.style.transition = "";
-  goto(SCENES[hFlow].some(s => s.id === hScene) ? hScene : SCENES[hFlow][0].id, hFlow);
+  goto(SCENES[hFlow].includes(hScene) ? hScene : SCENES[hFlow][0], hFlow);
 } else {
   goto("list", "ai");
   showIntro();
 }
+fetch("video/tour.mp4", {method:"HEAD"}).then(r => { if (r.ok) $("#watch-btn").hidden = false; }).catch(() => {});
 })();
 </script>
 </body>
