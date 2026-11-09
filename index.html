@@ -75,7 +75,7 @@
 html,body{height:100%;margin:0}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 input,select,textarea{font:inherit;color:inherit}
-h1,h2,h3,h4,p,ul,ol{margin:0;padding:0}
+h1,h2,h3,h4,h5,p,ul,ol{margin:0;padding:0}
 ul,ol{list-style:none}
 a{color:inherit;text-decoration:none}
 svg.ic{flex:none;display:block}
@@ -627,6 +627,132 @@ textarea.in{height:76px;padding:8px 9px;resize:vertical;line-height:20px}
 .modal-scroll{flex:1;overflow:auto;display:flex;justify-content:center;padding:40px 24px;transition:background .3s}
 .modal-scroll .pv-card{width:520px;max-width:100%;align-self:flex-start}
 
+/* =================================================================
+   Future concepts: steps, conditional fields, payments, appointments
+   ================================================================= */
+.ftabs{display:flex;align-items:flex-end;gap:4px;border-bottom:1px solid var(--divider);margin:-4px 0 16px}
+.ftab{position:relative;height:40px;padding:0 12px;font-size:14px;font-weight:600;color:var(--ink-900);transition:color .2s}
+.ftab:hover{color:var(--blue)}
+.ftab::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;border-radius:2px 2px 0 0;background:var(--green);transform:scaleX(0);transition:transform .35s var(--ease-out)}
+.ftab.on::after{transform:scaleX(1)}
+.ftabs.anim .ftab.on::after{animation:tabLine .4s var(--ease-out)}
+@keyframes tabLine{from{transform:scaleX(0)}}
+.ftab.add{display:inline-flex;align-items:center;gap:4px;margin-left:auto;color:var(--blue)}
+.ftab-body.fwd{animation:slideR .38s var(--ease-out)}
+.ftab-body.back{animation:slideL .38s var(--ease-out)}
+.fcard .branch{color:var(--ink-900)}
+.fcard.cond-hl{box-shadow:0 0 0 2px var(--blue),var(--z4)}
+.pay-note{font-size:16px;line-height:24px;color:var(--ink-900);margin-bottom:16px}
+.pay-note b{display:block;font-weight:500}
+.pcard .fcard-body .pad{padding:0 24px 22px 44px}
+.pdesc{font-size:14px;line-height:20px;color:var(--ink-900);margin-bottom:14px}
+.pitem{display:flex;align-items:center;gap:12px;padding:6px 6px 6px 14px;border:1px solid var(--gray-200);border-radius:8px;margin-bottom:8px}
+.pitem.new{animation:cardIn .45s var(--ease-out)}
+.pitem .t{flex:1;min-width:0;font-size:14px;line-height:20px;color:var(--ink-900)}
+.pitem .t small{display:block;font-size:12px;line-height:16px;color:var(--ink-800)}
+.pitem .pr{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink-900)}
+.pitem .code{font:600 13px/20px ui-monospace,"SF Mono",Menlo,monospace;letter-spacing:.04em}
+
+.pv-steps{display:flex;align-items:center;gap:6px;margin-bottom:20px}
+.pv-steps span{flex:1;height:4px;border-radius:2px;background:var(--gray-200);transition:background .45s var(--ease-out)}
+.pv-steps span.on{background:var(--blue)}
+.pv-steps em{font-style:normal;font-size:12px;line-height:16px;color:var(--ink-800);margin-left:8px;white-space:nowrap}
+.pv-fields.nohdr{margin-top:0}
+.pv-field.cond{display:grid;grid-template-rows:1fr;transition:grid-template-rows .42s var(--ease-out),opacity .3s,margin .42s var(--ease-out)}
+.pv-field.cond>.cond-in{position:relative;min-height:0;overflow:hidden}
+.pv-field.cond.off{grid-template-rows:0fr;opacity:0;margin-top:-16px}
+
+.cart{max-width:464px;margin-bottom:16px}
+.cart-sum{display:flex;align-items:center;justify-content:center;gap:12px;font-size:20px;line-height:28px;font-weight:600;color:var(--ink-900)}
+.cart-sum .tot{display:inline-block;font-variant-numeric:tabular-nums}
+.cart-sum .tot.bump{animation:bump .45s var(--ease-spring)}
+@keyframes bump{40%{transform:scale(1.1)}}
+.cart-sum .v{margin-left:12px;font-size:14px;font-weight:500;color:var(--ink-800);transition:color .2s}
+.cart-sum .v:hover{color:var(--blue)}
+.cart-lines{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s var(--ease-out)}
+.cart-lines.open{grid-template-rows:1fr}
+.cart-lines>div{overflow:hidden}
+.cl-in{margin:10px 2px 2px;padding:10px 16px;border-radius:8px;background:var(--paper);box-shadow:var(--z-subtle)}
+.cl{display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-size:13px;line-height:18px;color:var(--ink-900)}
+.cl small{display:block;font-size:12px;color:var(--ink-800)}
+.cl .p{font-variant-numeric:tabular-nums}
+.cl.promo{color:var(--green-700)}
+.pay-h{font-size:16px;line-height:24px;font-weight:600;color:var(--ink-900)}
+.pay-methods{display:flex;align-items:center;gap:28px;margin:10px 0 14px}
+.radio{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink-900);cursor:pointer}
+.radio input{width:18px;height:18px;margin:0;accent-color:var(--blue);cursor:pointer}
+.pp{font-weight:800;font-style:italic;font-size:15px;color:#003087;letter-spacing:-.2px}
+.pp span{color:#009CDE}
+.pay-box{display:grid;grid-template-columns:repeat(4,1fr);gap:16px 8px;padding:18px 14px;border-radius:8px;background:var(--gray-100);animation:capIn .35s var(--ease-out)}
+.pay-box .s4{grid-column:span 4}.pay-box .s2{grid-column:span 2}.pay-box .s1{grid-column:span 1}
+.pay-box .pv-field input{padding:0 10px 0 12px}
+.pay-box .pv-field select{padding:0 32px 0 12px}
+.pay-box .pv-field .chev{right:8px}
+.pay-box .pv-field .ph-l{left:12px;max-width:calc(100% - 14px);font-size:13px}
+.pay-box .pv-field.lead input{padding-left:40px}
+.pay-box .pv-field.lead .ph-l{left:40px;max-width:calc(100% - 48px)}
+.pv-field .lead-ic{position:absolute;left:12px;top:9px;color:var(--ink-700);pointer-events:none}
+.pp-box{grid-template-columns:1fr;justify-items:center;gap:10px;text-align:center;font-size:13px;line-height:18px;color:var(--ink-800)}
+.pp-btn{width:100%;height:44px;border-radius:999px;background:#FFC439;display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px;font-weight:600;color:#111;transition:filter .2s,transform .15s}
+.pp-btn:hover{filter:brightness(.96)}
+.pp-btn:active{transform:scale(.98)}
+.also{margin:22px 0 12px;text-align:center;font-size:16px;line-height:24px;font-weight:500;color:var(--ink-900)}
+.upsell{padding:18px 20px 10px;margin-bottom:12px;border-radius:8px;background:var(--paper);box-shadow:var(--z4)}
+.upsell h5{font-size:16px;line-height:24px;font-weight:500;color:var(--ink-900)}
+.upsell p{margin-top:4px;font-size:14px;line-height:20px;color:var(--ink-800)}
+.upsell .row{display:flex;align-items:center;justify-content:space-between;margin-top:6px;font-size:16px;font-variant-numeric:tabular-nums;color:var(--ink-900)}
+.upsell .btn.text.added{color:var(--green-700)}
+.upsell .btn.text.added .ic{animation:popIn .35s var(--ease-spring)}
+.promo-row{display:flex;gap:8px;margin-top:16px}
+.promo-row .pv-field{flex:1}
+.promo-msg{margin-top:6px;font-size:13px;line-height:18px;animation:capIn .3s var(--ease-out)}
+.promo-msg.ok{color:var(--green-700)}
+.promo-msg.err{color:var(--red)}
+
+.appt-h{margin-bottom:12px;font-size:16px;line-height:24px;font-weight:600;color:var(--ink-900)}
+.cal-h{display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;margin-bottom:14px;border-bottom:1px solid var(--divider)}
+.cal-h .m{font-size:16px;line-height:24px;font-weight:500;color:var(--ink-900)}
+.cal-nav{display:flex;align-items:center}
+.cal-nav .btn.text{height:32px;padding:0 8px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);row-gap:6px;text-align:center}
+.cal-grid.swap{animation:capIn .35s var(--ease-out)}
+.cal-grid .dn{padding-bottom:6px;font-size:12px;line-height:16px;color:var(--ink-800)}
+.day{width:36px;height:36px;margin:0 auto;border-radius:50%;display:grid;place-items:center;font-size:15px;color:var(--ink-900);font-variant-numeric:tabular-nums;transition:background .2s,color .2s}
+.day.past{color:var(--ink-700)}
+.day.av{color:var(--blue);font-weight:500;cursor:pointer}
+.day.av:hover{background:var(--blue-050)}
+.day.today:not(.sel){box-shadow:inset 0 0 0 1px var(--gray-400)}
+.day.sel{background:var(--blue);color:#fff;animation:popIn .35s var(--ease-spring)}
+.slots-h{display:flex;align-items:center;justify-content:space-between;margin:16px 0 12px;padding-top:14px;border-top:1px solid var(--divider);font-size:16px;line-height:24px;color:var(--ink-900)}
+.slots-h strong{font-weight:500}
+.slots-h span{display:flex}
+.slot{display:flex;align-items:center;justify-content:space-between;max-width:320px;height:40px;padding:0 14px 0 16px;margin-bottom:8px;border-radius:4px;background:#DDEBFD;color:var(--blue);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;animation:fadeUp .4s var(--ease-out) both;animation-delay:calc(var(--i)*55ms);transition:background .25s,color .25s}
+.slots.still .slot{animation:none}
+.slot button{display:inline-flex;align-items:center;gap:4px;font-weight:700;color:inherit}
+.slot button:hover{text-decoration:underline}
+.slot.booked{background:var(--green-050);color:var(--green-700)}
+.slot.booked .ic{animation:popIn .35s var(--ease-spring)}
+
+.cond-panel{position:absolute;top:0;right:0;bottom:0;width:375px;z-index:30;display:flex;flex-direction:column;background:var(--paper);box-shadow:-10px 0 30px rgba(0,0,0,.14),-1px 0 0 var(--divider);transform:translateX(102%);transition:transform .48s var(--ease-out)}
+.cond-panel.on{transform:none}
+.cond-top{flex:none;height:56px;display:flex;align-items:center;gap:8px;padding:0 8px;border-bottom:1px solid var(--divider)}
+.cond-top h2{flex:1;font-size:20px;line-height:24px;font-weight:400;color:var(--ink-900)}
+.cond-body{flex:1;overflow:auto;padding:12px 16px 24px}
+.cond-body h3{margin:14px 0 8px;font-size:24px;line-height:32px;font-weight:700;color:var(--ink-900)}
+.ccard{position:relative;display:block;padding:10px 40px 10px 16px;border:1px solid var(--gray-300);border-radius:8px;background:var(--paper);cursor:pointer;transition:border-color .2s,box-shadow .2s;animation:fadeUp .35s var(--ease-out) both}
+.ccard:hover{border-color:var(--gray-600)}
+.ccard:focus-within{border-color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue)}
+.ccard .t{display:block;font-size:16px;line-height:24px;color:var(--ink-900)}
+.ccard select{appearance:none;width:100%;padding:0;border:0;outline:0;background:none;font-size:14px;line-height:20px;color:var(--ink-800);cursor:pointer}
+.ccard .go{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--ink-800);pointer-events:none}
+.ccard .cx{position:absolute;right:34px;top:50%;transform:translateY(-50%)}
+.cline{width:1px;height:14px;margin:0 auto;background:var(--gray-400)}
+.cdot{width:5px;height:5px;margin:2px auto;border-radius:50%;background:var(--ink-900)}
+.cond-plus{display:grid;place-items:center;width:24px;height:24px;margin:0 auto;border-radius:50%;background:var(--ink-900);color:#fff;transition:transform .25s var(--ease-spring)}
+.cond-plus:hover{transform:scale(1.12)}
+.cond-remove{display:flex;margin:28px auto 0}
+.cond-foot{flex:none;height:72px;display:flex;align-items:center;padding:0 16px;border-top:1px solid var(--divider)}
+
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
   .intro h1 .w>span{transform:none}
@@ -655,6 +781,7 @@ textarea.in{height:76px;padding:8px 9px;resize:vertical;line-height:20px}
     <div class="sc-flow" role="tablist" aria-label="Choose a flow">
       <button role="tab" data-act="sc-flow" data-flow="ai">AI flow</button>
       <button role="tab" data-act="sc-flow" data-flow="manual">Manual flow</button>
+      <button role="tab" data-act="sc-flow" data-flow="future">Future</button>
     </div>
     <nav class="sc-steps" id="sc-steps" aria-label="Scenes"></nav>
     <div class="sc-spacer"></div>
@@ -700,6 +827,7 @@ textarea.in{height:76px;padding:8px 9px;resize:vertical;line-height:20px}
     <div class="actions rise" style="--i:2">
       <button class="sc-pill primary" data-act="start" data-flow="ai">Start with AI<span data-icon="arrowRight" data-size="16"></span></button>
       <button class="sc-pill ghost" data-act="start" data-flow="manual">Build it by hand</button>
+      <button class="sc-pill ghost" data-act="start" data-flow="future">See future concepts</button>
     </div>
     <p class="meta rise" style="--i:3">Keap, acquired by Thryv · Demo data · Use Back and Next, or the arrow keys<span class="small-note">Best on a laptop or larger screen.</span></p>
   </div>
@@ -781,6 +909,9 @@ const I = {
   edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',
   linkedin:'<path fill="currentColor" stroke="none" d="M4.5 3h15A1.5 1.5 0 0 1 21 4.5v15a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5v-15A1.5 1.5 0 0 1 4.5 3zm2 7v7.5H9V10zm1.25-4.1a1.45 1.45 0 1 0 0 2.9 1.45 1.45 0 0 0 0-2.9zM11 10v7.5h2.5v-4c0-1.1.5-1.8 1.5-1.8s1.3.8 1.3 1.8v4H19v-4.6c0-2.3-1.2-3.2-2.8-3.2-1.2 0-2 .6-2.4 1.2V10z"/>',
   facebook:'<path fill="currentColor" stroke="none" d="M12 2.5a9.5 9.5 0 0 0-1.5 18.9v-6.7H8.1V12h2.4V9.9c0-2.4 1.4-3.7 3.6-3.7 1 0 2.1.2 2.1.2v2.3H15c-1.2 0-1.5.7-1.5 1.5V12h2.6l-.4 2.7h-2.2v6.7A9.5 9.5 0 0 0 12 2.5z"/>',
+  branch:'<circle cx="6.5" cy="5.5" r="2"/><circle cx="6.5" cy="18.5" r="2"/><circle cx="17.5" cy="7.5" r="2"/><path d="M6.5 7.5v9"/><path d="M17.5 9.5c0 4.5-6 4-10 7.2"/>',
+  cart:'<circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17.5" cy="19.5" r="1.4"/><path d="M3 4h2.5l2.3 11h10.4l2-7.5H6.6"/>',
+  creditCard:'<rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h3"/>',
   xlogo:'<path fill="currentColor" stroke="none" d="M17.6 3.5h3l-6.6 7.5 7.8 9.5h-6.1l-4.8-6-5.4 6h-3l7-8-7.4-9h6.2l4.3 5.5zm-1 15.2h1.7L7.5 5.2H5.7z"/>'
 };
 const ic = (n, s = 24, cls = "", sw = 1.7) => `<svg class="ic ${cls}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n] || ""}</svg>`;
@@ -818,9 +949,12 @@ const LIB = {
   contactType:{label:"Contact type", type:"hidden", value:"Lead", values:["Lead","Customer","Partner","Other"], alias:["contact type"]},
   applyTags:{label:"Apply tags", type:"hidden", value:"New client", values:["New client","Book club","Workshop 2026","Website lead"], alias:["tag","tags"]},
   contactOwner:{label:"Contact owner", type:"hidden", value:"Kelly (you)", values:["Kelly (you)","Sam","Jordan"], alias:["contact owner","owner"]},
+  webBudget:{label:"Website budget", type:"select", options:["Under $5,000","$5,000 to $15,000","$15,000 or more"], alias:["website budget"]},
+  mktBudget:{label:"Monthly marketing budget", type:"select", options:["Under $1,000","$1,000 to $3,000","$3,000 or more"], alias:["marketing budget"]},
+  appointment:{label:"Appointment", type:"appointment", alias:["appointment","booking"]},
   custom:{label:"New custom field", type:"text", alias:[]}
 };
-const TYPE_NAMES = {text:"Short text", email:"Email", tel:"Phone", date:"Date", select:"Dropdown", textarea:"Paragraph", checkbox:"Checkbox", hidden:"Hidden"};
+const TYPE_NAMES = {text:"Short text", email:"Email", tel:"Phone", date:"Date", select:"Dropdown", textarea:"Paragraph", checkbox:"Checkbox", hidden:"Hidden", appointment:"Booking"};
 
 const TPL = {
   intake:{key:"intake", title:"Client intake form", name:"New Client Intake Form",
@@ -879,6 +1013,29 @@ const ROWS0 = [
 ];
 const STATUS = {draft:["draft","Draft"], published:["published","Published"], unpub:["unpub","Unpublished changes"], archived:["archived","Archived"]};
 
+/* Future concepts: catalog, appointment types, calendar names */
+const CATALOG = {
+  products:[
+    {id:"p1", name:"Web design retainer", price:159.99, note:"Starting today for 4 months"},
+    {id:"p2", name:"Brand strategy session", price:250, note:"One time payment"},
+    {id:"p3", name:"Monthly SEO plan", price:99, note:"Billed every month"}
+  ],
+  upsells:[
+    {id:"u1", name:"Event recording", price:30, desc:"Recordings of the full 60 minute presentation, delivered to you within 24 hours after the event so you don't miss any key insights."},
+    {id:"u2", name:"Brand guidelines PDF", price:45, desc:"A ready to share guide to your logo, colors and type."},
+    {id:"u3", name:"Rush delivery", price:75, desc:"Moves your project to the front of the queue."}
+  ],
+  promos:[
+    {id:"c1", code:"WELCOME10", off:.10, note:"10% off for new clients"},
+    {id:"c2", code:"SPRING15", off:.15, note:"15% off spring projects"}
+  ]
+};
+const APPT_TYPES = ["Discovery call · 30 min", "Project kickoff · 60 min", "Site walkthrough · 30 min"];
+const DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const DOW_L = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const FUTURE_IDS = ["cond", "pay", "appt"];
+
 /* -----------------------------------------------------------------
    Scenes (showcase narration)
    ----------------------------------------------------------------- */
@@ -901,8 +1058,15 @@ const SCENES = {
     {id:"settings", label:"Settings", text:"The logo and colors come from the Branding Center. Pick a thank you page, check the automation, then publish."},
     {id:"share", label:"Share", text:"Published. Copy the link, post it on social, or embed it on a website."},
     {id:"done", label:"Done", text:"The new form joins the list as Published, ready to use in automations and contact records."}
+  ],
+  future:[
+    {id:"cond", label:"Conditional fields", text:"Conditional logic was the top complaint in the survey and the top ranked feature in the Kano study, so it moved up the roadmap.", tip:"Pick Web design or Marketing in the preview."},
+    {id:"pay", label:"Payments", text:"Checkout carried payment logic the other forms did not, so payments were designed in as a future state: one more step in the same builder.", tip:"Add the upsell, or try code WELCOME10."},
+    {id:"appt", label:"Appointments", text:"The phasing put appointments and payments after parity and consolidation. Booking becomes a step too.", tip:"Pick a day, then book a time."}
   ]
 };
+const NEXT_FLOW = {ai:"manual", manual:"future", future:"ai"};
+const NEXT_LABEL = {ai:"Try the manual flow", manual:"See future concepts", future:"Try the AI flow"};
 const STEP_SCENE = {1:"details", 2:"fields", 3:"settings", 4:"share"};
 
 /* -----------------------------------------------------------------
@@ -916,7 +1080,10 @@ function freshState(flow){
     formsView:"list", step:1, maxStep:1, published:false, dir:"fade",
     form:null, rows:ROWS0.map((r, i) => ({...r, id:"r"+i})), newRow:null, query:"", sortAsc:false,
     chat:{mode:"welcome", stage:"start", msgs:[], replies:[], busy:false, tpl:null, draft:null, opened:false, lastChange:null},
-    ui:{open:new Set(), acc:new Set(["styles"]), shareAcc:new Set(), errors:{}, aiBanner:false, materialize:false, flash:null, thank:false, added:null}
+    ui:{open:new Set(), acc:new Set(["styles"]), shareAcc:new Set(), errors:{}, aiBanner:false, materialize:false, flash:null, thank:false, added:null,
+      fstep:0, fdir:"", cond:null, condAnim:null, pv:{}, payAdded:null,
+      cart:{method:"card", added:new Set(), promo:null, promoErr:"", open:false},
+      appt:{view:null, sel:null, booked:null, swap:false, still:false}}
   };
 }
 
@@ -935,6 +1102,18 @@ function baseForm(over){
 }
 function manualForm(){
   return baseForm({fields:["firstName","lastName","email","company"].map(k => mkField(k))});
+}
+/* Future concepts: a three step intake form with a condition, a checkout and a booking */
+function futureForm(){
+  const f = makeForm(TPL.intake, "");
+  const st = mkField("serviceType"), web = mkField("webBudget"), mkt = mkField("mktBudget");
+  const s1 = [mkField("firstName"), mkField("lastName"), mkField("email"), mkField("phone"), mkField("company"), st, web, mkt, mkField("projectDetails"), mkField("contactType")];
+  const appt = mkField("appointment", {apptType:APPT_TYPES[0]});
+  f.steps = [{name:"Step 1", kind:"fields", fields:s1}, {name:"Step 2", kind:"payment", fields:[]}, {name:"Step 3", kind:"fields", fields:[appt]}];
+  f.fields = s1;
+  f.rules = [{id:"rule-mkt", src:st.id, val:"Marketing", show:[mkt.id]}];
+  f.pay = {products:[CATALOG.products[0]], upsells:[CATALOG.upsells[0]], promos:[CATALOG.promos[0]]};
+  return f;
 }
 
 /* Pick a template from the first prompt */
@@ -1137,7 +1316,7 @@ function renderForms(){
     p.innerHTML = primaryNav("marketing") + `<div class="content"><section class="builder">${builderTop()}<div class="b-loading"><div class="loader" role="status" aria-label="Loading"></div></div></section></div>`;
   } else {
     p.innerHTML = primaryNav("marketing") + `<div class="content"><section class="builder">${builderTop()}
-      <div class="b-body"><div class="b-left" id="b-left"></div><aside class="b-right" id="b-right" aria-label="Form preview"></aside></div></section></div>`;
+      <div class="b-body"><div class="b-left" id="b-left"></div><aside class="b-right" id="b-right" aria-label="Form preview"></aside></div></section><div id="cond-host"></div></div>`;
     renderLeft(); renderPreview();
   }
 }
@@ -1225,7 +1404,7 @@ function stepDetails(){
 
 function fieldCard(f, opts = {}){
   const open = S.ui.open.has(f.id);
-  const body = f.type === "hidden" ? `
+  const body = f.type === "appointment" ? apptEditor(f) : f.type === "hidden" ? `
       <p class="hidden-note">This field is hidden on the form and your selection applies automatically on submission. When using this form from a contact record, you can change it.</p>
       <div class="group"><label class="fl">${esc(f.label)}</label>
         <div class="ofield">${`<select data-fbind="value">${(f.values || [f.value]).map(v => `<option ${v === f.value ? "selected" : ""}>${esc(v)}</option>`).join("")}</select>`}<span class="chev">${ic("chevDown", 18)}</span></div></div>`
@@ -1247,6 +1426,7 @@ function fieldCard(f, opts = {}){
       <span class="grip" data-drag aria-label="Drag to reorder ${esc(f.label)}" role="button" tabindex="0">${ic("grip", 18)}</span>
       <span class="fcard-title"><span class="ft">${esc(f.label)}</span>${f.required && f.type !== "hidden" ? `<span class="req">*</span>` : ""}</span>
       ${f.type === "hidden" ? `<span class="badge-hidden">${ic("eyeOff", 14)} Hidden</span>` : `<span class="fcard-type">${TYPE_NAMES[f.type]}</span>`}
+      ${inRule(f.id) ? `<button class="icon-btn branch" data-act="cond-open" data-id="${f.id}" aria-label="Edit condition for ${esc(f.label)}" title="Conditional field">${ic("branch", 22)}</button>` : ""}
       <button class="icon-btn" data-act="field-menu" aria-label="More options for ${esc(f.label)}">${ic("moreH", 22)}</button>
       <button class="icon-btn chev" data-act="toggle-field" aria-label="${open ? "Collapse" : "Expand"} ${esc(f.label)}" aria-expanded="${open}">${ic("chevDown", 22)}</button>
     </div>
@@ -1254,15 +1434,19 @@ function fieldCard(f, opts = {}){
   </div>`;
 }
 function stepFields(){
-  return `<h2 class="sec-h">Form fields</h2>
-    <div class="field-list" id="field-list">${S.form.fields.map(f => fieldCard(f, {added:S.ui.added === f.id})).join("")}</div>
-    <div class="under-list"><button class="btn outline" data-act="add-field">Add a field</button><button class="btn text" data-act="custom-field">Create a custom field</button></div>
+  const f = S.form, dir = S.ui.fdir; S.ui.fdir = "";
+  const tabs = f.steps ? `<div class="ftabs ${dir ? "anim" : ""}" role="tablist" aria-label="Form steps">${f.steps.map((s, i) => `<button class="ftab ${i === S.ui.fstep ? "on" : ""}" role="tab" aria-selected="${i === S.ui.fstep}" data-act="fstep" data-i="${i}">${esc(s.name)}</button>`).join("")}<button class="ftab add" data-act="soon" data-msg="Adds another step to the form">${ic("plus", 16, "", 2)} Add step</button></div>` : "";
+  const kind = f.steps ? f.steps[S.ui.fstep].kind : "fields";
+  const body = kind === "payment" ? paymentEditor() : `<div class="field-list" id="field-list">${f.fields.map(x => fieldCard(x, {added:S.ui.added === x.id})).join("")}</div>
+    <div class="under-list"><button class="btn outline" data-act="add-field">Add a field</button><button class="btn text" data-act="custom-field">Create a custom field</button></div>`;
+  return `<h2 class="sec-h">Form fields</h2>${tabs}<div class="ftab-body ${dir}">${body}</div>
     <div class="b-foot"><button class="btn text" data-act="prev">Back</button><button class="btn filled" data-act="next" style="min-width:64px">Next</button></div>`;
 }
 function renderFieldList(){
   const list = $("#field-list"); if (!list) return;
   list.innerHTML = S.form.fields.map(f => fieldCard(f, {added:S.ui.added === f.id})).join("");
   S.ui.added = null;
+  hlCond();
 }
 
 const SWATCH = {
@@ -1325,6 +1509,7 @@ function htmlCode(raw){
   const tag = s => t(s, "tg"), at = s => t(s, "at"), st = s => t(s, "st");
   L.push(`${tag("<form")} ${at("action")}=${st(`"https://forms.example.com/f/${slug(f.name)}"`)} ${at("method")}=${st('"post"')}${tag(">")}`);
   f.fields.forEach(x => {
+    if (x.type === "appointment") return;
     const nm = slug(x.label);
     if (x.type === "hidden"){ L.push(`  ${tag("<input")} ${at("type")}=${st('"hidden"')} ${at("name")}=${st(`"${nm}"`)} ${at("value")}=${st(`"${x.value}"`)}${tag(">")}`); return; }
     const req = x.required ? ` ${at("required")}` : "";
@@ -1369,16 +1554,36 @@ function stepShare(){
 }
 
 /* ---------------- Preview ---------------- */
+function inRule(id){ return (S.form && S.form.rules || []).some(r => r.src === id || r.show.includes(id)); }
+function condTargets(){ const s = new Set(); (S.form.rules || []).forEach(r => r.show.forEach(id => s.add(id))); return s; }
+function condVisible(id){
+  const rules = (S.form.rules || []).filter(r => r.show.includes(id));
+  return !rules.length || rules.some(r => S.ui.pv[r.src] === r.val);
+}
 function pvField(f, i, cls){
   const req = f.required ? `<span class="req">*</span>` : "";
   const help = f.helper && !f.helperInInfo ? `<div class="help">${esc(f.helper)}</div>` : "";
   const ph = `<span class="ph-l">${esc(f.label)}${req}</span>`;
   const st = `style="--i:${i}"`;
-  if (f.type === "select") return `<div class="pv-field ${cls}" data-id="${f.id}" ${st}><select class="ph" aria-label="${esc(f.label)}" onchange="this.classList.toggle('ph', !this.value)"><option value=""></option>${f.options.map(o => `<option>${esc(o)}</option>`).join("")}</select>${ph}<span class="chev">${ic("chevDown", 22)}</span>${help}</div>`;
-  if (f.type === "textarea") return `<div class="pv-field ${cls}" data-id="${f.id}" ${st}><textarea placeholder=" " aria-label="${esc(f.label)}"></textarea>${ph}${help}</div>`;
-  if (f.type === "checkbox") return `<div class="pv-field ${cls}" data-id="${f.id}" ${st}><label class="pv-check"><input type="checkbox"> ${esc(f.label)}${req}</label>${help}</div>`;
-  const type = f.type === "date" ? "text" : f.type;
-  return `<div class="pv-field ${cls}" data-id="${f.id}" ${st}><input type="${type}" placeholder=" " aria-label="${esc(f.label)}" ${f.type === "date" ? `onfocus="this.type='date'"` : ""}>${ph}${help}</div>`;
+  if (f.type === "appointment") return `<div class="pv-field pv-appt ${cls}" data-id="${f.id}" ${st}>${apptPreview(f)}</div>`;
+  let inner;
+  if (f.type === "select"){
+    const v = S.ui.pv[f.id] || "";
+    inner = `<select class="${v ? "" : "ph"}" data-pv="${f.id}" aria-label="${esc(f.label)}"><option value=""></option>${f.options.map(o => `<option ${o === v ? "selected" : ""}>${esc(o)}</option>`).join("")}</select>${ph}<span class="chev">${ic("chevDown", 22)}</span>${help}`;
+  } else if (f.type === "textarea"){
+    inner = `<textarea placeholder=" " aria-label="${esc(f.label)}"></textarea>${ph}${help}`;
+  } else if (f.type === "checkbox"){
+    inner = `<label class="pv-check"><input type="checkbox"> ${esc(f.label)}${req}</label>${help}`;
+  } else {
+    const type = f.type === "date" ? "text" : f.type;
+    inner = `<input type="${type}" placeholder=" " aria-label="${esc(f.label)}" ${f.type === "date" ? `onfocus="this.type='date'"` : ""}>${ph}${help}`;
+  }
+  if (condTargets().has(f.id)){
+    // a field that just became conditional renders visible first, then animates closed
+    const off = !condVisible(f.id) && !(S.ui.condAnim || []).includes(f.id);
+    return `<div class="pv-field cond ${off ? "off" : ""} ${cls}" data-id="${f.id}" ${st}><div class="cond-in">${inner}</div></div>`;
+  }
+  return `<div class="pv-field ${cls}" data-id="${f.id}" ${st}>${inner}</div>`;
 }
 function pvCard(f, opts = {}){
   const mat = opts.materialize;
@@ -1389,16 +1594,21 @@ function pvCard(f, opts = {}){
       <h4>${f.thankYou === "custom" ? "Thank you!" : "Thanks for reaching out"}</h4><p>${esc(f.thankYou === "custom" ? f.thankMsg : "We got your info and will be in touch soon.")}</p>
       <a class="link" data-act="thank-back">Back to form</a></div></div>`;
   }
+  const kind = f.steps ? f.steps[S.ui.fstep].kind : "fields";
+  if (kind === "payment") return checkoutCard();
+  const first = !f.steps || S.ui.fstep === 0;
+  const last = !f.steps || S.ui.fstep === f.steps.length - 1;
   const visible = f.fields.filter(x => x.type !== "hidden");
-  return `<div class="pv-card ${mat ? "sheen" : ""}">
-    <div class="pv-hdr ${sty.align === "center" ? "center" : ""} ${mat ? "mat" : ""} ${flash.region === "header" ? "flash-el" : ""}" style="--i:0">
+  const hasAppt = visible.some(x => x.type === "appointment");
+  return `<div class="pv-card ${mat ? "sheen" : ""}">${pvStepsBar()}
+    ${first ? `<div class="pv-hdr ${sty.align === "center" ? "center" : ""} ${mat ? "mat" : ""} ${flash.region === "header" ? "flash-el" : ""}" style="--i:0">
       ${f.showLogo ? `<img class="pv-logo" src="${OTTER}" alt="Otter and Rocket logo">` : ""}
       <h4 class="pv-h">${esc(f.headline || f.name || "Untitled form")}</h4>
       ${f.description ? `<p class="pv-d">${esc(f.description)}</p>` : ""}
-    </div>
-    <div class="pv-fields">${visible.map((x, i) => pvField(x, i + 1, [mat ? "mat" : "", (flash.ids || []).includes(x.id) ? "flash-el" : "", opts.added === x.id ? "added" : ""].join(" "))).join("")}</div>
-    <div class="pv-submit-row ${sty.btnAlign} ${mat ? "mat" : ""}" style="--i:${visible.length + 1}">
-      <button class="pv-submit ${flash.region === "button" ? "flash-el" : ""}" style="background:${sty.btnBg};color:${sty.btnText}" data-act="pv-submit">${esc(f.button || "Submit")}</button></div>
+    </div>` : ""}
+    <div class="pv-fields ${first ? "" : "nohdr"}">${visible.map((x, i) => pvField(x, i + 1, [mat ? "mat" : "", (flash.ids || []).includes(x.id) ? "flash-el" : "", opts.added === x.id ? "added" : ""].join(" "))).join("")}</div>
+    ${hasAppt ? "" : `<div class="pv-submit-row ${sty.btnAlign} ${mat ? "mat" : ""}" style="--i:${visible.length + 1}">
+      <button class="pv-submit ${flash.region === "button" ? "flash-el" : ""}" style="background:${sty.btnBg};color:${sty.btnText}" data-act="${last ? "pv-submit" : "pv-next"}">${last ? esc(f.button || "Submit") : "Next"}</button></div>`}
   </div>`;
 }
 function renderPreview(opts = {}){
@@ -1406,8 +1616,13 @@ function renderPreview(opts = {}){
   const mat = S.ui.materialize;
   const flash = S.active === "forms" ? S.ui.flash : null;
   el.style.background = S.form.styles.pageBg;
+  const prevScroll = opts.resetScroll ? 0 : (($(".pv-scroll", el) || {}).scrollTop || 0);
+  const kind = S.form.steps ? S.form.steps[S.ui.fstep].kind : "fields";
+  const body = kind === "payment" && !S.ui.thank ? cartSum() + checkoutCard() : pvCard(S.form, {materialize:mat, flash, thank:S.ui.thank, added:opts.added});
   el.innerHTML = `<div class="pv-head"><h3>Preview</h3><button class="icon-btn" data-act="expand" aria-label="Open full preview">${ic("expand", 22)}</button></div>
-    <div class="pv-scroll">${pvCard(S.form, {materialize:mat, flash, thank:S.ui.thank, added:opts.added})}</div>`;
+    <div class="pv-scroll">${body}</div>`;
+  if (prevScroll && !mat) $(".pv-scroll", el).scrollTop = prevScroll;
+  if (S.ui.condAnim){ S.ui.condAnim = null; requestAnimationFrame(() => requestAnimationFrame(applyConds)); }
   if (flash){
     S.ui.flash = null;
     const target = $(".flash-el", el);
@@ -1421,8 +1636,312 @@ function updatePreviewText(){
   const h = $(".pv-h", el), d = $(".pv-d", el), b = $(".pv-submit", el);
   if (h) h.textContent = f.headline || f.name || "Untitled form";
   if (d) d.textContent = f.description; else if (f.description) renderPreview();
-  if (b) b.textContent = f.button || "Submit";
+  if (b && b.dataset.act === "pv-submit") b.textContent = f.button || "Submit";
   const sub = $("#b-sub"); if (sub) sub.textContent = f.name || "Untitled form";
+}
+
+/* ---------------- Future concepts ---------------- */
+function pvStepsBar(){
+  const f = S.form; if (!f.steps) return "";
+  const n = f.steps.length, i = S.ui.fstep;
+  return `<div class="pv-steps" aria-label="Step ${i + 1} of ${n}">${f.steps.map((s, j) => `<span class="${j <= i ? "on" : ""}"></span>`).join("")}<em>Step ${i + 1} of ${n}</em></div>`;
+}
+function inFutureBuilder(){ return S.flow === "future" && S.form && S.form.steps && S.formsView === "builder" && S.active === "forms"; }
+function setFStep(i, force){
+  const f = S.form; if (!f || !f.steps || i < 0 || i >= f.steps.length) return;
+  if (i === S.ui.fstep && !force) return;
+  closePop(); if (S.ui.cond) closeCond();
+  f.steps[S.ui.fstep].fields = f.fields;
+  S.ui.fdir = i > S.ui.fstep ? "fwd" : i < S.ui.fstep ? "back" : "fade";
+  S.ui.fstep = i; f.fields = f.steps[i].fields;
+  S.ui.thank = false;
+  renderLeft(); renderPreview({resetScroll:true});
+  if (S.flow === "future") setScene(FUTURE_IDS[i]);
+}
+function futureTab(i){
+  if (!inFutureBuilder()) return goto(FUTURE_IDS[i], "future");
+  if (S.step !== 2){ S.dir = "back"; S.step = 2; }
+  setFStep(i, true);
+}
+function futureCond(){
+  if (!inFutureBuilder()) return goto("pay", "future");
+  if (!S.ui.cond) return futureTab(1);
+  // first Next: save the rule, then show it working in the preview
+  saveCond();
+  const st = S.form.fields.find(x => x.key === "serviceType"), ep = EPOCH;
+  setTimeout(() => {
+    if (ep !== EPOCH || !st) return;
+    S.ui.pv[st.id] = "Web design";
+    const sel = $(`#b-right [data-pv="${st.id}"]`);
+    if (sel){ sel.value = "Web design"; sel.classList.remove("ph"); sel.closest(".pv-field").scrollIntoView({block:"center", behavior:REDUCED ? "auto" : "smooth"}); }
+    applyConds();
+  }, 750);
+}
+
+/* conditional fields */
+function applyConds(){
+  $$("#b-right .pv-field.cond").forEach(el => {
+    const vis = condVisible(el.dataset.id), was = !el.classList.contains("off");
+    el.classList.toggle("off", !vis);
+    if (vis && !was){
+      const c = $("select,input,textarea", el);
+      if (c){ c.classList.remove("ai-fill"); void c.offsetWidth; c.style.setProperty("--i", 0); c.classList.add("ai-fill"); }
+    }
+  });
+}
+function hlCond(){
+  const d = S.ui.cond;
+  $$("#field-list .fcard").forEach(c => c.classList.toggle("cond-hl", !!d && (c.dataset.id === d.src || d.show.includes(c.dataset.id))));
+}
+function otherField(src, taken){
+  const f = S.form, i = f.fields.findIndex(x => x.id === src);
+  const pool = f.fields.filter(x => x.id !== src && x.type !== "hidden" && x.type !== "appointment" && !taken.includes(x.id));
+  return (pool.find(x => f.fields.indexOf(x) > i) || pool[0] || {}).id;
+}
+function condDraftDefault(){
+  const f = S.form, st = f.fields.find(x => x.key === "serviceType"), web = f.fields.find(x => x.key === "webBudget");
+  return {ruleId:null, src:st.id, val:"Web design", show:[web.id]};
+}
+function openCondFor(id){
+  closePop();
+  const f = S.form, fld = f.fields.find(x => x.id === id); if (!fld) return;
+  const rule = (f.rules || []).find(r => r.src === id || r.show.includes(id));
+  if (rule) return openCond({ruleId:rule.id, src:rule.src, val:rule.val, show:[...rule.show]});
+  if (fld.type === "select") return openCond({ruleId:null, src:id, val:fld.options[0], show:[otherField(id, [])].filter(Boolean)});
+  const src = f.fields.find(x => x.type === "select");
+  if (!src) return toast("Add a dropdown first. Conditions start from a dropdown answer.");
+  openCond({ruleId:null, src:src.id, val:src.options[0], show:[id]});
+}
+function condPanel(d, on){
+  const f = S.form;
+  const srcF = f.fields.find(x => x.id === d.src) || {options:[]};
+  const selects = f.fields.filter(x => x.type === "select");
+  const others = f.fields.filter(x => x.id !== d.src && x.type !== "hidden" && x.type !== "appointment");
+  const opts = (list, v) => list.map(x => `<option value="${x.id}" ${x.id === v ? "selected" : ""}>${esc(x.label)}</option>`).join("");
+  const go = `<span class="go">${ic("chevRight", 20)}</span>`;
+  return `<aside class="cond-panel ${on ? "on" : ""}" role="dialog" aria-label="Conditional fields">
+    <header class="cond-top"><button class="icon-btn" data-act="cond-close" aria-label="Close conditional fields">${ic("x", 22)}</button><h2>Conditional fields</h2><button class="btn filled" data-act="cond-save">${d.ruleId ? "Save" : "Add"}</button></header>
+    <div class="cond-body">
+      <h3>If</h3>
+      <label class="ccard" style="animation-delay:60ms"><span class="t">Field selected</span><select data-cond="src" aria-label="Field selected">${opts(selects, d.src)}</select>${go}</label>
+      <div class="cline"></div>
+      <label class="ccard" style="animation-delay:120ms"><span class="t">Answer is</span><select data-cond="val" aria-label="Answer is">${srcF.options.map(o => `<option ${o === d.val ? "selected" : ""}>${esc(o)}</option>`).join("")}</select>${go}</label>
+      <h3>Then</h3>
+      ${d.show.map((id, i) => `<div class="cdot"></div><div class="cline"></div><label class="ccard" style="animation-delay:${180 + i * 60}ms"><span class="t">Show</span><select data-cond="show" data-i="${i}" aria-label="Show field">${opts(others, id)}</select>${d.show.length > 1 ? `<button class="icon-btn sm cx" data-act="cond-unshow" data-i="${i}" aria-label="Remove this field">${ic("x", 16)}</button>` : ""}${go}</label>`).join("")}
+      <div class="cline"></div><button class="cond-plus" data-act="cond-plus" aria-label="Show another field">${ic("plus", 16, "", 2.4)}</button>
+      ${d.ruleId ? `<button class="btn text danger cond-remove" data-act="cond-remove">Remove condition</button>` : ""}
+    </div>
+    <footer class="cond-foot"><button class="btn outline" data-act="cond-close">Close</button></footer>
+  </aside>`;
+}
+function openCond(d){
+  S.ui.cond = d;
+  const host = $("#cond-host"); if (!host) return;
+  const was = !!$(".cond-panel.on", host);
+  host.innerHTML = condPanel(d, was);
+  if (!was){ const p = $(".cond-panel", host); void p.offsetWidth; requestAnimationFrame(() => p.classList.add("on")); }
+  hlCond();
+}
+function closeCond(){
+  S.ui.cond = null; hlCond();
+  const p = $("#cond-host .cond-panel"); if (!p) return;
+  p.classList.remove("on");
+  setTimeout(() => { if (!S.ui.cond && p.isConnected) p.remove(); }, 480);
+}
+function condChange(t){
+  const d = S.ui.cond; if (!d) return;
+  const k = t.dataset.cond;
+  if (k === "src"){
+    d.src = t.value;
+    const f = S.form.fields.find(x => x.id === d.src); d.val = f.options[0];
+    d.show = d.show.filter(id => id !== d.src);
+    if (!d.show.length) d.show = [otherField(d.src, [])].filter(Boolean);
+  } else if (k === "val") d.val = t.value;
+  else if (k === "show") d.show[+t.dataset.i] = t.value;
+  openCond(d);
+}
+function saveCond(){
+  const d = S.ui.cond; if (!d) return;
+  const f = S.form; f.rules = f.rules || [];
+  const show = [...new Set(d.show.filter(Boolean))];
+  if (!show.length) return toast("Pick a field to show");
+  const before = condTargets();
+  const rule = d.ruleId && f.rules.find(r => r.id === d.ruleId);
+  if (rule) Object.assign(rule, {src:d.src, val:d.val, show});
+  else f.rules.push({id:"rule" + Date.now(), src:d.src, val:d.val, show});
+  closeCond();
+  renderFieldList();
+  [d.src, ...show].forEach(id => { const c = $(`.fcard[data-id="${id}"]`); if (c){ c.classList.remove("flash"); void c.offsetWidth; c.classList.add("flash"); } });
+  S.ui.condAnim = show.filter(id => !before.has(id));
+  renderPreview();
+  toast(rule ? "Condition saved" : "Condition added");
+}
+function removeCond(){
+  const d = S.ui.cond; if (!d || !d.ruleId) return;
+  S.form.rules = S.form.rules.filter(r => r.id !== d.ruleId);
+  closeCond(); renderFieldList(); renderPreview();
+  toast("Condition removed");
+}
+
+/* payments */
+const money = n => "$" + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+function cartTotal(){
+  const p = S.form.pay, c = S.ui.cart;
+  let t = p.products.reduce((a, x) => a + x.price, 0) + p.upsells.filter(u => c.added.has(u.id)).reduce((a, x) => a + x.price, 0);
+  const promo = c.promo && p.promos.find(x => x.code === c.promo);
+  if (promo) t *= (1 - promo.off);
+  return Math.round(t * 100) / 100;
+}
+function tweenMoney(el, from, to){
+  if (REDUCED || from === to){ el.textContent = money(to); return; }
+  el.textContent = money(from);
+  el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump");
+  const t0 = performance.now(), dur = 520;
+  const step = ts => { const k = Math.min(1, (ts - t0) / dur), e = 1 - Math.pow(1 - k, 3); el.textContent = money(from + (to - from) * e); if (k < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+function refreshCart(before){
+  renderPreview();
+  const el = $("#cart-tot"); if (el) tweenMoney(el, before, cartTotal());
+}
+function cartSum(){
+  const p = S.form.pay, c = S.ui.cart;
+  const lines = [...p.products.map(x => [x.name, x.note, x.price]), ...p.upsells.filter(u => c.added.has(u.id)).map(x => [x.name, "Added at checkout", x.price])];
+  const promo = c.promo && p.promos.find(x => x.code === c.promo);
+  return `<div class="cart"><div class="cart-sum">${ic("cart", 24)}<span class="tot" id="cart-tot">${money(cartTotal())}</span><button class="v" data-act="cart-details" aria-expanded="${c.open}">${c.open ? "Hide details" : "View details"}</button></div>
+    <div class="cart-lines ${c.open ? "open" : ""}"><div><div class="cl-in">${lines.length ? lines.map(([n, s, pr]) => `<div class="cl"><span>${esc(n)}<small>${esc(s)}</small></span><span class="p">${money(pr)}</span></div>`).join("") : `<div class="cl"><span>No products yet</span></div>`}
+      ${promo ? `<div class="cl promo"><span>${promo.code}</span><span class="p">${Math.round(promo.off * 100)}% off</span></div>` : ""}</div></div></div></div>`;
+}
+function checkoutCard(){
+  const f = S.form, p = f.pay, c = S.ui.cart;
+  const last = S.ui.fstep === f.steps.length - 1;
+  const box = c.method === "card" ? `<div class="pay-box">
+      <div class="pv-field s4"><input placeholder=" " autocomplete="off" aria-label="Name on card"><span class="ph-l">Name on card</span></div>
+      <div class="pv-field s2 lead"><span class="lead-ic">${ic("creditCard", 22)}</span><input placeholder=" " inputmode="numeric" autocomplete="off" aria-label="Card number" data-cardnum><span class="ph-l">Card number</span></div>
+      <div class="pv-field s1"><input placeholder=" " autocomplete="off" maxlength="5" aria-label="Expiry"><span class="ph-l">MM/YY</span></div>
+      <div class="pv-field s1"><input placeholder=" " autocomplete="off" maxlength="4" aria-label="CVV"><span class="ph-l">CVV</span></div>
+      <div class="pv-field s2"><select aria-label="Country"><option>United States</option><option>Canada</option><option>United Kingdom</option><option>Australia</option></select><span class="chev">${ic("chevDown", 22)}</span></div>
+      <div class="pv-field s2"><input placeholder=" " autocomplete="off" aria-label="Postal code"><span class="ph-l">Postal code</span></div>
+    </div>` : `<div class="pay-box pp-box"><button class="pp-btn" data-act="soon" data-msg="Opens the PayPal window">Continue with <span class="pp">Pay<span>Pal</span></span></button><p>You will finish paying on PayPal, then come back here.</p></div>`;
+  const ups = p.upsells.length ? `<p class="also">You may also like</p>${p.upsells.map(u => { const on = c.added.has(u.id); return `<div class="upsell"><h5>${esc(u.name)}</h5><p>${esc(u.desc)}</p><div class="row"><span>${money(u.price)}</span><button class="btn text ${on ? "added" : ""}" data-act="upsell-toggle" data-id="${u.id}">${on ? ic("check", 16, "", 2.6) + " Added" : "Add to cart"}</button></div></div>`; }).join("")}` : "";
+  const applied = c.promo && p.promos.find(x => x.code === c.promo);
+  const promo = p.promos.length ? `<div class="promo-row"><div class="pv-field"><input id="promo-in" placeholder=" " autocomplete="off" aria-label="Promo code" value="${esc(c.promo || "")}"><span class="ph-l">Promo code</span></div><button class="btn outline" data-act="promo-apply">Apply</button></div>
+    ${applied ? `<p class="promo-msg ok">${applied.code} applied. You save ${Math.round(applied.off * 100)}%.</p>` : c.promoErr ? `<p class="promo-msg err">${esc(c.promoErr)}</p>` : ""}` : "";
+  return `<div class="pv-card">${pvStepsBar()}
+    <h4 class="pay-h">Choose payment method</h4>
+    <div class="pay-methods" role="radiogroup" aria-label="Payment method">
+      <label class="radio"><input type="radio" name="pv-method" value="card" ${c.method === "card" ? "checked" : ""}> Credit card</label>
+      <label class="radio"><input type="radio" name="pv-method" value="paypal" ${c.method === "paypal" ? "checked" : ""}> <span class="pp">Pay<span>Pal</span></span></label>
+    </div>${box}${ups}${promo}
+    <div class="pv-submit-row ${f.styles.btnAlign}"><button class="pv-submit" style="background:${f.styles.btnBg};color:${f.styles.btnText}" data-act="${last ? "pv-submit" : "pv-next"}">${last ? esc(f.button || "Submit") : "Next"}</button></div>
+  </div>`;
+}
+function paymentEditor(){
+  const p = S.form.pay, added = S.ui.payAdded; S.ui.payAdded = null;
+  const del = (kind, x, name) => `<button class="icon-btn sm" data-act="pay-del" data-kind="${kind}" data-id="${x.id}" aria-label="Remove ${esc(name)}">${ic("x", 16)}</button>`;
+  const rowP = x => `<div class="pitem ${added === x.id ? "new" : ""}"><div class="t">${esc(x.name)}<small>${esc(x.note)}</small></div><span class="pr">${money(x.price)}</span>${del("products", x, x.name)}</div>`;
+  const rowU = x => `<div class="pitem ${added === x.id ? "new" : ""}"><div class="t">${esc(x.name)}<small>Shown at checkout</small></div><span class="pr">${money(x.price)}</span>${del("upsells", x, x.name)}</div>`;
+  const rowC = x => `<div class="pitem ${added === x.id ? "new" : ""}"><div class="t"><span class="code">${x.code}</span><small>${esc(x.note)}</small></div>${del("promos", x, x.code)}</div>`;
+  const card = (key, title, desc, rows, label) => {
+    const id = "pay-" + key, open = S.ui.open.has(id);
+    return `<div class="fcard pcard ${open ? "open" : ""}" data-id="${id}">
+      <div class="fcard-head" data-act="toggle-field"><span class="grip" aria-hidden="true">${ic("grip", 18)}</span><span class="fcard-title"><span class="ft">${title}</span></span>${rows.length ? `<span class="fcard-type">${rows.length} added</span>` : ""}
+        <button class="icon-btn" data-act="soon" data-msg="${title} options open here" aria-label="More options for ${title}">${ic("moreH", 22)}</button>
+        <button class="icon-btn chev" data-act="toggle-field" aria-label="${open ? "Collapse" : "Expand"} ${title}" aria-expanded="${open}">${ic("chevDown", 22)}</button></div>
+      <div class="fcard-body"><div><div class="pad"><p class="pdesc">${desc}</p>${rows.join("")}<button class="btn outline" data-act="pay-add" data-kind="${key}">${ic("plus", 18, "", 2)} ${label}</button></div></div></div></div>`;
+  };
+  return `<p class="pay-note"><b>Payment processing</b>This form will accept payments with Keap Pay. You can manage payment processing in <a class="link" data-act="soon" data-msg="Payment processing settings open here">Settings</a>.</p>
+    <div class="field-list">
+      ${card("products", "Products", "Choose the products you want to sell with this form.", p.products.map(rowP), "Add a product")}
+      ${card("upsells", "Upsells", "Suggest related products or add ons directly at checkout to boost sales.", p.upsells.map(rowU), "Add an upsell")}
+      ${card("promos", "Promo codes", `Let your clients use one of your active promo codes for special deals and discounts. <a class="link" data-act="soon" data-msg="Opens the promo codes help article">Learn more</a>`, p.promos.map(rowC), "Add a promo code")}
+    </div>`;
+}
+function payAddMenu(btn){
+  const kind = btn.dataset.kind, have = new Set(S.form.pay[kind].map(x => x.id));
+  const items = CATALOG[kind].filter(x => !have.has(x.id));
+  if (!items.length) return toast("Everything in your catalog is already added");
+  openPop(btn, `<h5>${kind === "promos" ? "Active promo codes" : "From your product catalog"}</h5>` + items.map(x => `<button data-act="pay-pick" data-kind="${kind}" data-id="${x.id}">${esc(x.name || x.code)}<span style="margin-left:auto;padding-left:16px;font-size:13px;color:var(--ink-800)">${x.price != null ? money(x.price) : Math.round(x.off * 100) + "% off"}</span></button>`).join(""));
+  POP.style.transformOrigin = "top left";
+  const vr = $("#viewport").getBoundingClientRect(), ar = btn.getBoundingClientRect();
+  POP.style.left = (ar.left - vr.left) / SCALE + "px";
+}
+function payPick(kind, id){
+  closePop();
+  const before = cartTotal(), x = CATALOG[kind].find(i => i.id === id); if (!x) return;
+  S.form.pay[kind].push(x); S.ui.payAdded = id; S.ui.open.add("pay-" + kind);
+  renderLeft(); refreshCart(before);
+}
+function payDel(kind, id){
+  const before = cartTotal(), p = S.form.pay;
+  p[kind] = p[kind].filter(x => x.id !== id);
+  if (kind === "upsells") S.ui.cart.added.delete(id);
+  if (kind === "promos" && S.ui.cart.promo && !p.promos.some(x => x.code === S.ui.cart.promo)) S.ui.cart.promo = null;
+  renderLeft(); refreshCart(before);
+}
+function applyPromo(){
+  const inp = $("#promo-in"), code = (inp ? inp.value : "").trim().toUpperCase(), c = S.ui.cart, before = cartTotal();
+  if (!code){ c.promo = null; c.promoErr = "Enter a promo code."; }
+  else if (S.form.pay.promos.some(x => x.code === code)){ c.promo = code; c.promoErr = ""; }
+  else { c.promo = null; c.promoErr = "That code is not active on this form."; }
+  refreshCart(before);
+  if (c.promo) toast(`${code} applied`);
+}
+
+/* appointments */
+const d0 = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+const sameDay = (a, b) => !!a && !!b && a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+function isAvail(d){
+  const t = d0(new Date()), max = new Date(t); max.setDate(max.getDate() + 35);
+  const w = d.getDay();
+  return d >= t && d <= max && w > 0 && w < 6;
+}
+function stepAvail(from, dir){
+  const d = new Date(from);
+  for (let i = 0; i < 70; i++){ d.setDate(d.getDate() + dir); if (isAvail(d)) return d0(d); }
+  return null;
+}
+function apptInit(){
+  const a = S.ui.appt; if (a.sel) return;
+  let d = d0(new Date()); if (!isAvail(d)) d = stepAvail(d, 1);
+  a.sel = d; a.view = {y:d.getFullYear(), m:d.getMonth()};
+}
+function fmtTime(h, m){ return {t:`${((h + 11) % 12) + 1}:${String(m).padStart(2, "0")}`, ap:h >= 12 ? "pm" : "am"}; }
+function slotLabel(h, mins){
+  const s = fmtTime(h, 0), e = fmtTime(h + Math.floor(mins / 60), mins % 60);
+  return s.ap === e.ap ? `${s.t} to ${e.t} ${e.ap}` : `${s.t} ${s.ap} to ${e.t} ${e.ap}`;
+}
+function apptEditor(f){
+  return `<label class="ofield" style="margin-top:6px"><span class="lg">Appointment type</span><select data-fbind="apptType" aria-label="Appointment type">${APPT_TYPES.map(o => `<option ${o === f.apptType ? "selected" : ""}>${esc(o)}</option>`).join("")}</select><span class="chev">${ic("chevDown", 18)}</span></label>
+    <p class="hint" style="margin-top:10px">People pick from your open times over the next five weeks.</p>`;
+}
+function apptPreview(f){
+  apptInit();
+  const a = S.ui.appt, {y, m} = a.view, sel = a.sel, today = d0(new Date());
+  const first = new Date(y, m, 1), days = new Date(y, m + 1, 0).getDate();
+  let cells = "";
+  for (let i = 0; i < first.getDay(); i++) cells += "<span></span>";
+  for (let dd = 1; dd <= days; dd++){
+    const d = new Date(y, m, dd), av = isAvail(d), on = sameDay(d, sel);
+    const cls = ["day", av ? "av" : "", on ? "sel" : "", d < today ? "past" : "", sameDay(d, today) ? "today" : ""].join(" ");
+    cells += av ? `<button class="${cls}" data-act="cal-pick" data-iso="${y}-${m + 1}-${dd}" aria-label="${DOW_L[d.getDay()]}, ${MON[m]} ${dd}" aria-pressed="${on}">${dd}</button>` : `<span class="${cls}">${dd}</span>`;
+  }
+  const type = f.apptType || APPT_TYPES[0];
+  const mins = /60/.test(type) ? 60 : 30;
+  const starts = mins === 60 ? [9, 10, 11, 13, 14] : [9, 10, 11, 12, 13];
+  const slots = sel ? starts.map((h, i) => {
+    const key = `${sel.toDateString()} ${h}`, booked = a.booked === key;
+    return `<div class="slot ${booked ? "booked" : ""}" style="--i:${i}"><span>${slotLabel(h, mins)}</span><button data-act="book" data-key="${key}" data-h="${h}">${booked ? ic("check", 16, "", 2.6) + " Booked" : "Book now"}</button></div>`;
+  }).join("") : "";
+  const html = `<div class="cal">
+    <p class="appt-h">${esc(type.split(" · ")[0])}</p>
+    <div class="cal-h"><span class="m">${MON[m]} ${y}</span><div class="cal-nav"><button class="icon-btn sm" data-act="cal-month" data-d="-1" aria-label="Previous month">${ic("chevLeft", 18)}</button><button class="btn text" data-act="cal-today">Today</button><button class="icon-btn sm" data-act="cal-month" data-d="1" aria-label="Next month">${ic("chevRight", 18)}</button></div></div>
+    <div class="cal-grid ${a.swap ? "swap" : ""}">${DOW.map(d => `<span class="dn">${d}</span>`).join("")}${cells}</div>
+    ${sel ? `<div class="slots-h"><strong>${DOW_L[sel.getDay()]}, ${MON[sel.getMonth()]} ${sel.getDate()} ${sel.getFullYear()}</strong><span><button class="icon-btn sm" data-act="cal-step" data-d="-1" aria-label="Previous open day">${ic("chevLeft", 18)}</button><button class="icon-btn sm" data-act="cal-step" data-d="1" aria-label="Next open day">${ic("chevRight", 18)}</button></span></div>
+      <div class="slots ${a.still ? "still" : ""}">${slots}</div>` : ""}
+  </div>`;
+  a.swap = false; a.still = false;
+  return html;
 }
 
 /* ---------------- AI pane ---------------- */
@@ -1714,7 +2233,7 @@ function goStep(n, force){
   S.dir = n > S.step ? "fwd" : "back";
   S.step = n; S.maxStep = Math.max(S.maxStep, n); S.ui.thank = false;
   if (n !== 1) S.ui.aiBanner = false;
-  renderLeft(); renderPreview();
+  renderLeft(); renderPreview({resetScroll:true});
   $("#b-left").scrollTop = 0;
   setScene(STEP_SCENE[n]);
 }
@@ -1905,6 +2424,7 @@ function fieldMenu(btn){
     ${f.type !== "hidden" ? `<button data-act="fm" data-op="req" data-id="${id}">${ic("check", 20)} Make ${f.required ? "optional" : "required"}</button>` : ""}
     <button data-act="fm" data-op="up" data-id="${id}" ${i === 0 ? "disabled" : ""}>${ic("arrowUp", 20)} Move up</button>
     <button data-act="fm" data-op="down" data-id="${id}" ${i === S.form.fields.length - 1 ? "disabled" : ""}>${ic("arrowDown", 20)} Move down</button>
+    ${S.flow === "future" && f.type !== "hidden" && f.type !== "appointment" ? `<button data-act="fm" data-op="cond" data-id="${id}">${ic("branch", 20)} ${inRule(id) ? "Edit condition" : "Add condition"}</button>` : ""}
     <hr><button class="danger" data-act="fm" data-op="del" data-id="${id}">${ic("trash", 20)} Delete</button>`);
 }
 function addFieldMenu(btn){
@@ -1974,13 +2494,13 @@ function renderNarration(animate){
   const list = scenesFor(); const i = sceneIndex(S.scene); const sc = list[i];
   $$(".sc-flow button").forEach(b => { b.classList.toggle("on", b.dataset.flow === S.flow); b.setAttribute("aria-selected", b.dataset.flow === S.flow); });
   $("#sc-steps").innerHTML = list.map((s, j) => `<button class="sc-step ${j === i ? "on" : ""} ${j < i ? "past" : ""}" data-act="sc-scene" data-scene="${s.id}" aria-current="${j === i ? "step" : "false"}" title="${s.label}"><span class="n">${j + 1}</span><span class="l">${s.label}</span></button>`).join("");
-  $("#sc-eyebrow").textContent = `${String(i + 1).padStart(2, "0")} / ${String(list.length).padStart(2, "0")} · ${sc.label}`;
+  $("#sc-eyebrow").textContent = `${S.flow === "future" ? "Future concept · " : ""}${String(i + 1).padStart(2, "0")} / ${String(list.length).padStart(2, "0")} · ${sc.label}`;
   const copy = $("#sc-copy");
   copy.innerHTML = esc(sc.text) + (sc.tip ? `<span class="tip">${esc(sc.tip)}</span>` : "");
   if (animate){ copy.classList.remove("swap"); void copy.offsetWidth; copy.classList.add("swap"); }
   $("#sc-prev").disabled = i === 0;
   const last = i === list.length - 1;
-  $("#sc-next").innerHTML = last ? `${S.flow === "ai" ? "Try the manual flow" : "Try the AI flow"}${ic("arrowRight", 16)}` : `Next${ic("arrowRight", 16)}`;
+  $("#sc-next").innerHTML = last ? `${NEXT_LABEL[S.flow]}${ic("arrowRight", 16)}` : `Next${ic("arrowRight", 16)}`;
 }
 
 function seedChat(upTo){
@@ -2007,6 +2527,17 @@ function goto(id, flow = S.flow){
   EPOCH++;
   closePop(); closeModal();
   S = freshState(flow);
+  if (flow === "future"){
+    const i = Math.max(0, FUTURE_IDS.indexOf(id));
+    S.form = futureForm(); S.formsView = "builder"; S.step = 2; S.maxStep = 2; S.dir = "fade";
+    S.ui.fstep = i; S.form.fields = S.form.steps[i].fields;
+    ["pay-products", "pay-upsells", "pay-promos"].forEach(k => S.ui.open.add(k));
+    S.form.steps[2].fields.forEach(x => S.ui.open.add(x.id));
+    renderAll(true);
+    setScene(FUTURE_IDS[i]);
+    if (i === 0){ const ep = EPOCH; setTimeout(() => { if (ep === EPOCH && inFutureBuilder()) openCond(condDraftDefault()); }, 560); }
+    return;
+  }
   const n = {details:1, fields:2, settings:3, share:4, done:4}[id];
   if (id === "ai-welcome"){ openAITab(false); }
   else if (id === "ai-clarify"){ openAITab(false); seedChat("clarify"); }
@@ -2033,7 +2564,7 @@ function goto(id, flow = S.flow){
 }
 function advance(){
   const list = scenesFor(); const i = sceneIndex(S.scene);
-  if (i === list.length - 1){ goto("list", S.flow === "ai" ? "manual" : "ai"); return; }
+  if (i === list.length - 1){ startFlow(NEXT_FLOW[S.flow]); return; }
   if (S.chat.busy && S.active === "ai") return;
   const id = S.scene;
   const A = {
@@ -2051,6 +2582,8 @@ function advance(){
     "fields": () => { if (S.active !== "forms") switchTab("forms"); if (S.formsView !== "builder" || S.step !== 2) return goto("settings"); goStep(3, true); },
     "settings": () => { if (S.active !== "forms") switchTab("forms"); if (S.formsView !== "builder" || S.step !== 3) return goto("share"); publish(); },
     "share": () => { if (S.active !== "forms") switchTab("forms"); done(); },
+    "cond": () => futureCond(),
+    "pay": () => futureTab(2),
   };
   const fn = A[id];
   if (fn){ const r = fn(); if (r === null) goto(list[i + 1].id); }
@@ -2060,7 +2593,7 @@ function prevScene(){
   const i = sceneIndex(S.scene);
   if (i > 0) goto(scenesFor()[i - 1].id);
 }
-function startFlow(flow){ goto("list", flow); }
+function startFlow(flow){ goto(SCENES[flow][0].id, flow); }
 
 /* intro */
 function buildIntro(){
@@ -2106,6 +2639,7 @@ const ACT = {
     else if (op === "dup") duplicateField(id);
     else if (op === "up") moveField(id, -1);
     else if (op === "down") moveField(id, 1);
+    else if (op === "cond") openCondFor(id);
     else if (op === "req"){ const f = S.form.fields.find(x => x.id === id); f.required = !f.required; renderFieldList(); renderPreview(); }
   },
   "add-field": el => addFieldMenu(el),
@@ -2129,6 +2663,31 @@ const ACT = {
   "expand": () => openModal(),
   "close-modal": () => closeModal(),
   "copy": el => copyText(el.dataset.what, el),
+  "fstep": el => setFStep(+el.dataset.i),
+  "pv-next": () => setFStep(S.ui.fstep + 1),
+  "cond-open": el => openCondFor(el.dataset.id),
+  "cond-close": () => closeCond(),
+  "cond-save": () => saveCond(),
+  "cond-remove": () => removeCond(),
+  "cond-plus": () => { const d = S.ui.cond; if (!d) return; const n = otherField(d.src, d.show); if (!n) return toast("Every field is already in this condition"); d.show.push(n); openCond(d); },
+  "cond-unshow": el => { const d = S.ui.cond; if (!d) return; d.show.splice(+el.dataset.i, 1); openCond(d); },
+  "pay-add": el => payAddMenu(el),
+  "pay-pick": el => payPick(el.dataset.kind, el.dataset.id),
+  "pay-del": el => payDel(el.dataset.kind, el.dataset.id),
+  "cart-details": el => { const c = S.ui.cart; c.open = !c.open; const w = $(".cart-lines"); if (w) w.classList.toggle("open", c.open); el.textContent = c.open ? "Hide details" : "View details"; el.setAttribute("aria-expanded", c.open); },
+  "upsell-toggle": el => { const c = S.ui.cart, id = el.dataset.id, before = cartTotal(); c.added.has(id) ? c.added.delete(id) : c.added.add(id); refreshCart(before); },
+  "promo-apply": () => applyPromo(),
+  "cal-month": el => { const a = S.ui.appt; let {y, m} = a.view; m += +el.dataset.d; if (m < 0){ m = 11; y--; } if (m > 11){ m = 0; y++; } a.view = {y, m}; a.swap = true; renderPreview(); },
+  "cal-today": () => { const a = S.ui.appt; a.sel = null; apptInit(); a.swap = true; renderPreview(); },
+  "cal-pick": el => { const [y, m, d] = el.dataset.iso.split("-").map(Number); S.ui.appt.sel = new Date(y, m - 1, d); S.ui.appt.booked = null; renderPreview(); },
+  "cal-step": el => {
+    const a = S.ui.appt, n = stepAvail(a.sel, +el.dataset.d);
+    if (!n) return toast("No more open days in the next five weeks");
+    a.sel = n; a.booked = null;
+    if (n.getMonth() !== a.view.m || n.getFullYear() !== a.view.y){ a.view = {y:n.getFullYear(), m:n.getMonth()}; a.swap = true; }
+    renderPreview();
+  },
+  "book": el => { const a = S.ui.appt, t = fmtTime(+el.dataset.h, 0); a.booked = el.dataset.key; a.still = true; renderPreview(); toast(`Booked ${DOW_L[a.sel.getDay()]}, ${MON[a.sel.getMonth()]} ${a.sel.getDate()} at ${t.t} ${t.ap}`); },
   "sc-flow": el => { if (el.dataset.flow !== S.flow) startFlow(el.dataset.flow); },
   "sc-scene": el => goto(el.dataset.scene),
   "sc-next": () => advance(),
@@ -2155,6 +2714,10 @@ document.addEventListener("pointerdown", e => {
 });
 document.addEventListener("input", e => {
   const t = e.target;
+  if (t.dataset.cond){ condChange(t); return; }
+  if (t.dataset.pv){ S.ui.pv[t.dataset.pv] = t.value; t.classList.toggle("ph", !t.value); applyConds(); return; }
+  if (t.name === "pv-method"){ S.ui.cart.method = t.value; renderPreview(); return; }
+  if (t.dataset.cardnum != null){ t.value = t.value.replace(/\D/g, "").slice(0, 16).replace(/(.{4})(?=.)/g, "$1 "); return; }
   if (t.dataset.input === "prompt"){ autoGrow(t); updateSend(); return; }
   if (t.dataset.input === "search"){
     S.query = t.value; const pos = t.selectionStart;
@@ -2178,7 +2741,9 @@ document.addEventListener("input", e => {
       renderPreview(); return;
     }
     f[k] = t.value;
-    const cnt = $(`[data-cnt="${k}"]`, t.closest(".group")); if (cnt) cnt.textContent = `${t.value.length}/${k === "label" ? 100 : 280}`;
+    if (k === "apptType") S.ui.appt.booked = null;
+    const grp = t.closest(".group");
+    const cnt = grp && $(`[data-cnt="${k}"]`, grp); if (cnt) cnt.textContent = `${t.value.length}/${k === "label" ? 100 : 280}`;
     if (k === "label") $(".ft", t.closest(".fcard")).textContent = t.value || "Untitled field";
     const pv = $(`.pv-field[data-id="${id}"]`);
     if (pv && k === "label"){ const l = $(".ph-l", pv); if (l) l.innerHTML = `${esc(f.label)}${f.required ? '<span class="req">*</span>' : ""}`; else renderPreview(); }
@@ -2210,7 +2775,8 @@ document.addEventListener("change", e => {
 document.addEventListener("keydown", e => {
   const t = e.target;
   if (t.id === "prompt" && e.key === "Enter" && !e.shiftKey){ e.preventDefault(); sendUser(t.value); return; }
-  if (e.key === "Escape"){ if ($("#modal")) closeModal(); closePop(); return; }
+  if (t.id === "promo-in" && e.key === "Enter"){ e.preventDefault(); applyPromo(); return; }
+  if (e.key === "Escape"){ if ($("#modal")) closeModal(); else if (POP) closePop(); else if (S.ui.cond) closeCond(); return; }
   if ((e.key === "Enter" || e.key === " ") && t.matches(".tab,[role='button']") && t.dataset.act){ e.preventDefault(); t.click(); return; }
   const typing = t.closest("input,textarea,select,[contenteditable]");
   if (typing || !$("#intro").classList.contains("hide")) return;
@@ -2250,7 +2816,7 @@ const hash = location.hash.replace("#", "");
 const [hFlow, hScene] = hash.split("/");
 if (SCENES[hFlow]){
   const intro = $("#intro"); intro.style.transition = "none"; hideIntro(); void intro.offsetWidth; intro.style.transition = "";
-  goto(SCENES[hFlow].some(s => s.id === hScene) ? hScene : "list", hFlow);
+  goto(SCENES[hFlow].some(s => s.id === hScene) ? hScene : SCENES[hFlow][0].id, hFlow);
 } else {
   goto("list", "ai");
   showIntro();

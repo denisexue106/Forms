@@ -10,6 +10,8 @@ Built from the Figma design on demo data, as a companion to the Form Unification
 
 **Manual flow.** Forms list, Start from scratch, details with inline validation, fields, settings, publish and share.
 
+**Future concepts.** Three features designed as future states, shown as steps of one form: conditional fields (an If and Then rule that shows a question only for certain answers), payments (products, upsells and promo codes with a live cart total) and appointment booking (a calendar with open times).
+
 Back and Next (or the arrow keys) step through each scene. Everything in between is clickable: type your own prompt, ask for changes such as `add a phone number field and make company name optional`, drag fields to reorder, change styles and watch the preview update.
 
 ## Run it
@@ -28,6 +30,7 @@ Each scene has its own address, for example `index.html#ai/fields` or `index.htm
 | --- | --- |
 | `ai` | `list`, `ai-welcome`, `ai-clarify`, `ai-generated`, `details`, `fields`, `settings`, `share`, `done` |
 | `manual` | `list`, `details`, `fields`, `settings`, `share`, `done` |
+| `future` | `cond`, `pay`, `appt` |
 
 ## Notes
 
