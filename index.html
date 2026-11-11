@@ -102,8 +102,6 @@ body::before{
 .sc :focus-visible{outline-color:var(--sc-accent-light)}
 
 .sc-bar{flex:none;height:60px;display:flex;align-items:center;gap:14px;padding:0 20px}
-.sc-back{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px 0 8px;border-radius:999px;border:1px solid var(--sc-rule);color:var(--sc-muted);font-size:13px;font-weight:500;transition:color .2s,border-color .2s,background .2s}
-.sc-back:hover{color:#fff;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.04)}
 .sc-title{font-family:var(--sc-display);font-weight:800;font-size:16px;letter-spacing:-.02em;white-space:nowrap}
 .sc-title small{display:block;font-family:var(--sc-font);font-weight:500;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--sc-subtle);margin-top:1px}
 .sc-main{flex:1;min-height:0;position:relative;padding-bottom:20px}
@@ -959,11 +957,9 @@ html.vt-brand::view-transition-new(pv){animation:vtWipe .95s cubic-bezier(.65,0,
   .ai-cta,.ai-cta-glow,.ai-cta.beacon::after,.brand-card.synced::before,.sync-pill .dot,.mini.pan .mini-scale{animation:none}
 }
 
-.sc-back{white-space:nowrap}
 .small-note{display:none}
 @media (max-width:560px){
   .sc-bar{gap:8px;padding:0 12px}
-  .sc-back{padding:0 10px 0 6px}
   .sc-main{padding-bottom:12px}
   .small-note{display:block}
 }
@@ -972,7 +968,6 @@ html.vt-brand::view-transition-new(pv){animation:vtWipe .95s cubic-bezier(.65,0,
 <body>
 <div class="sc">
   <header class="sc-bar">
-    <a class="sc-back" href="https://dbyxdesign.com/case-form-unification.html"><span data-icon="arrowLeft" data-size="16"></span>Case study</a>
     <div class="sc-title">Form builder with AI<small>Interactive prototype</small></div>
   </header>
 
