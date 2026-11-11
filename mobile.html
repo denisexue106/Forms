@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Forms on a phone · Interactive prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* Forms on a phone: the owner's app (Thryv AI, builder, share) and the customer's view of the form.
+   Product tokens and the four templates come from index.html, so both prototypes match. Demo data only. */
+:root{
+  --blue:#006CEB; --blue-hover:#0060D1; --blue-050:#EAF3FE;
+  --green:#36A635; --green-700:#2A942A; --green-050:#E8F6E8;
+  --red:#E02500; --nav:#151B22;
+  --paper:#FFFFFF; --gray-050:#FAFAFA; --gray-100:#F0F0F0; --gray-200:#E7E7E7; --gray-300:#DDDDDD; --gray-600:#B5B5B5;
+  --ink-900:rgba(0,0,0,.82); --ink-800:rgba(0,0,0,.60); --ink-700:rgba(0,0,0,.40);
+  --divider:rgba(0,0,0,.09);
+  --app-bg:#F3F5F8;
+  --z-subtle:0 1px 5px rgba(0,0,0,.10),0 1px 1px -1px rgba(0,0,0,.12),0 0 1px rgba(0,0,0,.16);
+  --z4:0 2px 4px -1px rgba(0,0,0,.20),0 1px 10px rgba(0,0,0,.12),0 4px 5px rgba(0,0,0,.14);
+  /* Sul Sans is not web hosted, Figtree is the closest open face (same as index.html) */
+  --font:"Sul Sans","Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --ios:system-ui,-apple-system,"SF Pro Text","Segoe UI",sans-serif;
+  --orb:radial-gradient(120% 120% at 20% 10%,#4FA3FF 0%,#006CEB 45%,#0A3D91 100%);
+  --ring:linear-gradient(120deg,#006CEB 0%,#2A9BD8 40%,#36A635 75%,#F2C230 100%);
+  --ease-out:cubic-bezier(.2,.8,.2,1); --ease-in-out:cubic-bezier(.65,0,.35,1); --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  --sb:54px; --tabs:83px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font);color:var(--ink-900);-webkit-font-smoothing:antialiased;background:#041a3b}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+img{display:block}
+.ic{display:block;flex:none}
+
+/* showcase frame (desktop only) */
+.stage{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:32px 16px;background:radial-gradient(110% 80% at 50% 0%,#0d4a93 0%,#07326A 48%,#041a3b 100%)}
+.sc-label{display:flex;align-items:center;gap:12px;font:500 13px/18px "Inter",system-ui,sans-serif;color:rgba(255,255,255,.74)}
+.sc-pill{height:30px;padding:0 14px;border-radius:999px;background:rgba(255,255,255,.12);color:#fff;font:600 12px/30px "Inter",system-ui,sans-serif;box-shadow:inset 0 0 0 1px rgba(255,255,255,.2)}
+.sc-pill:hover{background:rgba(255,255,255,.2)}
+.device{position:relative;flex:none;width:390px;height:844px;border-radius:58px;overflow:hidden;background:var(--app-bg);box-shadow:0 0 0 11px #0a0d13,0 0 0 13px #343d4b,0 40px 90px rgba(0,0,0,.55);isolation:isolate}
+@media (max-width:430px){
+  .stage{display:block;padding:0;background:var(--app-bg)}
+  .device{width:100vw;height:100vh;height:100dvh;border-radius:0;box-shadow:none}
+  .chrome-out{display:none!important}
+}
+
+/* status bar and home indicator */
+.sbar{position:absolute;inset:0 0 auto;height:var(--sb);z-index:40;color:#000;pointer-events:none}
+.sb-time{position:absolute;left:0;top:17px;width:calc(50% - 62px);padding-left:14px;text-align:center;font:600 17px/22px var(--ios);letter-spacing:-.3px}
+.sb-isl{position:absolute;left:50%;top:11px;width:124px;height:36px;margin-left:-62px;border-radius:20px;background:#000}
+.sb-r{position:absolute;right:0;top:19px;width:calc(50% - 62px);padding-right:12px;display:flex;justify-content:center;align-items:center;gap:6px}
+.sb-r svg{display:block;fill:currentColor}
+.homebar{position:absolute;left:50%;bottom:8px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:#000;z-index:60;pointer-events:none}
+
+/* screens and transitions */
+.scr{position:absolute;inset:0;display:none;flex-direction:column;padding-top:var(--sb);background:var(--app-bg);overflow:hidden}
+.scr.on{display:flex}
+.scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+.scroll::-webkit-scrollbar,.thread::-webkit-scrollbar,.rail::-webkit-scrollbar,.fchips::-webkit-scrollbar{display:none}
+@keyframes inPush{from{transform:translateX(100%)}to{transform:none}}
+@keyframes outPush{to{transform:translateX(-28%);filter:brightness(.94)}}
+@keyframes inPop{from{transform:translateX(-28%);filter:brightness(.94)}to{transform:none;filter:none}}
+@keyframes outPop{to{transform:translateX(100%)}}
+@keyframes inUp{from{transform:translateY(100%)}to{transform:none}}
+@keyframes outDown{to{transform:translateY(100%)}}
+.scr.in-push{animation:inPush .44s var(--ease-out) both;z-index:3;box-shadow:-12px 0 30px rgba(0,0,0,.12)}
+.scr.out-push{animation:outPush .44s var(--ease-out) both;z-index:2}
+.scr.in-pop{animation:inPop .44s var(--ease-out) both;z-index:2}
+.scr.out-pop{animation:outPop .44s var(--ease-out) both;z-index:3}
+.scr.in-present{animation:inUp .48s var(--ease-out) both;z-index:3}
+.scr.out-present{z-index:2}
+.scr.in-dismiss{z-index:2}
+.scr.out-dismiss{animation:outDown .42s var(--ease-in-out) both;z-index:3}
+
+.ib{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;color:var(--ink-900);flex:none}
+.ib:active{background:rgba(0,0,0,.06)}
+
+/* forms list (owner's app) */
+.lt-head{flex:none;padding:0 6px 4px 16px}
+.lt-row{display:flex;align-items:center;justify-content:space-between;height:46px}
+.biz{display:flex;align-items:center;gap:8px;height:36px;padding:0 10px 0 2px;border-radius:999px;font-size:15px;font-weight:600}
+.biz img{width:30px;height:30px;border-radius:8px;object-fit:contain;background:#fff;padding:2px;box-shadow:inset 0 0 0 1px var(--gray-200)}
+.biz .ic{color:var(--ink-700)}
+.lt-acts{display:flex}
+.lt-title{margin-top:2px;font:700 34px/41px var(--font);letter-spacing:-.02em}
+.forms-body{padding:10px 16px calc(var(--tabs) + 20px)}
+.ai-card{display:flex;align-items:center;gap:12px;width:100%;padding:14px 10px 14px 14px;border-radius:18px;border:1.5px solid transparent;text-align:left;background:linear-gradient(#fff,#fff) padding-box,var(--ring) border-box;box-shadow:0 8px 22px rgba(0,108,235,.13);transition:transform .2s var(--ease-out)}
+.ai-card:active{transform:scale(.985)}
+.orb{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--orb);box-shadow:0 4px 12px rgba(0,108,235,.32)}
+.ai-card b{display:block;font-size:16px;line-height:22px;font-weight:600}
+.ai-card small{display:block;margin-top:2px;font-size:13px;line-height:18px;color:var(--ink-800)}
+.go{margin-left:auto;color:var(--ink-700)}
+.fchips{display:flex;gap:8px;margin:18px -16px 0;padding:0 16px;overflow-x:auto;scrollbar-width:none}
+.fchip{flex:none;display:flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 1px var(--gray-300);font-size:14px;font-weight:600}
+.fchip em{font-style:normal;font-weight:500;color:var(--ink-700)}
+.fchip.on{background:var(--nav);color:#fff;box-shadow:none}
+.fchip.on em{color:rgba(255,255,255,.7)}
+.flist{list-style:none;margin-top:12px;border-radius:18px;background:#fff;box-shadow:var(--z-subtle);overflow:hidden}
+.frow{position:relative;display:flex;align-items:center;gap:12px;min-height:70px;padding:10px 2px 10px 14px}
+.frow+.frow::before{content:"";position:absolute;left:62px;right:0;top:0;height:1px;background:var(--divider)}
+.fic{flex:none;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--blue-050);color:var(--blue)}
+.fm{flex:1;min-width:0}
+.fm b{display:block;font-size:15px;line-height:20px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fm small{display:flex;align-items:center;gap:8px;margin-top:5px;font-size:12px;line-height:16px;color:var(--ink-800);white-space:nowrap;overflow:hidden}
+.fm small .pill{flex:none}
+.mt{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.pill{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;font-size:11px;font-weight:600}
+.pill.draft{background:var(--gray-100);color:var(--ink-800)}
+.pill.published{background:var(--green-050);color:var(--green-700)}
+.pill.unpub{background:#FFF1E6;color:#A84000}
+.tabbar{position:absolute;left:0;right:0;bottom:0;z-index:5;display:flex;height:var(--tabs);padding:2px 6px 30px;background:rgba(255,255,255,.93);backdrop-filter:saturate(1.6) blur(16px);-webkit-backdrop-filter:saturate(1.6) blur(16px);box-shadow:0 -1px 0 var(--divider)}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10.5px;font-weight:600;color:var(--ink-700)}
+.tab.on{color:var(--blue)}
+
+/* Thryv AI */
+.ai-scr{background:linear-gradient(180deg,#F4F8FE 0%,var(--app-bg) 45%)}
+.ai-top{flex:none;display:grid;grid-template-columns:52px 1fr 52px;align-items:center;height:50px;padding:0 4px}
+.ai-title{display:flex;align-items:center;justify-content:center;gap:6px;font-size:16px;font-weight:600}
+.ai-title .ic{color:var(--blue)}
+.thread{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding:6px 16px 18px;scrollbar-width:none;scroll-behavior:smooth}
+.hello{display:flex;flex-direction:column;align-items:center;text-align:center;padding:30px 10px 4px;transition:opacity .25s,transform .3s var(--ease-out)}
+.hello .orb{width:64px;height:64px}
+.hello h2{margin-top:18px;font-size:24px;line-height:30px;font-weight:700;letter-spacing:-.01em}
+.hello p{max-width:290px;margin-top:8px;font-size:15px;line-height:21px;color:var(--ink-800)}
+.cc-label{margin:14px 2px -4px;font-size:13px;font-weight:600;color:var(--ink-800)}
+.cc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cc{display:flex;align-items:center;gap:10px;min-height:60px;padding:10px 12px;border-radius:14px;background:#fff;box-shadow:var(--z-subtle);text-align:left;font-size:14px;line-height:18px;font-weight:600;transition:transform .15s}
+.cc:active,.cc.tap{transform:scale(.97);background:var(--blue-050)}
+.ci{flex:none;width:32px;height:32px;border-radius:9px;display:grid;place-items:center;background:var(--blue-050);color:var(--blue)}
+.leaving{opacity:0;transform:translateY(-8px)}
+.msg{display:flex;gap:8px}
+.msg.user{justify-content:flex-end}
+.bubble{font-size:15px;line-height:21px}
+.msg.user .bubble{max-width:82%;padding:11px 15px;border-radius:20px 20px 6px 20px;background:var(--blue);color:#fff;box-shadow:0 6px 16px rgba(0,108,235,.2)}
+.av{flex:none;width:28px;height:28px;margin-top:2px;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--orb)}
+.msg.ai .bubble{max-width:calc(100% - 36px);padding:13px 15px;border-radius:6px 20px 20px 20px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.07)}
+.msg.ai.wide .bubble{flex:1}
+.bubble ul{padding-left:18px;margin-top:8px}
+.bubble li+li{margin-top:6px}
+.enter{animation:msgIn .4s var(--ease-out) both}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+.typing{display:inline-flex;gap:4px;padding:5px 2px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--ink-700);animation:dot 1.1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}
+.typing i:nth-child(3){animation-delay:.3s}
+@keyframes dot{0%,60%,100%{opacity:.3;transform:none}30%{opacity:1;transform:translateY(-3px)}}
+.replies{display:flex;flex-direction:column;align-items:flex-end;gap:8px;padding-left:44px}
+.reply{min-height:44px;padding:10px 16px;border-radius:22px;background:#fff;color:var(--blue);font-size:15px;line-height:20px;font-weight:600;text-align:right;box-shadow:inset 0 0 0 1.5px var(--blue)}
+.reply:active,.reply.tap{background:var(--blue-050)}
+.replies.enter{animation:none}
+.replies.enter .reply{animation:msgIn .4s var(--ease-out) both;animation-delay:calc(var(--i)*80ms)}
+.build-title{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600}
+.spark{display:grid;color:var(--blue);animation:spin 2.4s linear infinite}
+.build-title.done .spark{animation:none;color:var(--green)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.build-list{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:11px}
+.build-list li{display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:19px;color:var(--ink-700);transition:color .3s}
+.build-list li.on{color:var(--ink-900)}
+.st{position:relative;flex:none;width:18px;height:18px;margin-top:1px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--gray-300)}
+.build-list li.on .st{box-shadow:none}
+.sp{position:absolute;inset:0;border-radius:50%;border:2px solid var(--blue-050);border-top-color:var(--blue);opacity:0}
+.build-list li.on:not(.ok) .sp{opacity:1;animation:spin .8s linear infinite}
+.ck{position:absolute;inset:0;border-radius:50%;display:grid;place-items:center;background:var(--green);color:#fff;transform:scale(0);transition:transform .35s var(--ease-spring)}
+.build-list li.ok .ck{transform:scale(1)}
+.mini{position:relative;height:248px;margin-top:13px;border-radius:12px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+.mini-scale{position:absolute;left:10px;top:10px;width:340px;transform-origin:0 0;transform:translateY(var(--pan,0px)) scale(var(--ms,.8));transition:transform 7s linear}
+.mini.vt .mini-scale{view-transition-name:mini}
+.tpl-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
+.tchip{height:36px;padding:0 14px;border-radius:999px;background:#fff;font-size:14px;font-weight:600;box-shadow:inset 0 0 0 1px var(--gray-300)}
+.tchip.on{background:var(--blue-050);color:var(--blue);box-shadow:inset 0 0 0 1.5px var(--blue)}
+.form-link{display:inline-flex;align-items:center;gap:4px;height:42px;margin-top:12px;padding:0 10px 0 16px;border-radius:12px;background:var(--blue);color:#fff;font-size:15px;font-weight:600}
+.composer{flex:none;padding:8px 12px 34px}
+.cbox{display:flex;align-items:center;gap:2px;min-height:52px;padding:4px 6px 4px 16px;border-radius:26px;border:1.5px solid transparent;background:linear-gradient(#fff,#fff) padding-box,var(--ring) border-box;box-shadow:0 8px 22px rgba(0,0,0,.08)}
+.cph{flex:1;min-width:0;font-size:16px;color:var(--ink-700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cph.typed{color:var(--ink-900)}
+.mic{width:40px;height:40px;color:var(--ink-800)}
+.send{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--gray-200);color:#fff;transition:background .2s}
+.send.ready{background:var(--blue)}
+.beta{margin-top:8px;text-align:center;font-size:11px;line-height:14px;color:var(--ink-700)}
+
+/* builder */
+.nav-sm{flex:none;display:grid;grid-template-columns:100px 1fr 100px;align-items:center;height:48px;padding:0 4px;background:#fff}
+.back{display:flex;align-items:center;height:44px;padding:0 8px 0 0;color:var(--blue);font-size:16px;font-weight:500}
+.nav-t{text-align:center;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-r{justify-self:end;display:flex}
+.nav-r .ib{color:var(--blue)}
+.seg{flex:none;display:flex;padding:0 12px;background:#fff;box-shadow:0 1px 0 var(--divider)}
+.seg button{flex:1;height:42px;font-size:14px;font-weight:600;color:var(--ink-800);border-bottom:2.5px solid transparent}
+.seg button.on{color:var(--blue);border-bottom-color:var(--blue)}
+.b-body{padding:18px 0 calc(var(--tabs) + 28px)}
+.sec-h{margin:0 16px 10px;font-size:13px;font-weight:600;color:var(--ink-800)}
+.rail{display:flex;gap:10px;padding:2px 16px 6px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.tcard{position:relative;flex:none;width:122px;padding:5px 5px 9px;border-radius:14px;background:#fff;box-shadow:var(--z-subtle);text-align:left;scroll-snap-align:start;cursor:pointer;transition:box-shadow .3s}
+.tcard:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.tcard.on{box-shadow:0 0 0 2px var(--blue),var(--z4)}
+.tthumb{position:relative;display:block;height:150px;border-radius:10px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
+.tthumb .mini-scale{left:6px;top:6px;--ms:.3;transition:none}
+.tn{display:block;margin:8px 4px 0;font-size:13px;font-weight:600}
+.tcheck{position:absolute;right:10px;top:10px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--blue);color:#fff;transform:scale(0);transition:transform .35s var(--ease-spring);z-index:2}
+.tcard.on .tcheck{transform:scale(1)}
+.brand-row{display:flex;align-items:center;gap:12px;margin:16px 16px 22px;padding:12px;border-radius:14px;background:#fff;box-shadow:var(--z-subtle)}
+.brand-row img{width:44px;height:44px;border-radius:10px;object-fit:contain;padding:3px;background:#fff;box-shadow:inset 0 0 0 1px var(--gray-200)}
+.brand-row b{display:block;font-size:14px;line-height:19px;font-weight:600}
+.brand-row small{display:flex;align-items:center;gap:5px;margin-top:2px;font-size:12px;line-height:16px;font-weight:600;color:var(--green-700)}
+.dots{display:flex;gap:5px;margin-left:auto;padding-right:4px}
+.dots i{width:18px;height:18px;border-radius:5px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)}
+.pv-host{margin:0 16px;padding:16px;border-radius:18px;transition:background-color .4s}
+.pv-host.vt{view-transition-name:pvhost}
+.bbar{position:absolute;left:0;right:0;bottom:0;z-index:5;display:flex;gap:10px;padding:12px 16px 34px;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 -1px 0 var(--divider)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;height:52px;border-radius:14px;font-size:16px;font-weight:600}
+.btn.primary{flex:1;background:var(--blue);color:#fff}
+.btn.primary:active{background:var(--blue-hover)}
+.btn.secondary{width:124px;background:var(--blue-050);color:var(--blue)}
+
+/* share sheet */
+.sheet-wrap{position:absolute;inset:0;z-index:20;pointer-events:none}
+.sheet-wrap.open{pointer-events:auto}
+.dim{position:absolute;inset:0;background:rgba(10,14,22,.42);opacity:0;transition:opacity .35s}
+.sheet-wrap.open .dim{opacity:1}
+.sheet{position:absolute;left:0;right:0;bottom:0;padding:8px 16px 34px;border-radius:24px 24px 0 0;background:#fff;box-shadow:0 -10px 40px rgba(0,0,0,.18);transform:translateY(105%);transition:transform .46s var(--ease-out)}
+.sheet-wrap.open .sheet{transform:none}
+.sheet-wrap.instant .dim,.sheet-wrap.instant .sheet{transition:none}
+.grab{display:block;width:38px;height:5px;margin:0 auto 10px;border-radius:3px;background:var(--gray-300)}
+.sh-head{display:flex;align-items:center;justify-content:space-between}
+.sh-head h3{font-size:20px;line-height:26px;font-weight:700}
+.live{display:flex;align-items:center;gap:8px;margin-top:2px;font-size:14px;line-height:20px;color:var(--ink-800)}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px var(--green-050)}
+.linkbox{display:flex;align-items:center;gap:10px;height:54px;margin-top:16px;padding:0 6px 0 14px;border-radius:14px;background:var(--gray-050);box-shadow:inset 0 0 0 1px var(--gray-200)}
+.linkbox .ic{color:var(--ink-800)}
+.url{flex:1;min-width:0;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.copy{display:flex;align-items:center;gap:6px;height:42px;padding:0 14px;border-radius:10px;background:var(--blue);color:#fff;font-size:14px;font-weight:600}
+.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:18px}
+.sgrid button{display:flex;flex-direction:column;align-items:center;gap:8px;padding:4px 0;font-size:12px;line-height:15px;font-weight:600}
+.sgi{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;background:var(--blue-050);color:var(--blue)}
+.rowbtn{display:flex;align-items:center;gap:12px;width:100%;min-height:62px;padding:8px 2px;text-align:left;border-top:1px solid var(--divider)}
+.sgrid+.rowbtn{margin-top:16px}
+.ri{flex:none;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:var(--gray-100)}
+.rowbtn b{display:block;font-size:15px;line-height:20px;font-weight:600}
+.rowbtn small{display:block;font-size:13px;line-height:18px;color:var(--ink-800)}
+.sheet .btn.primary{width:100%;margin-top:10px}
+
+.toast{position:absolute;left:50%;bottom:112px;z-index:70;display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;background:rgba(21,27,34,.92);color:#fff;font-size:14px;font-weight:600;white-space:nowrap;opacity:0;transform:translate(-50%,16px);transition:opacity .25s,transform .35s var(--ease-out);pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.toast .ic{color:#7BD67A}
+
+/* customer's phone: the published form in an in app browser */
+.fill{background:var(--page-bg,#F2F6FB)}
+.sv-bar{flex:none;display:grid;grid-template-columns:76px 1fr 76px;align-items:center;height:44px;padding:0 6px;background:rgba(248,248,249,.96);box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.sv-done{justify-self:start;height:44px;padding:0 10px;color:var(--blue);font:600 17px/44px var(--ios)}
+.sv-url{justify-self:center;display:flex;align-items:center;gap:5px;font:500 15px/20px var(--ios);color:var(--ink-900)}
+.sv-url .ic{color:var(--ink-800)}
+.sv-r{justify-self:end;display:flex}
+.sv-r .ib{color:var(--blue)}
+.fill-scroll{padding:16px 16px 130px}
+.fill-cta{position:absolute;left:0;right:0;bottom:0;z-index:5;padding:16px 16px 34px;background:linear-gradient(to bottom,transparent,var(--page-bg,#F2F6FB) 32%)}
+.fill-cta .pv-submit{width:100%;height:52px;font-size:16px;border-radius:10px}
+.fill-cta[data-tpl=cover] .pv-submit,.fill-cta[data-tpl=minimal] .pv-submit{border-radius:999px}
+.fill-cta[data-tpl=spotlight] .pv-submit{border-radius:12px}
+.ty{padding:36px 8px 28px;text-align:center}
+.ty .burst{width:64px;height:64px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;background:var(--ba);color:#fff;animation:pop .5s var(--ease-spring) both}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+.ty h4{font-family:var(--hf);font-size:22px;line-height:28px;font-weight:700}
+.ty p{margin-top:8px;font-size:16px;line-height:23px;color:var(--ink-800)}
+
+/* form preview: the same card and templates as index.html */
+.pv-card{position:relative;max-width:464px;padding:24px;border-radius:12px;background:var(--paper);box-shadow:var(--z4);overflow:hidden;--bp:#222;--bt:#fff;--ba:var(--blue);--hf:var(--font);transition:background-color .5s,box-shadow .5s,border-radius .5s}
+.pv-logo{display:block;width:142px;height:97px;margin-bottom:16px;object-fit:contain;transition:opacity .4s,transform .6s var(--ease-spring)}
+.pv-hdr.center{text-align:center}
+.pv-hdr.center .pv-logo{margin-left:auto;margin-right:auto}
+.pv-h{font-family:var(--hf);font-size:16px;line-height:24px;font-weight:600;color:var(--ink-900);word-wrap:break-word}
+.pv-d{margin-top:8px;font-size:14px;line-height:20px;color:var(--ink-800);word-wrap:break-word}
+.pv-fields{display:flex;flex-direction:column;gap:16px;margin-top:24px}
+.pv-field{position:relative}
+.pv-field input,.pv-field select,.pv-field textarea{display:block;width:100%;height:40px;padding:0 15px;border:1px solid var(--gray-600);border-radius:4px;background:var(--paper);color:var(--ink-900);font:inherit;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s,padding .2s}
+.pv-field textarea{height:120px;padding:10px 15px;resize:none;line-height:20px}
+.pv-field select{appearance:none;-webkit-appearance:none;padding-right:36px}
+.pv-field select.ph{color:transparent}
+.pv-field .ph-l{position:absolute;left:16px;top:10px;max-width:calc(100% - 52px);font-size:14px;line-height:20px;color:var(--ink-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;transition:top .2s,font-size .2s,line-height .2s}
+.pv-field .ph-l .req{margin-left:1px;color:var(--red)}
+.pv-field input:not(:placeholder-shown)+.ph-l,.pv-field textarea:not(:placeholder-shown)+.ph-l,.pv-field select:not(.ph)+.ph-l{display:none}
+.pv-field .chev{position:absolute;right:12px;top:8px;color:var(--ink-800);pointer-events:none}
+.pv-field input:focus,.pv-field select:focus,.pv-field textarea:focus{border-color:var(--ba);box-shadow:inset 0 0 0 1px var(--ba)}
+.pv-submit-row{display:flex;margin-top:16px}
+.pv-submit-row.full .pv-submit{width:100%}
+.pv-submit{height:40px;padding:0 16px;border-radius:4px;background:var(--bp);color:var(--bt);font-size:14px;font-weight:700;transition:background-color .55s,color .55s,border-radius .4s,transform .15s}
+.pv-submit:active{transform:scale(.97)}
+.pv-art{display:none}
+.tpl-spotlight .pv-hdr{margin:-24px -24px 0;padding:26px 24px 24px;background-color:var(--bp);background-image:radial-gradient(120% 150% at 100% 0%,color-mix(in srgb,var(--ba) 60%,transparent) 0%,transparent 58%);color:#fff}
+.tpl-spotlight .pv-logo{width:112px;height:76px;padding:6px 10px;border-radius:12px;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,.18)}
+.tpl-spotlight .pv-h{color:#fff;font-size:22px;line-height:28px;font-weight:700}
+.tpl-spotlight .pv-d{color:rgba(255,255,255,.84)}
+.tpl-spotlight .pv-submit{border-radius:8px}
+.tpl-cover{border-radius:18px}
+.tpl-cover .pv-hdr{margin:-24px -24px 0;padding:0 28px 2px;text-align:center}
+.tpl-cover .pv-art{position:relative;display:block;height:118px;margin:0 -28px;overflow:hidden;background:var(--bp)}
+.tpl-cover .pv-art i{position:absolute;border-radius:50%}
+.tpl-cover .pv-art i:nth-child(1){width:230px;height:230px;left:-70px;top:-120px;background:var(--ba);opacity:.9}
+.tpl-cover .pv-art i:nth-child(2){width:170px;height:170px;right:-40px;top:-30px;background:color-mix(in srgb,var(--ba) 45%,#fff);opacity:.55}
+.tpl-cover .pv-art i:nth-child(3){width:86px;height:86px;left:46%;top:56px;border:12px solid rgba(255,255,255,.22)}
+.tpl-cover .pv-logo{position:relative;width:104px;height:104px;margin:-52px auto 12px;padding:12px;border-radius:50%;background:#fff;box-shadow:0 8px 22px rgba(0,0,0,.16)}
+.tpl-cover .pv-h{font-size:21px;line-height:28px;font-weight:700}
+.tpl-cover .pv-field input,.tpl-cover .pv-field select,.tpl-cover .pv-field textarea{border-color:transparent;border-radius:10px;background:color-mix(in srgb,var(--bp) 6%,#fff)}
+.tpl-cover .pv-submit{width:100%;height:44px;border-radius:999px}
+.tpl-minimal{padding:8px 4px;background:transparent;box-shadow:none}
+.tpl-minimal .pv-logo{width:96px;height:66px;margin-bottom:20px}
+.tpl-minimal .pv-h{font-size:28px;line-height:34px;font-weight:700;letter-spacing:-.01em}
+.tpl-minimal .pv-d{font-size:15px;line-height:22px}
+.tpl-minimal .pv-fields{gap:10px;margin-top:28px}
+.tpl-minimal .pv-field input,.tpl-minimal .pv-field select,.tpl-minimal .pv-field textarea{padding-left:0;border:0;border-bottom:1.5px solid rgba(0,0,0,.22);border-radius:0;background:transparent}
+.tpl-minimal .pv-field input:focus,.tpl-minimal .pv-field select:focus,.tpl-minimal .pv-field textarea:focus{border-bottom-color:var(--ba);box-shadow:inset 0 -1px 0 var(--ba)}
+.tpl-minimal .pv-field .ph-l{left:0}
+.tpl-minimal .pv-field textarea{height:84px}
+.tpl-minimal .pv-submit{height:44px;padding:0 26px;border-radius:999px}
+
+/* phone sizing: 52px fields, 16px text so iOS doesn't zoom, labels that float instead of vanishing */
+.pv-card.m .pv-field input,.pv-card.m .pv-field select{height:52px;font-size:16px}
+.pv-card.m:not(.tpl-minimal):not(.tpl-cover) .pv-field input,.pv-card.m:not(.tpl-minimal):not(.tpl-cover) .pv-field select,.pv-card.m:not(.tpl-minimal):not(.tpl-cover) .pv-field textarea{border-radius:8px}
+.pv-card.m .pv-field textarea{height:116px;padding:14px 15px;font-size:16px;line-height:22px}
+.pv-card.m .pv-field .ph-l{top:15px;font-size:16px;line-height:22px}
+.pv-card.m .pv-field .chev{top:15px}
+.pv-card.m .pv-field input:not(:placeholder-shown),.pv-card.m .pv-field select:not(.ph){padding-top:16px}
+.pv-card.m .pv-field input:not(:placeholder-shown)+.ph-l,.pv-card.m .pv-field select:not(.ph)+.ph-l{display:block;top:7px;font-size:11px;line-height:14px}
+.pv-card.m .pv-fields{gap:14px}
+.pv-card.m .pv-h{font-size:20px;line-height:26px}
+.pv-card.m.tpl-spotlight .pv-h{font-size:24px;line-height:30px}
+.pv-card.m.tpl-minimal .pv-h{font-size:30px;line-height:36px}
+.pv-card.m .pv-d{font-size:15px;line-height:22px}
+.pv-card.m.tpl-spotlight .pv-d{color:rgba(255,255,255,.86)}
+
+/* AI build: parts of the mini preview fill in as each step finishes (same classes as index.html) */
+.mini.bld:not(.b-brand) .pv-card{--bp:#C9CED6!important;--ba:#DADDE3!important}
+.mini.bld:not(.b-brand) .pv-logo{opacity:0;transform:scale(.5) rotate(-8deg)}
+.mini.bld:not(.b-copy) .pv-h,.mini.bld:not(.b-copy) .pv-d{color:transparent!important;border-radius:6px;background:linear-gradient(90deg,#e9e9ec,#f6f6f8,#e9e9ec);background-size:200% 100%;animation:shimmer 1.2s linear infinite}
+.mini.bld:not(.b-copy) .pv-h{width:72%;min-height:24px}
+.mini.bld:not(.b-fields) .pv-field{border-radius:6px;background:linear-gradient(90deg,#ececef,#f7f7f9,#ececef);background-size:200% 100%;animation:shimmer 1.2s linear infinite}
+.mini.bld:not(.b-fields) .pv-field>*{visibility:hidden}
+.mini.bld.b-fields .pv-field{animation:fadeUp .5s var(--ease-out) backwards;animation-delay:calc(var(--i)*110ms)}
+.mini.bld:not(.b-fields) .pv-submit{opacity:.35}
+@keyframes shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* recorded taps */
+.touches{position:absolute;inset:0;z-index:90;pointer-events:none}
+.touch{position:absolute;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(20,30,50,.16);box-shadow:inset 0 0 0 2px rgba(255,255,255,.9),0 0 0 1px rgba(20,30,50,.2);animation:touch .7s var(--ease-out) forwards}
+@keyframes touch{0%{transform:scale(.55);opacity:1}100%{transform:scale(1.3);opacity:0}}
+::view-transition-group(*){animation-duration:.45s;animation-timing-function:cubic-bezier(.2,.8,.2,1)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="stage">
+  <p class="sc-label chrome-out">Interactive prototype · Forms on a phone <button class="sc-pill" type="button" data-act="restart">Restart</button></p>
+  <div class="device" id="device">
+    <div class="sbar" aria-hidden="true">
+      <span class="sb-time">9:41</span><span class="sb-isl"></span>
+      <span class="sb-r">
+        <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 2.4c2.3 0 4.4.9 6 2.4l1.2-1.3A10.4 10.4 0 0 0 8 .6 10.4 10.4 0 0 0 .8 3.5L2 4.8a8.6 8.6 0 0 1 6-2.4z"/><path d="M8 5.9c1.4 0 2.6.5 3.6 1.4l1.2-1.3A7 7 0 0 0 8 4.1a7 7 0 0 0-4.8 1.9l1.2 1.3c1-.9 2.2-1.4 3.6-1.4z"/><path d="M8 9.3c.5 0 1 .2 1.3.5L8 11.3 6.7 9.8c.3-.3.8-.5 1.3-.5z"/></svg>
+        <svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="22" height="12" rx="3.6" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="19" height="9" rx="2.2"/><path d="M24 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" opacity=".45"/></svg>
+      </span>
+    </div>
+
+    <!-- owner's app: forms list -->
+    <section class="scr" data-s="forms" aria-label="Forms">
+      <div class="lt-head">
+        <div class="lt-row">
+          <span class="biz"><img src="img/otter-and-rocket.jpg" alt="">Otter and Rocket<span data-i="chevDown" data-s="18"></span></span>
+          <span class="lt-acts"><button class="ib" type="button" aria-label="Search" data-act="soon"><span data-i="search"></span></button><button class="ib" type="button" aria-label="New form" data-act="ai"><span data-i="plus"></span></button></span>
+        </div>
+        <h1 class="lt-title">Forms</h1>
+      </div>
+      <div class="scroll">
+        <div class="forms-body">
+          <button class="ai-card" type="button" data-act="ai">
+            <span class="orb"><span data-i="sparkle" data-s="22" data-w="1.9"></span></span>
+            <span><b>Create a form with Thryv AI</b><small>Describe it and get a full draft with your brand</small></span>
+            <span class="go" data-i="chevRight" data-s="20"></span>
+          </button>
+          <div class="fchips"><button class="fchip on" type="button">All <em>10</em></button><button class="fchip" type="button">Drafts <em>4</em></button><button class="fchip" type="button">Published <em>3</em></button><button class="fchip" type="button">Changes <em>2</em></button></div>
+          <ul class="flist" id="flist"></ul>
+        </div>
+      </div>
+      <nav class="tabbar" aria-label="App">
+        <button class="tab" type="button" data-act="soon"><span data-i="home"></span>Home</button>
+        <button class="tab" type="button" data-act="soon"><span data-i="contacts"></span>Contacts</button>
+        <button class="tab" type="button" data-act="soon"><span data-i="comms"></span>Inbox</button>
+        <button class="tab on" type="button" aria-current="page"><span data-i="form"></span>Forms</button>
+        <button class="tab" type="button" data-act="soon"><span data-i="moreH"></span>More</button>
+      </nav>
+    </section>
+
+    <!-- owner's app: Thryv AI -->
+    <section class="scr ai-scr" data-s="ai" aria-label="Thryv AI">
+      <div class="ai-top">
+        <button class="ib" type="button" aria-label="Close" data-act="close-ai"><span data-i="x"></span></button>
+        <span class="ai-title"><span data-i="sparkle" data-s="18" data-w="1.9"></span>Thryv AI</span>
+        <span></span>
+      </div>
+      <div class="thread" id="thread" aria-live="polite"></div>
+      <div class="composer">
+        <div class="cbox"><span class="cph" id="cph">Describe your form</span><button class="ib mic" type="button" aria-label="Dictate" data-act="soon"><span data-i="mic" data-s="22"></span></button><button class="send" id="send" type="button" aria-label="Send"><span data-i="arrowUp" data-s="20" data-w="2.2"></span></button></div>
+        <p class="beta">Chat is in beta. AI can make mistakes, so check all responses.</p>
+      </div>
+    </section>
+
+    <!-- owner's app: builder, Style step, with the share sheet -->
+    <section class="scr" data-s="builder" aria-label="Form builder">
+      <div class="nav-sm">
+        <button class="back" type="button" data-act="back-forms"><span data-i="chevLeft" data-s="28" data-w="2"></span>Forms</button>
+        <span class="nav-t">Client intake form</span>
+        <span class="nav-r"><button class="ib" type="button" aria-label="See it as a customer" data-act="fill"><span data-i="eye"></span></button></span>
+      </div>
+      <div class="seg" role="tablist"><button type="button" role="tab" data-act="soon">Details</button><button type="button" role="tab" data-act="soon">Fields</button><button class="on" type="button" role="tab" aria-selected="true">Style</button><button type="button" role="tab" data-act="soon">Settings</button></div>
+      <div class="scroll">
+        <div class="b-body">
+          <p class="sec-h">Template</p>
+          <div class="rail" id="rail"></div>
+          <div class="brand-row"><img src="img/otter-and-rocket.jpg" alt=""><span><b>Otter and Rocket</b><small><span data-i="check" data-s="14" data-w="2.6"></span>Synced with Branding Center</small></span><span class="dots"><i style="background:#1F2C55"></i><i style="background:#2A9BD8"></i><i style="background:#F2F6FB"></i></span></div>
+          <p class="sec-h">Preview</p>
+          <div class="pv-host" id="pvhost"></div>
+        </div>
+      </div>
+      <div class="bbar"><button class="btn secondary" type="button" data-act="fill">Preview</button><button class="btn primary" type="button" data-act="share">Publish and share</button></div>
+      <div class="sheet-wrap" id="sheet">
+        <div class="dim" data-act="close-sheet"></div>
+        <div class="sheet" role="dialog" aria-label="Share your form">
+          <span class="grab"></span>
+          <div class="sh-head"><h3>Share your form</h3><button class="ib" type="button" aria-label="Close" data-act="close-sheet"><span data-i="x" data-s="22"></span></button></div>
+          <p class="live"><i></i>Published. Anyone with the link can fill it out.</p>
+          <div class="linkbox"><span data-i="link" data-s="20"></span><span class="url">forms.example.com/otter-and-rocket/intake</span><button class="copy" type="button" data-act="toast" data-msg="Link copied"><span data-i="copy" data-s="18"></span>Copy</button></div>
+          <div class="sgrid">
+            <button type="button" data-act="toast" data-msg="Opens Messages with the link"><span class="sgi"><span data-i="comms"></span></span>Text message</button>
+            <button type="button" data-act="toast" data-msg="Opens Mail with the link"><span class="sgi"><span data-i="mail"></span></span>Email</button>
+            <button type="button" data-act="toast" data-msg="Shows a QR code to scan"><span class="sgi"><span data-i="qr"></span></span>QR code</button>
+            <button type="button" data-act="toast" data-msg="Opens the share menu"><span class="sgi"><span data-i="upload"></span></span>More</button>
+          </div>
+          <button class="rowbtn" type="button" data-act="toast" data-msg="Embed code copied"><span class="ri"><span data-i="code" data-s="20"></span></span><span><b>Add to your website</b><small>Copy the embed code</small></span><span class="go" data-i="chevRight" data-s="20"></span></button>
+          <button class="rowbtn" type="button" data-act="fill"><span class="ri"><span data-i="phone" data-s="20"></span></span><span><b>See it as a customer</b><small>Open the form the way customers will</small></span><span class="go" data-i="chevRight" data-s="20"></span></button>
+          <button class="btn primary" type="button" data-act="close-sheet">Done</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- customer's phone: the published form -->
+    <section class="scr fill" data-s="fill" aria-label="Published form">
+      <div class="sv-bar"><button class="sv-done" type="button" data-act="back-builder">Done</button><span class="sv-url"><span data-i="lock" data-s="14" data-w="2"></span>forms.example.com</span><span class="sv-r"><button class="ib" type="button" aria-label="Reload" data-act="refill"><span data-i="reload" data-s="20"></span></button></span></div>
+      <div class="scroll" id="fillscroll"><div class="fill-scroll" id="fillbody"></div></div>
+      <div class="fill-cta" id="fillcta"></div>
+    </section>
+
+    <div class="toast" id="toast" role="status"></div>
+    <div class="touches" id="touches" aria-hidden="true"></div>
+    <div class="homebar" aria-hidden="true"></div>
+  </div>
+</div>
+
+<script>
+(() => {
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* icons: the same stroke set as index.html, plus a few phone ones */
+const I = {
+  search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/>',
+  home:'<path d="M4 10.2 12 4l8 6.2V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z"/>',
+  contacts:'<circle cx="9" cy="8.5" r="3.5"/><path d="M3 19.5c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M15.5 5.2a3.4 3.4 0 0 1 0 6.6M18 14.4c1.8.8 3 2.6 3 5.1"/>',
+  comms:'<path d="M20 11.5a8 8 0 0 1-11.7 7.1L4 20l1.3-4A8 8 0 1 1 20 11.5z"/><path d="M8.5 10h7M8.5 13.5h4.5"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  x:'<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',
+  check:'<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+  chevDown:'<path d="m6 9 6 6 6-6"/>',
+  chevLeft:'<path d="m15 6-6 6 6 6"/>',
+  chevRight:'<path d="m9 6 6 6-6 6"/>',
+  arrowUp:'<path d="M12 19V5M6 11l6-6 6 6"/>',
+  moreH:'<circle cx="5.5" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="18.5" cy="12" r="1.6" fill="currentColor" stroke="none"/>',
+  copy:'<rect x="8.5" y="8.5" width="11.5" height="11.5" rx="2"/><path d="M15.5 8.5V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v9.5a1 1 0 0 0 1 1h3.5"/>',
+  link:'<path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/>',
+  code:'<path d="m8 7-5 5 5 5M16 7l5 5-5 5"/>',
+  userPlus:'<circle cx="9" cy="8.5" r="3.5"/><path d="M3 19.5c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5M19 8v6M16 11h6"/>',
+  sparkle:'<path d="M12 3.5c.6 4 2.6 6 6.5 6.5-3.9.6-5.9 2.6-6.5 6.5-.6-3.9-2.6-5.9-6.5-6.5 3.9-.5 5.9-2.5 6.5-6.5z"/><path d="M18.5 15.5c.3 1.6 1 2.3 2.5 2.5-1.5.3-2.2 1-2.5 2.5-.3-1.5-1-2.2-2.5-2.5 1.5-.2 2.2-.9 2.5-2.5z"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/>',
+  feedback:'<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12.5h5"/>',
+  calendar:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8.5 3v4M15.5 3v4"/>',
+  marketing:'<path d="M4 10v4a1 1 0 0 0 1 1h2l7 4.5V4.5L7 9H5a1 1 0 0 0-1 1z"/><path d="M17.5 9a4 4 0 0 1 0 6M8 15l1 4.5"/>',
+  form:'<rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/>',
+  mail:'<rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4.5 7 7.5 6 7.5-6"/>',
+  qr:'<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h3v3M20 14v.01M14 20h.01M17 20h3v-3"/>',
+  mic:'<rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5"/>',
+  lock:'<rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>',
+  phone:'<rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M11 18h2"/>',
+  eye:'<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',
+  reload:'<path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3M19.5 4.5v4h-4"/>',
+  upload:'<path d="M12 15V4M7.5 8.5 12 4l4.5 4.5"/><path d="M5 13v5.5a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5V13"/>'
+};
+const ic = (n, s = 24, sw = 1.7) => `<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n] || ""}</svg>`;
+const paintIcons = (root = document) => $$("[data-i]", root).forEach(el => { el.outerHTML = ic(el.dataset.i, +(el.dataset.s || 24), +(el.dataset.w || 1.7)).replace('class="ic"', `class="ic ${el.className}"`); });
+
+/* demo data, shared with index.html */
+const BRAND = {name:"Otter and Rocket", primary:"#1F2C55", accent:"#2A9BD8", bg:"#F2F6FB", font:'"Poppins","Figtree",system-ui,sans-serif', logo:"img/otter-and-rocket.jpg"};
+const LIB = {
+  firstName:{label:"First name", type:"text", req:1, ac:"given-name"},
+  lastName:{label:"Last name", type:"text", req:1, ac:"family-name"},
+  email:{label:"Email address", type:"email", req:1, ac:"email"},
+  company:{label:"Company name", type:"text", req:1, ac:"organization"},
+  serviceType:{label:"Service type", type:"select", options:["Brand strategy","Web design","Marketing","Something else"]},
+  budget:{label:"Budget range", type:"select", options:["Under $1,000","$1,000 to $5,000","$5,000 to $10,000","$10,000 or more"]},
+  contactMethod:{label:"Preferred contact method", type:"select", options:["Email","Phone call","Text message"]},
+  projectDetails:{label:"Project details", type:"textarea"}
+};
+const FORM = {headline:"We'd love to learn more about you and your project.", description:"This helps us get to know you and your goals before we dive in. The more detail you share, the better we can tailor our work to you.", button:"Submit"};
+const QUESTIONS = ["Will this be filled out by new customers or your internal team?", "Any specific fields beyond the basics, like service type, budget, or preferred contact method?"];
+const REPLIES = [
+  {text:"New customers. Add service type and budget range", fields:["firstName","lastName","email","company","serviceType","budget","projectDetails"], who:" for new customers"},
+  {text:"My internal team. Keep it short", fields:["firstName","lastName","email","company","projectDetails"], who:" for your team"},
+  {text:"Add a preferred contact method too", fields:["firstName","lastName","email","company","contactMethod","projectDetails"], who:""}
+];
+const COMMON = [["intake","Client intake","userPlus"],["lead","Lead capture","marketing"],["event","Event registration","calendar"],["feedback","Customer feedback","feedback"],["booking","Consultation request","clock"],["contact","Contact us","comms"]];
+const PROMPT = "Create a new client intake form with contact info.";
+const TEMPLATES = [["classic","Classic"],["spotlight","Spotlight"],["cover","Cover"],["minimal","Minimal"]];
+const ROWS = [["New Client Intake","draft","Edited 11/2/26"],["Service Request Form","draft","20 contacts · Edited 10/29/26"],["Event Registration","published","Edited 10/21/26"],["Lead Capture · Website","unpub","5 contacts · Edited 10/28/26"],["Employee Onboarding","published","1 contact · Edited 10/6/26"],["Weekly Check In","draft","Edited 9/25/26"],["Feedback Survey","unpub","Edited 10/20/26"],["Referral Form","published","Edited 8/19/26"]];
+const STATUS = {draft:"Draft", published:"Published", unpub:"Unpublished changes"};
+const S = {tpl:"classic", reply:0, cur:null, epoch:0};
+const fieldsOf = () => REPLIES[S.reply].fields.map(k => LIB[k]);
+const tplName = id => TEMPLATES.find(t => t[0] === id)[1];
+const pageBg = tpl => tpl === "minimal" ? "#FFFFFF" : BRAND.bg;
+
+/* the form card, same markup and templates as index.html */
+function pvField(f, i){
+  const ph = `<span class="ph-l">${esc(f.label)}${f.req ? '<span class="req">*</span>' : ""}</span>`;
+  let inner;
+  if (f.type === "select") inner = `<select class="ph" aria-label="${esc(f.label)}"><option value=""></option>${f.options.map(o => `<option>${esc(o)}</option>`).join("")}</select>${ph}<span class="chev">${ic("chevDown", 22)}</span>`;
+  else if (f.type === "textarea") inner = `<textarea placeholder=" " aria-label="${esc(f.label)}"></textarea>${ph}`;
+  else inner = `<input type="${f.type}" placeholder=" " autocomplete="${f.ac || "off"}" ${f.type === "email" ? 'inputmode="email" autocapitalize="off"' : ""} aria-label="${esc(f.label)}">${ph}`;
+  return `<div class="pv-field" style="--i:${i}">${inner}</div>`;
+}
+function pvCard(tpl, {m = false, submit = true} = {}){
+  return `<div class="pv-card tpl-${tpl} ${m ? "m" : ""}" style="--bp:${BRAND.primary};--bt:#fff;--ba:${BRAND.accent};--hf:${BRAND.font}">
+    <div class="pv-hdr"><div class="pv-art" aria-hidden="true"><i></i><i></i><i></i></div><img class="pv-logo" src="${BRAND.logo}" alt="${BRAND.name}"><div class="pv-h">${esc(FORM.headline)}</div><div class="pv-d">${esc(FORM.description)}</div></div>
+    <div class="pv-fields">${fieldsOf().map(pvField).join("")}</div>
+    ${submit ? `<div class="pv-submit-row ${tpl === "cover" ? "full" : ""}"><button class="pv-submit" type="button">${FORM.button}</button></div>` : ""}
+  </div>`;
+}
+const miniHTML = (tpl, cls = "", ms = .8) => `<div class="mini ${cls}" inert style="background:${pageBg(tpl)}"><div class="mini-scale" style="--ms:${ms}">${pvCard(tpl)}</div></div>`;
+
+/* navigation: push and pop for the builder, present and dismiss for Thryv AI */
+const MOTION = ["in-push","out-push","in-pop","out-pop","in-present","out-present","in-dismiss","out-dismiss"];
+function show(name, how = "none"){
+  const next = $(`.scr[data-s="${name}"]`), prev = S.cur && $(`.scr[data-s="${S.cur}"]`);
+  if (!next || prev === next) return;
+  $$(".scr").forEach(s => { s.classList.remove(...MOTION); if (s !== prev && s !== next) s.classList.remove("on"); });
+  next.classList.add("on");
+  S.cur = name;
+  if (!prev) return;
+  if (how === "none" || REDUCED){ prev.classList.remove("on"); return; }
+  next.classList.add("in-" + how); prev.classList.add("out-" + how);
+  setTimeout(() => {
+    prev.classList.remove("out-" + how); next.classList.remove("in-" + how);
+    if (prev.dataset.s !== S.cur) prev.classList.remove("on");
+  }, 500);
+}
+let toastT;
+function toast(msg){ const t = $("#toast"); t.innerHTML = ic("check", 18, 2.4) + esc(msg); t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 1900); }
+
+/* forms list */
+$("#flist").innerHTML = ROWS.map(([n, st, meta]) => `<li class="frow"><span class="fic">${ic("form", 20)}</span><span class="fm"><b>${esc(n)}</b><small><span class="pill ${st}">${STATUS[st]}</span><span class="mt">${esc(meta)}</span></small></span><button class="ib" type="button" aria-label="More for ${esc(n)}" data-act="soon">${ic("moreH", 22)}</button></li>`).join("");
+
+/* Thryv AI thread */
+const thread = () => $("#thread");
+const scrollEnd = (smooth = true) => { const t = thread(); t.style.scrollBehavior = smooth && !REDUCED ? "smooth" : "auto"; t.scrollTop = t.scrollHeight; };
+const welcomeHTML = () => `<div class="hello" id="hello"><span class="orb">${ic("sparkle", 30, 1.8)}</span><h2>What form do you need?</h2><p>Describe it in your own words, or start from a common form.</p></div><p class="cc-label" id="cclabel">Commonly created forms</p><div class="cc-grid" id="ccgrid">${COMMON.map(([k, l, i]) => `<button class="cc" type="button" data-act="common" data-k="${k}"><span class="ci">${ic(i, 18)}</span>${l}</button>`).join("")}</div>`;
+const userHTML = (t, anim) => `<div class="msg user ${anim ? "enter" : ""}"><div class="bubble">${esc(t)}</div></div>`;
+const aiHTML = (h, {wide = false, anim = false} = {}) => `<div class="msg ai ${wide ? "wide" : ""} ${anim ? "enter" : ""}"><span class="av">${ic("sparkle", 16, 2)}</span><div class="bubble">${h}</div></div>`;
+const questionsHTML = () => `<p>Sure! A couple of quick questions before I build it:</p><ul>${QUESTIONS.map(q => `<li>${esc(q)}</li>`).join("")}</ul>`;
+const repliesHTML = anim => `<div class="replies ${anim ? "enter" : ""}" id="replies">${REPLIES.map((r, i) => `<button class="reply" type="button" style="--i:${i}" data-act="reply" data-n="${i}">${esc(r.text)}</button>`).join("")}</div>`;
+const stepsOf = () => [`Choosing ${fieldsOf().length} fields${REPLIES[S.reply].who}`, "Writing the headline and description", "Applying your logo, colors and font from the Branding Center", `Picking the ${tplName("classic")} template`, "Setting new contacts to Lead"];
+function buildHTML(ok = 0, active = -1, done = false, miniCls = ""){
+  return `<p class="build-title ${done ? "done" : ""}"><span class="spark">${ic("sparkle", 18)}</span><span class="bt">${done ? "Built your form" : "Building your form"}</span></p>
+    <ul class="build-list">${stepsOf().map((s, i) => `<li class="${i < ok || done ? "on ok" : i === active ? "on" : ""}"><span class="st"><span class="sp"></span><span class="ck">${ic("check", 12, 3)}</span></span><span>${esc(s)}</span></li>`).join("")}</ul>
+    ${miniHTML(S.tpl, miniCls)}`;
+}
+const resultHTML = () => `<p>Here's your client intake form. I used the ${tplName("classic")} template with your logo, colors and font from the Branding Center. Want a different look?</p><div class="tpl-chips">${TEMPLATES.map(([id, n]) => `<button class="tchip ${id === S.tpl ? "on" : ""}" type="button" data-act="chat-tpl" data-tpl="${id}" aria-pressed="${id === S.tpl}">${n}</button>`).join("")}</div><button class="form-link" type="button" data-act="open-builder">Open in builder${ic("chevRight", 18, 2.2)}</button>`;
+function append(html){ const t = thread(); t.insertAdjacentHTML("beforeend", html); return t.lastElementChild; }
+function setComposer(text){ const c = $("#cph"); c.textContent = text || "Describe your form"; c.classList.toggle("typed", !!text); $("#send").classList.toggle("ready", !!text); }
+function resetThread(){ S.epoch++; S.busy = false; S.tpl = "classic"; S.reply = 0; thread().innerHTML = welcomeHTML(); setComposer(""); thread().scrollTop = 0; }
+
+/* still states for deep links */
+function staticThread(stage, tpl = "classic"){
+  resetThread();
+  S.tpl = tpl;
+  let h = userHTML(PROMPT) + aiHTML(questionsHTML());
+  if (stage === "questions") h += repliesHTML(false);
+  if (stage === "build") h += userHTML(REPLIES[0].text) + aiHTML(buildHTML(2, 2, false, "bld b-fields b-copy"), {wide:true});
+  if (stage === "result") h += userHTML(REPLIES[0].text) + aiHTML(buildHTML(5, -1, true), {wide:true}) + aiHTML(resultHTML());
+  thread().innerHTML = h;
+  requestAnimationFrame(() => scrollEnd(false));
+}
+
+/* the live flow */
+async function typeInto(text, ep){
+  for (let i = 1; i <= text.length; i += 2){ if (ep !== S.epoch) return; setComposer(text.slice(0, i)); await wait(16); }
+  setComposer(text);
+}
+async function startChat(prompt){
+  if (S.busy || !$("#hello")) return;
+  S.busy = true;
+  const ep = ++S.epoch;
+  await typeInto(prompt, ep); await wait(260); if (ep !== S.epoch) return;
+  ["#hello", "#cclabel", "#ccgrid"].forEach(s => $(s) && $(s).classList.add("leaving"));
+  await wait(240); if (ep !== S.epoch) return;
+  thread().innerHTML = ""; setComposer("");
+  append(userHTML(prompt, true)); scrollEnd();
+  await wait(420); if (ep !== S.epoch) return;
+  const m = append(aiHTML(`<span class="typing" aria-label="Thryv AI is typing"><i></i><i></i><i></i></span>`, {anim:true})); scrollEnd();
+  await wait(950); if (ep !== S.epoch) return;
+  $(".bubble", m).innerHTML = questionsHTML(); scrollEnd();
+  await wait(380); if (ep !== S.epoch) return;
+  append(repliesHTML(true)); scrollEnd();
+  S.busy = false;
+}
+async function reply(i){
+  if (S.busy) return;
+  S.busy = true;
+  const ep = ++S.epoch; S.reply = i;
+  const r = $("#replies"); if (r) r.remove();
+  append(userHTML(REPLIES[i].text, true)); scrollEnd();
+  await wait(480); if (ep !== S.epoch) return;
+  const m = append(aiHTML(buildHTML(0, 0, false, "bld anim"), {wide:true, anim:true})); scrollEnd();
+  const lis = $$(".build-list li", m), mini = $(".mini", m);
+  const parts = ["b-fields", "b-copy", "b-brand"];
+  for (let k = 0; k < lis.length; k++){
+    lis[k].classList.add("on");
+    await wait(k < 4 ? 520 : 360); if (ep !== S.epoch) return;
+    if (parts[k]) mini.classList.add(parts[k]);
+    await wait(k < 4 ? 340 : 200); if (ep !== S.epoch) return;
+    lis[k].classList.add("ok");
+  }
+  await wait(250); if (ep !== S.epoch) return;
+  const t = $(".build-title", m); t.classList.add("done"); $(".bt", t).textContent = "Built your form";
+  mini.classList.remove("bld", "anim", ...parts);
+  panMini(mini);
+  await wait(650); if (ep !== S.epoch) return;
+  append(aiHTML(resultHTML(), {anim:true})); scrollEnd();
+  S.busy = false;
+}
+function panMini(mini){
+  if (!mini || REDUCED) return;
+  const sc = $(".mini-scale", mini), k = parseFloat(sc.style.getPropertyValue("--ms")) || .8;
+  const over = sc.offsetHeight * k - (mini.clientHeight - 20);
+  if (over > 12) requestAnimationFrame(() => sc.style.setProperty("--pan", `${-Math.round(over)}px`));
+}
+function morph(fn){ if (document.startViewTransition && !REDUCED) return document.startViewTransition(fn).finished.catch(() => {}); fn(); return Promise.resolve(); }
+function chatTpl(id){
+  if (id === S.tpl) return;
+  const minis = $$("#thread .mini"), mini = minis[minis.length - 1];
+  if (mini) mini.classList.add("vt");
+  morph(() => {
+    S.tpl = id;
+    if (mini){
+      const sc = $(".mini-scale", mini);
+      mini.style.background = pageBg(id); sc.innerHTML = pvCard(id);
+      sc.style.transition = "none"; sc.style.removeProperty("--pan"); void sc.offsetHeight; sc.style.removeProperty("transition");
+    }
+    $$("#thread .tchip").forEach(c => { const on = c.dataset.tpl === id; c.classList.toggle("on", on); c.setAttribute("aria-pressed", on); });
+  }).then(() => { if (mini){ mini.classList.remove("vt"); panMini(mini); } });
+}
+
+/* builder and share sheet */
+function renderBuilder(){
+  /* a div with button behavior: the thumbnail holds a whole form, and a button can't contain buttons or inputs */
+  $("#rail").innerHTML = TEMPLATES.map(([id, n]) => `<div class="tcard ${id === S.tpl ? "on" : ""}" role="button" tabindex="0" data-act="tpl" data-tpl="${id}" aria-pressed="${id === S.tpl}" aria-label="${n} template"><div class="tthumb" inert style="background:${pageBg(id)}"><div class="mini-scale" style="--ms:.3">${pvCard(id)}</div></div><span class="tcheck">${ic("check", 14, 2.8)}</span><span class="tn">${n}</span></div>`).join("");
+  renderPreview();
+}
+function renderPreview(){ const h = $("#pvhost"); h.style.background = pageBg(S.tpl); h.innerHTML = pvCard(S.tpl, {m:true}); }
+function pickTpl(id){
+  if (id === S.tpl) return;
+  $("#pvhost").classList.add("vt");
+  morph(() => { S.tpl = id; $$("#rail .tcard").forEach(c => { const on = c.dataset.tpl === id; c.classList.toggle("on", on); c.setAttribute("aria-pressed", on); }); renderPreview(); })
+    .then(() => $("#pvhost").classList.remove("vt"));
+}
+function openSheet(instant){ const w = $("#sheet"); if (instant){ w.classList.add("instant"); w.classList.add("open"); requestAnimationFrame(() => requestAnimationFrame(() => w.classList.remove("instant"))); } else w.classList.add("open"); }
+const closeSheet = () => $("#sheet").classList.remove("open");
+
+/* customer's view */
+function renderFill(thanks = false){
+  const scr = $('.scr[data-s="fill"]');
+  scr.style.setProperty("--page-bg", pageBg(S.tpl));
+  const vars = `--bp:${BRAND.primary};--bt:#fff;--ba:${BRAND.accent};--hf:${BRAND.font}`;
+  $("#fillbody").innerHTML = thanks
+    ? `<div class="pv-card tpl-${S.tpl} m" style="${vars}"><div class="ty"><span class="burst">${ic("check", 30, 2.6)}</span><h4>Thanks for reaching out</h4><p>We got your info and will be in touch soon.</p></div></div>`
+    : pvCard(S.tpl, {m:true, submit:false});
+  const cta = $("#fillcta"); cta.dataset.tpl = S.tpl; cta.setAttribute("style", vars);
+  cta.innerHTML = thanks ? "" : `<button class="pv-submit" type="button" data-act="submit">${FORM.button}</button>`;
+  $("#fillscroll").scrollTop = 0;
+}
+
+/* taps */
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-act]"); if (!b) return;
+  const a = b.dataset.act;
+  if (a === "ai"){ resetThread(); show("ai", "present"); }
+  else if (a === "close-ai"){ S.epoch++; show("forms", "dismiss"); }
+  else if (a === "common"){ if (!S.busy && $("#hello")){ b.classList.add("tap"); startChat(PROMPT); } }
+  else if (a === "reply"){ if (!S.busy){ b.classList.add("tap"); reply(+b.dataset.n); } }
+  else if (a === "chat-tpl") chatTpl(b.dataset.tpl);
+  else if (a === "open-builder"){ renderBuilder(); show("builder", "push"); }
+  else if (a === "back-forms"){ closeSheet(); show("forms", "pop"); }
+  else if (a === "tpl") pickTpl(b.dataset.tpl);
+  else if (a === "share") openSheet();
+  else if (a === "close-sheet") closeSheet();
+  else if (a === "fill"){ closeSheet(); renderFill(); show("fill", "push"); }
+  else if (a === "back-builder"){ renderPreview(); show("builder", "pop"); }
+  else if (a === "submit") renderFill(true);
+  else if (a === "refill") renderFill();
+  else if (a === "toast") toast(b.dataset.msg);
+  else if (a === "soon") toast("Not part of this prototype");
+  else if (a === "restart"){ history.replaceState(null, "", location.pathname + location.search); boot(); }
+});
+document.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches('[role="button"][data-act]')){ e.preventDefault(); e.target.click(); } });
+/* the composer is scripted: tapping it writes the client intake prompt and sends it */
+$(".cbox").addEventListener("click", e => { if (!e.target.closest(".mic")) startChat(PROMPT); });
+$('.scr[data-s="fill"]').addEventListener("change", e => { if (e.target.matches("select")) e.target.classList.toggle("ph", !e.target.value); });
+
+/* recordings draw a touch where each tap lands */
+if (new URLSearchParams(location.search).has("rec")){
+  document.addEventListener("pointerdown", e => {
+    const d = $("#device").getBoundingClientRect(), t = document.createElement("span");
+    t.className = "touch"; t.style.left = `${e.clientX - d.left}px`; t.style.top = `${e.clientY - d.top}px`;
+    $("#touches").appendChild(t); setTimeout(() => t.remove(), 750);
+  }, true);
+}
+
+/* deep links: #forms #ai #questions #build #result #builder/<tpl> #share/<tpl> #fill/<tpl> #thanks/<tpl> */
+function boot(){
+  closeSheet(); S.cur = null; $$(".scr").forEach(s => s.classList.remove("on"));
+  const [name, arg] = (location.hash.slice(1) || "forms").split("/");
+  if (arg && TEMPLATES.some(t => t[0] === arg)) S.tpl = arg;
+  const tpl = S.tpl;
+  switch (name){
+    case "ai": resetThread(); show("ai"); break;
+    case "questions": case "build": case "result": staticThread(name, arg && TEMPLATES.some(t => t[0] === arg) ? arg : "classic"); show("ai"); requestAnimationFrame(() => scrollEnd(false)); break;
+    case "builder": S.tpl = tpl; renderBuilder(); show("builder"); break;
+    case "share": S.tpl = tpl; renderBuilder(); show("builder"); openSheet(true); break;
+    case "fill": S.tpl = tpl; renderFill(); show("fill"); break;
+    case "thanks": S.tpl = tpl; renderFill(true); show("fill"); break;
+    default: resetThread(); show("forms");
+  }
+}
+paintIcons();
+boot();
+})();
+</script>
+</body>
+</html>

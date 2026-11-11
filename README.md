@@ -18,6 +18,16 @@ Everything is clickable, and every path lands in the same builder.
 
 **Future concepts.** Conditional fields, payments and appointment booking are labelled as future concepts. Add a payment or booking step from Add a step, add a condition from a field's menu, or open the Service Request Form, which has all three.
 
+## Phone version
+
+`mobile.html` is the same flow on a phone, for the Mobile section of the case study. On a desktop it shows inside a phone frame; on a phone it fills the screen.
+
+**The owner's side.** From the forms list, open Thryv AI, pick a common form and tap an answer. The form builds with the same checklist and live preview as on desktop, and you can try templates from the chat, then open the builder's Style step, publish, and share from a sheet (copy the link, text, email, QR code).
+
+**The customer's side.** See it as a customer opens the published form in an in app browser, in any of the four templates. Fields are 52 pixels tall with 16 pixel text so iOS doesn't zoom, labels float up as you type, and Submit stays pinned to the bottom.
+
+Deep links: `mobile.html#forms`, `#ai`, `#questions`, `#build`, `#result`, `#builder/<template>`, `#share/<template>`, `#fill/<template>`, `#thanks/<template>`, where the template is `classic`, `spotlight`, `cover` or `minimal`. Add `?rec` to draw a touch where each tap lands, for screen recordings.
+
 ## Run it
 
 There is no build step. Serve the folder and open it in a browser:
